@@ -91,12 +91,29 @@ const CrosswordPuzzle = () => {
     }
 
     // Handle backspace
-    if (e.key === 'Backspace' && userGrid[row][col] === '') {
-      const prevCell = findNextCell(userGrid, row, col, direction, false);
-      if (prevCell) {
-        setSelected(prevCell);
-        cellRefs.current[prevCell.row][prevCell.col]?.focus();
+    if (e.key === 'Backspace') {
+      e.preventDefault();
+      
+      const newGrid = [...userGrid];
+      const newCellStatus = [...cellStatus];
+
+      if (userGrid[row][col] === '') {
+        // If current cell is empty, move to and clear previous cell
+        const prevCell = findNextCell(userGrid, row, col, direction, false);
+        if (prevCell) {
+          newGrid[prevCell.row][prevCell.col] = '';
+          newCellStatus[prevCell.row][prevCell.col] = null;
+          setSelected(prevCell);
+          cellRefs.current[prevCell.row][prevCell.col]?.focus();
+        }
+      } else {
+        // If current cell has content, just clear it
+        newGrid[row][col] = '';
+        newCellStatus[row][col] = null;
       }
+
+      setUserGrid(newGrid);
+      setCellStatus(newCellStatus);
       return;
     }
 
@@ -122,11 +139,13 @@ const CrosswordPuzzle = () => {
 
     if (userGrid[row][col] === 'blank') return;
     
-    // Handle backspace/delete through onChange
-    if (value === '') {
+    // Only handle actual input changes, not backspace
+    // (backspace is handled in handleKeyDown)
+    if (value !== '') {
       const newGrid = [...userGrid];
-      newGrid[row][col] = '';
+      newGrid[row][col] = value.toUpperCase();
       setUserGrid(newGrid);
+      
       // Clear validation state for this cell
       const newCellStatus = [...cellStatus];
       newCellStatus[row][col] = null;
