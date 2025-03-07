@@ -372,45 +372,6 @@ const CrosswordPuzzle = () => {
     setCellStatus(result.newCellStatus);
   };
 
-  // Get the background color for a cell based on selection and validation status
-  const getCellStyle = (row: number, col: number, isSelected: boolean | null) => {
-    if (userGrid[row][col] === 'blank') {
-      return 'bg-black';
-    }
-
-    if (cellStatus[row][col] !== null) {
-      if (cellStatus[row][col]) {
-        return 'bg-green-200';
-      }
-    }
-
-    if (isSelected) {
-      return 'bg-blue-200';
-    } else if (
-      selected && (
-        (direction === 'across' && selected.row === row) ||
-        (direction === 'down' && selected.col === col)
-      )
-    ) {
-      return 'bg-blue-100';
-    }
-
-    return 'bg-white';
-  };
-
-  // Helper function to convert between display and logical column positions
-  const displayToLogicalCol = (displayCol: number) => 4 - displayCol;
-
-  // Get all available puzzle IDs
-  const puzzleIds = Object.keys(puzzles) as PuzzleId[];
-
-  // Add function to check puzzle status
-  const getPuzzleStatus = (puzzleId: PuzzleId) => {
-    const savedState = loadPuzzleState(puzzleId);
-    if (!savedState) return null;
-    return savedState.isComplete ? '✓' : '•';
-  };
-
   // Add reveal functionality
   const handleReveal = () => {
     if (!currentConfig) return;
