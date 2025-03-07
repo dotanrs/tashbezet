@@ -98,10 +98,61 @@ const CrosswordPuzzle = () => {
           cellRefs.current[newRow][col]?.focus();
         }
       }
-    } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-      setDirection('across');
-    } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-      setDirection('down');
+    } else if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+      e.preventDefault(); // Prevent cursor movement within input
+      
+      let newRow = row;
+      let newCol = col;
+      
+      // If moving perpendicular to current direction, switch direction
+      if ((direction === 'down' && ['ArrowRight', 'ArrowLeft'].includes(e.key)) ||
+          (direction === 'across' && ['ArrowUp', 'ArrowDown'].includes(e.key))) {
+        setDirection(direction === 'across' ? 'down' : 'across');
+        return;
+      }
+
+      // Move in the current direction
+      switch (e.key) {
+        case 'ArrowRight':
+          if (direction === 'across') {
+            newCol = col + 1;
+            while (newCol < 5 && userGrid[row][newCol] === 'blank') {
+              newCol++;
+            }
+          }
+          break;
+        case 'ArrowLeft':
+          if (direction === 'across') {
+            newCol = col - 1;
+            while (newCol >= 0 && userGrid[row][newCol] === 'blank') {
+              newCol--;
+            }
+          }
+          break;
+        case 'ArrowDown':
+          if (direction === 'down') {
+            newRow = row + 1;
+            while (newRow < 5 && userGrid[newRow][col] === 'blank') {
+              newRow++;
+            }
+          }
+          break;
+        case 'ArrowUp':
+          if (direction === 'down') {
+            newRow = row - 1;
+            while (newRow >= 0 && userGrid[newRow][col] === 'blank') {
+              newRow--;
+            }
+          }
+          break;
+      }
+
+      // Only move if we found a valid cell
+      if (newRow >= 0 && newRow < 5 && newCol >= 0 && newCol < 5 && 
+          userGrid[newRow][newCol] !== 'blank') {
+        setSelected({ row: newRow, col: newCol });
+        cellRefs.current[newRow][newCol]?.focus();
+      }
     }
   };
   
