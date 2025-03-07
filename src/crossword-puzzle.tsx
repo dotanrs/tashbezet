@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-
-type Cell = string | 'blank';
-type Grid = Cell[][];
-type Selected = { row: number | null; col: number | null };
-type CellStatus = boolean | null;
-type CellStatusGrid = CellStatus[][];
-type Direction = 'across' | 'down';
+import { Cell, Grid, Selected, CellStatus, CellStatusGrid, Direction, CrosswordConfig } from './types/crossword';
+import { findNextCell, handleArrowNavigation } from './utils/crosswordNavigation';
 
 const CrosswordPuzzle = () => {
   // Sample configuration - you would pass this in as a prop in a real implementation
@@ -76,125 +71,53 @@ const CrosswordPuzzle = () => {
   };
   
   // Handle keyboard navigation
-  const handleKeyDown = (row: number, col: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const row = selected.row!;
+    const col = selected.col!;
+    
     // Handle letter keys
     if (e.key.length === 1 && /^[A-Za-z]$/.test(e.key)) {
-      e.preventDefault(); // Prevent default input behavior
+      e.preventDefault();
       const value = e.key.toUpperCase();
       const newGrid = [...userGrid];
       newGrid[row][col] = value;
       setUserGrid(newGrid);
       
-      // If check was performed, update the status of this cell
-      const newCellStatus = [...cellStatus];
-      newCellStatus[row][col] = null;
-      setCellStatus(newCellStatus);
-      
-      // Move to next cell
-      if (direction === 'across' && col < 4) {
-        let newCol = col + 1;
-        while (newCol < 5 && userGrid[row][newCol] === 'blank') {
-          newCol++;
-        }
-        if (newCol < 5) {
-          setSelected({ row, col: newCol });
-          cellRefs.current[row][newCol]?.focus();
-        }
-      } else if (direction === 'down' && row < 4) {
-        let newRow = row + 1;
-        while (newRow < 5 && userGrid[newRow][col] === 'blank') {
-          newRow++;
-        }
-        if (newRow < 5) {
-          setSelected({ row: newRow, col });
-          cellRefs.current[newRow][col]?.focus();
-        }
-      }
+      updateCellStatus(row, col, value);
+      moveToNextCell(row, col);
       return;
     }
 
     // Handle backspace
     if (e.key === 'Backspace' && userGrid[row][col] === '') {
-      // Move backwards based on direction
-      if (direction === 'across' && col > 0) {
-        let newCol = col - 1;
-        while (newCol >= 0 && userGrid[row][newCol] === 'blank') {
-          newCol--;
-        }
-        if (newCol >= 0) {
-          setSelected({ row, col: newCol });
-          cellRefs.current[row][newCol]?.focus();
-        }
-      } else if (direction === 'down' && row > 0) {
-        let newRow = row - 1;
-        while (newRow >= 0 && userGrid[newRow][col] === 'blank') {
-          newRow--;
-        }
-        if (newRow >= 0) {
-          setSelected({ row: newRow, col });
-          cellRefs.current[newRow][col]?.focus();
-        }
+      const prevCell = findNextCell(userGrid, row, col, direction, false);
+      if (prevCell) {
+        setSelected(prevCell);
+        cellRefs.current[prevCell.row][prevCell.col]?.focus();
       }
-    } else if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-      e.preventDefault(); // Prevent cursor movement within input
-      
-      let newRow = row;
-      let newCol = col;
-      
-      // If moving perpendicular to current direction, switch direction
-      if ((direction === 'down' && ['ArrowRight', 'ArrowLeft'].includes(e.key)) ||
-          (direction === 'across' && ['ArrowUp', 'ArrowDown'].includes(e.key))) {
-        setDirection(direction === 'across' ? 'down' : 'across');
-        return;
-      }
+      return;
+    }
 
-      // Move in the current direction
-      switch (e.key) {
-        case 'ArrowRight':
-          if (direction === 'across') {
-            newCol = col + 1;
-            while (newCol < 5 && userGrid[row][newCol] === 'blank') {
-              newCol++;
-            }
-          }
-          break;
-        case 'ArrowLeft':
-          if (direction === 'across') {
-            newCol = col - 1;
-            while (newCol >= 0 && userGrid[row][newCol] === 'blank') {
-              newCol--;
-            }
-          }
-          break;
-        case 'ArrowDown':
-          if (direction === 'down') {
-            newRow = row + 1;
-            while (newRow < 5 && userGrid[newRow][col] === 'blank') {
-              newRow++;
-            }
-          }
-          break;
-        case 'ArrowUp':
-          if (direction === 'down') {
-            newRow = row - 1;
-            while (newRow >= 0 && userGrid[newRow][col] === 'blank') {
-              newRow--;
-            }
-          }
-          break;
+    // Handle arrow keys
+    if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+      e.preventDefault();
+      const { newDirection, newPosition } = handleArrowNavigation(e.key, direction, row, col, userGrid);
+      
+      if (newDirection) {
+        setDirection(newDirection);
       }
-
-      // Only move if we found a valid cell
-      if (newRow >= 0 && newRow < 5 && newCol >= 0 && newCol < 5 && 
-          userGrid[newRow][newCol] !== 'blank') {
-        setSelected({ row: newRow, col: newCol });
-        cellRefs.current[newRow][newCol]?.focus();
+      if (newPosition) {
+        setSelected(newPosition);
+        cellRefs.current[newPosition.row][newPosition.col]?.focus();
       }
     }
   };
-  
-  // Remove or simplify handleKeyInput since we're handling it in handleKeyDown
-  const handleKeyInput = (row: number, col: number, value: string) => {
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const row = selected.row!;
+    const col = selected.col!;
+    const value = e.target.value;
+
     if (userGrid[row][col] === 'blank') return;
     
     // Handle backspace/delete through onChange
@@ -202,10 +125,27 @@ const CrosswordPuzzle = () => {
       const newGrid = [...userGrid];
       newGrid[row][col] = '';
       setUserGrid(newGrid);
-      
-      const newCellStatus = [...cellStatus];
+      updateCellStatus(row, col, '');
+    }
+  };
+
+  const updateCellStatus = (row: number, col: number, value: string) => {
+    if (!isChecked) return;
+    
+    const newCellStatus = [...cellStatus];
+    if (value === '') {
       newCellStatus[row][col] = null;
-      setCellStatus(newCellStatus);
+    } else {
+      newCellStatus[row][col] = (value === sampleConfig.grid[row][col]);
+    }
+    setCellStatus(newCellStatus);
+  };
+
+  const moveToNextCell = (row: number, col: number) => {
+    const nextCell = findNextCell(userGrid, row, col, direction, true);
+    if (nextCell) {
+      setSelected(nextCell);
+      cellRefs.current[nextCell.row][nextCell.col]?.focus();
     }
   };
 
@@ -294,8 +234,8 @@ const CrosswordPuzzle = () => {
                   ref={el => cellRefs.current[rowIndex][colIndex] = el}
                   type="text"
                   value={cell}
-                  onChange={(e) => handleKeyInput(rowIndex, colIndex, e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(rowIndex, colIndex, e)}
+                  onChange={handleChange}
+                  onKeyDown={handleKeyDown}
                   className="w-full h-full text-center text-xl font-bold outline-none bg-transparent"
                   maxLength={1}
                 />
