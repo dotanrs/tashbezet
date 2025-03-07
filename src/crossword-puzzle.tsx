@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Cell, Grid, Selected, CellStatus, CellStatusGrid, Direction, CrosswordConfig } from './types/crossword';
 import { findNextCell, handleArrowNavigation } from './utils/crosswordNavigation';
+import ReactConfetti from 'react-confetti';
 
 const CrosswordPuzzle = () => {
   // Sample configuration - now with Hebrew letters
@@ -236,7 +237,27 @@ const CrosswordPuzzle = () => {
     }
   };
 
-  // Check if the puzzle is solved correctly
+  // Track confetti state
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  // Add window resize handler
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Modify checkPuzzle to trigger confetti
   const checkPuzzle = () => {
     let isCorrect = true;
     const newCellStatus = Array(5).fill(null).map(() => Array(5).fill(null)) as CellStatusGrid;
@@ -261,8 +282,9 @@ const CrosswordPuzzle = () => {
 
   const checkComplete = () => {
     const result = checkPuzzle();
-    if (result.isCorrect) {
-      setMessage('Congratulations! The puzzle is correct!');
+    if (!result.isCorrect) {
+      setMessage('כל הכבוד, פתרת את התשבץ!');
+      setShowConfetti(true);
     }
   };
 
@@ -299,6 +321,17 @@ const CrosswordPuzzle = () => {
 
   return (
     <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto">
+      {showConfetti && (
+        <ReactConfetti
+          width={windowSize.width}
+          height={windowSize.height}
+          recycle={false}
+          numberOfPieces={200}
+          gravity={0.2}
+          colors={['#FFD700', '#FFA500', '#FF6347', '#87CEEB', '#98FB98']}
+        />
+      )}
+      
       <h1 className="text-3 xl mb-6">תשבצת</h1>
       
       {/* Crossword grid */}
@@ -359,7 +392,7 @@ const CrosswordPuzzle = () => {
       
       {/* Status message */}
       {message && (
-        <div className={`mt-4 p-2 rounded ${message.includes('Congratulations') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+        <div className="mt-4 p-2 rounded bg-green-100 text-green-800">
           {message}
         </div>
       )}
