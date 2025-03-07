@@ -7,7 +7,7 @@ import { puzzles, PuzzleId } from './crosswords';
 
 const CrosswordPuzzle = () => {
   // State for the current puzzle
-  const [currentPuzzleId, setCurrentPuzzleId] = useState<PuzzleId>('puzzle2');
+  const [currentPuzzleId, setCurrentPuzzleId] = useState<PuzzleId>('puzzle1');
   const [currentConfig, setCurrentConfig] = useState<CrosswordConfig>(puzzles.puzzle1);
 
   // State for the user's input grid
@@ -55,8 +55,8 @@ const CrosswordPuzzle = () => {
     setSelected({ row: 0, col: 0 });
     setDirection('across');
     setMessage('');
-    setShowConfetti(false);
-  }, [currentPuzzleId, currentConfig]);
+    resetCellStatus();
+  }, [currentPuzzleId]);
 
   // Save puzzle state whenever it changes
   useEffect(() => {
@@ -318,6 +318,10 @@ const CrosswordPuzzle = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const resetCellStatus = () => {
+    setCellStatus(Array(5).fill(null).map(() => Array(5).fill(null)));
+  }
 
   // Modify checkPuzzle to trigger confetti
   const checkPuzzle = () => {
