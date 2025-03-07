@@ -62,25 +62,29 @@ const CrosswordPuzzle = () => {
   useEffect(() => {
     if (!currentPuzzleId) return;
 
-    const savedState = loadPuzzleState(currentPuzzleId);
-    
-    if (savedState && puzzles[savedState.puzzleId]) {
-      setCurrentConfig(puzzles[savedState.puzzleId]);
-      const newGrid = mergeStateWithPuzzle(currentPuzzleId, savedState);
-      setUserGrid(newGrid);
-      checkComplete();
-    } else {
-      const initialGrid = puzzles[currentPuzzleId].grid.map(row => 
-        row.map(cell => cell === 'blank' ? 'blank' : '')
-      );
-      setUserGrid(initialGrid);
-      setCellStatus(createEmptyCellStatus());
+    const getUpdatedGrid = () => {
+      const savedState = loadPuzzleState(currentPuzzleId);
+      if (savedState && puzzles[savedState.puzzleId]) {
+        setCurrentConfig(puzzles[savedState.puzzleId]);
+        const newGrid = mergeStateWithPuzzle(currentPuzzleId, savedState);
+        setUserGrid(newGrid);
+        return newGrid;
+      } else {
+        const initialGrid = puzzles[currentPuzzleId].grid.map(row => 
+          row.map(cell => cell === 'blank' ? 'blank' : '')
+        );
+        setUserGrid(initialGrid);
+        setCellStatus(createEmptyCellStatus());
+        return initialGrid;
+      }
     }
-    
+    const newGrid = getUpdatedGrid();
+
     setSelected({ row: 0, col: 0 });
     setDirection('across');
     setMessage('');
     resetCellStatus();
+    checkComplete(newGrid);
   }, [currentPuzzleId]);
 
   // Save puzzle state whenever it changes
@@ -208,7 +212,7 @@ const CrosswordPuzzle = () => {
       setCellStatus(newCellStatus);
 
       moveToNextCell(row, col);
-      checkComplete();
+      checkComplete(newGrid);
       return;
     }
 
@@ -301,10 +305,10 @@ const CrosswordPuzzle = () => {
     setCellStatus(createEmptyCellStatus());
   };
 
-  const checkComplete = () => {
-    const result = checkPuzzle(userGrid, currentConfig);
+  const checkComplete = (grid: Grid) => {  
+    const result = checkPuzzle(grid, currentConfig);
     if (result.isCorrect) {
-      markPuzzle();
+      setCellStatus(result.newCellStatus);
       setMessage('כל הכבוד, פתרת את התשבץ!');
       setShowConfetti(true);
     }
