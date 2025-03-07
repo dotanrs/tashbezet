@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+type Cell = string | 'blank';
+type Grid = Cell[][];
+type Selected = { row: number | null; col: number | null };
+type CellStatus = boolean | null;
+type CellStatusGrid = CellStatus[][];
+
 const CrosswordPuzzle = () => {
   // Sample configuration - you would pass this in as a prop in a real implementation
   const sampleConfig = {
@@ -9,7 +15,7 @@ const CrosswordPuzzle = () => {
       ['R', 'E', 'blank', 'I', 'A'],
       ['D', 'A', 'T', 'L', 'N'],
       ['S', 'M', 'A', 'S', 'H']
-    ],
+    ] as Grid,
     rowClues: [
       "Feline animals",
       "Actually existing",
@@ -27,18 +33,18 @@ const CrosswordPuzzle = () => {
   };
 
   // State for the user's input grid
-  const [userGrid, setUserGrid] = useState(Array(5).fill().map(() => Array(5).fill('')));
+  const [userGrid, setUserGrid] = useState<Grid>(Array(5).fill(null).map(() => Array(5).fill('')));
   // Track selected cell
-  const [selected, setSelected] = useState({ row: null, col: null });
+  const [selected, setSelected] = useState<Selected>({ row: null, col: null });
   // Status message
   const [message, setMessage] = useState('');
   // Track cell validation status
-  const [cellStatus, setCellStatus] = useState(Array(5).fill().map(() => Array(5).fill(null)));
+  const [cellStatus, setCellStatus] = useState<CellStatusGrid>(Array(5).fill(null).map(() => Array(5).fill(null)));
   // Flag to indicate if check was performed
   const [isChecked, setIsChecked] = useState(false);
   
   // Create refs for all cells
-  const cellRefs = useRef(Array(5).fill().map(() => Array(5).fill(null)));
+  const cellRefs = useRef<(HTMLInputElement | null)[][]>(Array(5).fill(null).map(() => Array(5).fill(null)));
   
   // Initialize the grid with empty cells (except for blanks)
   useEffect(() => {
@@ -49,18 +55,21 @@ const CrosswordPuzzle = () => {
   }, []);
   
   // Handle cell selection
-  const handleCellClick = (row, col) => {
+  const handleCellClick = (row: number, col: number) => {
     if (userGrid[row][col] !== 'blank') {
       setSelected({ row, col });
       // Focus the input if it's a valid cell
-      if (cellRefs.current[row][col]) {
-        cellRefs.current[row][col].focus();
+      const cellRef = cellRefs.current[row]?.[col];
+      if (cellRef) {
+        cellRef.focus();
+      } else {
+        console.log(`cellRef is null on {row} {col}`);
       }
     }
   };
   
   // Handle key input
-  const handleKeyInput = (row, col, value) => {
+  const handleKeyInput = (row: number, col: number, value: string) => {
     if (userGrid[row][col] === 'blank') return;
     
     // Allow only letters
@@ -91,7 +100,7 @@ const CrosswordPuzzle = () => {
   // Check if the puzzle is solved correctly
   const checkPuzzle = () => {
     let isCorrect = true;
-    const newCellStatus = Array(5).fill().map(() => Array(5).fill(null));
+    const newCellStatus = Array(5).fill(null).map(() => Array(5).fill(null)) as CellStatusGrid;
     
     for (let row = 0; row < 5; row++) {
       for (let col = 0; col < 5; col++) {
@@ -115,7 +124,7 @@ const CrosswordPuzzle = () => {
   };
 
   // Get the background color for a cell based on selection and validation status
-  const getCellBackgroundColor = (row, col, isSelected) => {
+  const getCellBackgroundColor = (row: number, col: number, isSelected: boolean) => {
     if (userGrid[row][col] === 'blank') {
       return 'bg-black';
     }
@@ -170,7 +179,7 @@ const CrosswordPuzzle = () => {
                   value={cell}
                   onChange={(e) => handleKeyInput(rowIndex, colIndex, e.target.value)}
                   className="w-full h-full text-center text-xl font-bold outline-none bg-transparent"
-                  maxLength="1"
+                  maxLength={1}
                 />
               )}
             </div>
