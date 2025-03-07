@@ -36,8 +36,6 @@ const CrosswordPuzzle = () => {
   const [message, setMessage] = useState('');
   // Track cell validation status
   const [cellStatus, setCellStatus] = useState<CellStatusGrid>(Array(5).fill(null).map(() => Array(5).fill(null)));
-  // Flag to indicate if check was performed
-  const [isChecked, setIsChecked] = useState(false);
   // Track direction
   const [direction, setDirection] = useState<Direction>('across');
   
@@ -83,7 +81,11 @@ const CrosswordPuzzle = () => {
       newGrid[row][col] = value;
       setUserGrid(newGrid);
       
-      updateCellStatus(row, col, value);
+      // Clear validation state for this cell
+      const newCellStatus = [...cellStatus];
+      newCellStatus[row][col] = null;
+      setCellStatus(newCellStatus);
+      
       moveToNextCell(row, col);
       return;
     }
@@ -125,20 +127,11 @@ const CrosswordPuzzle = () => {
       const newGrid = [...userGrid];
       newGrid[row][col] = '';
       setUserGrid(newGrid);
-      updateCellStatus(row, col, '');
-    }
-  };
-
-  const updateCellStatus = (row: number, col: number, value: string) => {
-    if (!isChecked) return;
-    
-    const newCellStatus = [...cellStatus];
-    if (value === '') {
+      // Clear validation state for this cell
+      const newCellStatus = [...cellStatus];
       newCellStatus[row][col] = null;
-    } else {
-      newCellStatus[row][col] = (value === sampleConfig.grid[row][col]);
+      setCellStatus(newCellStatus);
     }
-    setCellStatus(newCellStatus);
   };
 
   const moveToNextCell = (row: number, col: number) => {
@@ -157,8 +150,6 @@ const CrosswordPuzzle = () => {
     for (let row = 0; row < 5; row++) {
       for (let col = 0; col < 5; col++) {
         if (sampleConfig.grid[row][col] !== 'blank') {
-          // Only mark as incorrect if the user entered a wrong letter
-          // Leave blank cells as null status
           if (userGrid[row][col] !== '') {
             const cellCorrect = userGrid[row][col] === sampleConfig.grid[row][col];
             newCellStatus[row][col] = cellCorrect;
@@ -173,7 +164,6 @@ const CrosswordPuzzle = () => {
     }
     
     setCellStatus(newCellStatus);
-    setIsChecked(true);
     setMessage(isCorrect ? 'Congratulations! The puzzle is correct!' : 'Not quite right. Keep trying!');
   };
 
@@ -183,7 +173,7 @@ const CrosswordPuzzle = () => {
       return 'bg-black';
     }
     
-    if (isChecked && cellStatus[row][col] !== null) {
+    if (cellStatus[row][col] !== null) {
       return cellStatus[row][col] ? 'bg-green-200' : 'bg-red-200';
     }
     
