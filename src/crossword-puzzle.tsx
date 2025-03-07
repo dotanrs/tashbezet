@@ -7,7 +7,7 @@ import { puzzles, PuzzleId } from './crosswords';
 
 const CrosswordPuzzle = () => {
   // State for the current puzzle
-  const [currentPuzzleId, setCurrentPuzzleId] = useState<PuzzleId>('puzzle1');
+  const [currentPuzzleId, setCurrentPuzzleId] = useState<PuzzleId>('puzzle2');
   const [currentConfig, setCurrentConfig] = useState<CrosswordConfig>(puzzles.puzzle1);
 
   // State for the user's input grid
@@ -28,13 +28,20 @@ const CrosswordPuzzle = () => {
   useEffect(() => {
     const savedState = loadPuzzleState(currentPuzzleId);
     
-    if (savedState) {
+    if (savedState && puzzles[savedState.puzzleId]) {
       // Restore saved state
-      setUserGrid(savedState.userGrid);
-      setCellStatus(savedState.cellStatus);
-      if (savedState.isComplete) {
+      setCurrentConfig(puzzles[savedState.puzzleId]);
+      // Create new grid based on puzzle config and saved state
+      const newGrid = puzzles[savedState.puzzleId].grid.map((row, rowIndex) => 
+        row.map((cell, colIndex) => {
+          if (cell === 'blank') return 'blank';
+          return savedState.userGrid[rowIndex][colIndex] || '';
+        })
+      );
+      setUserGrid(newGrid);
+      const result = checkPuzzle();
+      if (result.isCorrect) {
         setMessage('כל הכבוד, פתרת את התשבץ!');
-        setShowConfetti(true);
       }
     } else {
       // Initialize new puzzle
