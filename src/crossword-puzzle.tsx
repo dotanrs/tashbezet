@@ -95,15 +95,15 @@ const CrosswordPuzzle = () => {
     return { row, col };
   };
 
-  const findNextDefinition = (currentRow: number, currentCol: number, currentDirection: Direction, backward: boolean = false): { row: number; col: number; newDirection: Direction } => {
+  const findNextDefinition = (currentRow: number, currentCol: number, currentDirection: Direction, forward: boolean = false): { row: number; col: number; newDirection: Direction } => {
     if (currentDirection === 'across') {
       // Moving through rows
-      let newRow = currentRow + (backward ? -1 : 1);
+      let newRow = currentRow + (forward ? -1 : 1);
       
       // If we went past the edges, switch to columns
       if (newRow < 0 || newRow >= 5) {
         // Switch to down direction
-        const newCol = backward ? 4 : 0;  // Start from first/last column
+        const newCol = forward ? 4 : 0;  // Start from first/last column
         const newDirection = 'down';
         // Find first available cell in the column
         const { row: availableRow } = findFirstAvailableCell(0, newCol, newDirection);
@@ -115,12 +115,12 @@ const CrosswordPuzzle = () => {
       return { row: newRow, col: availableCol, newDirection: 'across' };
     } else {
       // Moving through columns
-      let newCol = currentCol + (backward ? -1 : 1);
+      let newCol = currentCol + (forward ? -1 : 1);
       
       // If we went past the edges, switch to rows
       if (newCol < 0 || newCol >= 5) {
         // Switch to across direction
-        const newRow = backward ? 4 : 0;  // Start from first/last row
+        const newRow = forward ? 4 : 0;  // Start from first/last row
         const newDirection = 'across';
         // Find first available cell in the row
         const { col: availableCol } = findFirstAvailableCell(newRow, 0, newDirection);
@@ -138,6 +138,12 @@ const CrosswordPuzzle = () => {
     const row = selected.row!;
     const col = selected.col!;
     
+    // Don't allow changes to correct cells
+    if (cellStatus[row][col] === true) {
+      e.preventDefault();
+      return;
+    }
+
     // Handle tab key
     if (e.key === 'Tab') {
       e.preventDefault(); // Prevent losing focus
@@ -229,8 +235,24 @@ const CrosswordPuzzle = () => {
     }
   };
 
+  const findNextEditableCell = (
+    row: number, 
+    col: number, 
+    direction: Direction, 
+    forward: boolean = false
+  ): { row: number; col: number } | null => {
+    let nextCell = findNextCell(userGrid, row, col, direction, forward);
+    
+    // Keep looking for the next cell until we find an editable one or run out of cells
+    while (nextCell && cellStatus[nextCell.row][nextCell.col] === true) {
+      nextCell = findNextCell(userGrid, nextCell.row, nextCell.col, direction, forward);
+    }
+    
+    return nextCell;
+  };
+
   const moveToNextCell = (row: number, col: number) => {
-    const nextCell = findNextCell(userGrid, row, col, direction, true);
+    const nextCell = findNextEditableCell(row, col, direction, true);
     if (nextCell) {
       setSelected(nextCell);
       cellRefs.current[nextCell.row][nextCell.col]?.focus();
@@ -282,7 +304,8 @@ const CrosswordPuzzle = () => {
 
   const checkComplete = () => {
     const result = checkPuzzle();
-    if (!result.isCorrect) {
+    if (result.isCorrect) {
+      markPuzzle();
       setMessage('כל הכבוד, פתרת את התשבץ!');
       setShowConfetti(true);
     }
@@ -356,10 +379,12 @@ const CrosswordPuzzle = () => {
                     value={cell}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
-                    className="w-full h-full text-center text-xl font-bold outline-none bg-transparent"
+                    className={`w-full h-full text-center text-xl font-bold outline-none bg-transparent
+                      ${cellStatus[rowIndex][colIndex] === true ? 'cursor-not-allowed' : ''}`}
                     maxLength={1}
                     dir="rtl"
                     lang="he"
+                    disabled={cellStatus[rowIndex][colIndex] === true}
                   />
                 )}
               </div>
