@@ -3,28 +3,28 @@ import { Cell, Grid, Selected, CellStatus, CellStatusGrid, Direction, CrosswordC
 import { findNextCell, handleArrowNavigation } from './utils/crosswordNavigation';
 
 const CrosswordPuzzle = () => {
-  // Sample configuration - you would pass this in as a prop in a real implementation
+  // Sample configuration - now with Hebrew letters
   const sampleConfig = {
     grid: [
-      ['C', 'A', 'T', 'S', 'P'],
-      ['A', 'R', 'E', 'A', 'L'],
-      ['R', 'E', 'blank', 'I', 'A'],
-      ['D', 'A', 'T', 'L', 'N'],
-      ['S', 'M', 'A', 'S', 'H']
+      ['כ', 'ל', 'ב', 'י', 'ם'],
+      ['ת', 'פ', 'ו', 'ח', 'י'],
+      ['ר', 'ק', 'blank', 'ל', 'ם'],
+      ['י', 'ד', 'י', 'ם', 'י'],
+      ['ם', 'ה', 'ם', 'י', 'ם']
     ] as Grid,
     rowClues: [
-      "Feline animals",
-      "Actually existing",
-      "Car part",
-      "Information bits",
-      "Hit forcefully"
+      "חיות מחמד נאמנות",
+      "פרי עסיסי",
+      "חלק מהמכונית",
+      "איברי גוף",
+      "שייכים להם"
     ],
     columnClues: [
-      "Playing cards",
-      "Metric measure",
-      "Drinking vessel",
-      "All over",
-      "Writing implement"
+      "כותבים",
+      "דלת",
+      "בא",
+      "בריא",
+      "רבים"
     ]
   };
 
@@ -147,10 +147,10 @@ const CrosswordPuzzle = () => {
       return;
     }
 
-    // Handle letter keys
-    if (e.key.length === 1 && /^[A-Za-z]$/.test(e.key)) {
+    // Handle letter keys - now checking for Hebrew letters
+    if (e.key.length === 1 && /^[א-ת]$/.test(e.key)) {
       e.preventDefault();
-      const value = e.key.toUpperCase();
+      const value = e.key;  // No need for toUpperCase() as Hebrew doesn't have case
       const newGrid = [...userGrid];
       newGrid[row][col] = value;
       setUserGrid(newGrid);
@@ -281,49 +281,59 @@ const CrosswordPuzzle = () => {
     
     return 'bg-white';
   };
-  
+
+  // Helper function to convert between display and logical column positions
+  const displayToLogicalCol = (displayCol: number) => 4 - displayCol;
+  const logicalToDisplayCol = (logicalCol: number) => 4 - logicalCol;
+
   return (
     <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto">
-      <h1 className="text-3xl mb-6">תשבצת </h1>
+      <h1 className="text-3 xl mb-6">תשבצת</h1>
       
       {/* Crossword grid */}
-      <div className="grid grid-cols-5 gap-0 border-[0.8px] border-black mb-4">
+      <div className="grid grid-cols-5 gap-0 border border-black mb-4">
         {userGrid.map((row, rowIndex) => (
-          row.map((cell, colIndex) => (
-            <div 
-              key={`${rowIndex}-${colIndex}`}
-              className={`
-                w-12 h-12 border-[0.5px] border-gray-400 flex items-center justify-center
-                ${getCellBackgroundColor(rowIndex, colIndex, selected.row === rowIndex && selected.col === colIndex)}
-              `}
-              onClick={() => handleCellClick(rowIndex, colIndex)}
-            >
-              {cell !== 'blank' && (
-                <input
-                  ref={el => cellRefs.current[rowIndex][colIndex] = el}
-                  type="text"
-                  value={cell}
-                  onChange={handleChange}
-                  onKeyDown={handleKeyDown}
-                  className="w-full h-full text-center text-xl font-bold outline-none bg-transparent"
-                  maxLength={1}
-                />
-              )}
-            </div>
-          ))
+          row.map((_, displayColIndex) => {
+            const colIndex = displayToLogicalCol(displayColIndex);
+            const cell = userGrid[rowIndex][colIndex];
+            return (
+              <div 
+                key={`${rowIndex}-${colIndex}`}
+                className={`
+                  w-12 h-12 border-[0.5px] border-gray-400 flex items-center justify-center
+                  ${getCellBackgroundColor(rowIndex, colIndex, selected.row === rowIndex && selected.col === colIndex)}
+                `}
+                onClick={() => handleCellClick(rowIndex, colIndex)}
+              >
+                {cell !== 'blank' && (
+                  <input
+                    ref={el => cellRefs.current[rowIndex][colIndex] = el}
+                    type="text"
+                    value={cell}
+                    onChange={handleChange}
+                    onKeyDown={handleKeyDown}
+                    className="w-full h-full text-center text-xl font-bold outline-none bg-transparent"
+                    maxLength={1}
+                    dir="rtl"
+                    lang="he"
+                  />
+                )}
+              </div>
+            );
+          })
         ))}
       </div>
       
       {/* Clues display */}
-      <div className="mb-4 p-4 bg-gray-100 rounded w-full">
+      <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right">
         {selected.row !== null && direction === 'across' && (
           <div className="mb-2">
-            <span className="font-bold">Across:</span> {sampleConfig.rowClues[selected.row]}
+            <span className="font-bold">מאוזן:</span> {sampleConfig.rowClues[selected.row]}
           </div>
         )}
         {selected.col !== null && direction === 'down' && (
           <div>
-            <span className="font-bold">Down:</span> {sampleConfig.columnClues[selected.col]}
+            <span className="font-bold">מאונך:</span> {sampleConfig.columnClues[selected.col]}
           </div>
         )}
       </div>
