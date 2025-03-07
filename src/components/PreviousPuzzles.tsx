@@ -1,6 +1,6 @@
 import React from 'react';
 import { PuzzleId } from '../crosswords';
-import { loadPuzzleState } from '../utils/storage';
+import { loadPuzzleState } from '../utils/storageUtils';
 import { puzzles } from '../crosswords';
 
 interface PreviousPuzzlesProps {
@@ -29,9 +29,9 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPu
               onClick={() => onPuzzleChange(puzzleId)}
               className={`px-4 py-2 rounded flex items-center gap-2 ${
                 currentPuzzleId === puzzleId
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-blue-200'
                   : 'bg-gray-200 hover:bg-gray-300'
-              }`}
+              } ${status === '✓' && 'text-green-600'}`}
             >
               {puzzles[puzzleId].name}
               {status && (

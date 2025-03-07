@@ -84,31 +84,8 @@ const CrosswordPuzzle = () => {
     setDirection('across');
     setMessage('');
     resetCellStatus();
-    checkComplete(newGrid);
+    checkComplete(newGrid, currentPuzzleId);
   }, [currentPuzzleId]);
-
-  // Save puzzle state whenever it changes
-  useEffect(() => {
-    if (!currentPuzzleId || !currentConfig) return;
-    
-    const isComplete = cellStatus.every((row, rowIndex) => 
-      row.every((status, colIndex) => {
-        if (currentConfig.grid[rowIndex][colIndex] === 'blank') {
-          return true;
-        }
-        return status === true;
-      })
-    );
-    
-    if (currentPuzzleId) {
-      savePuzzleState(currentPuzzleId, {
-        userGrid,
-        cellStatus,
-        isComplete,
-        puzzleId: currentPuzzleId
-      });
-    }
-  }, [currentPuzzleId, userGrid, cellStatus, currentConfig]);
 
   // Modify handlePuzzleChange
   const handlePuzzleChange = (puzzleId: PuzzleId) => {
@@ -212,7 +189,9 @@ const CrosswordPuzzle = () => {
       setCellStatus(newCellStatus);
 
       moveToNextCell(row, col);
-      checkComplete(newGrid);
+      if (currentPuzzleId) {
+        checkComplete(newGrid, currentPuzzleId);
+      }
       return;
     }
 
@@ -305,13 +284,19 @@ const CrosswordPuzzle = () => {
     setCellStatus(createEmptyCellStatus());
   };
 
-  const checkComplete = (grid: Grid) => {  
+  const checkComplete = (grid: Grid, puzzleId: PuzzleId) => {  
     const result = checkPuzzle(grid, currentConfig);
     if (result.isCorrect) {
       setCellStatus(result.newCellStatus);
       setMessage('כל הכבוד, פתרת את התשבץ!');
       setShowConfetti(true);
     }
+    savePuzzleState(puzzleId, {
+      userGrid: grid,
+      cellStatus: result.newCellStatus,
+      isComplete: result.isCorrect,
+      puzzleId,
+    });
   };
 
   const markPuzzle = () => {
