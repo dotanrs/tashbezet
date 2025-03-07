@@ -77,6 +77,43 @@ const CrosswordPuzzle = () => {
   
   // Handle keyboard navigation
   const handleKeyDown = (row: number, col: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Handle letter keys
+    if (e.key.length === 1 && /^[A-Za-z]$/.test(e.key)) {
+      e.preventDefault(); // Prevent default input behavior
+      const value = e.key.toUpperCase();
+      const newGrid = [...userGrid];
+      newGrid[row][col] = value;
+      setUserGrid(newGrid);
+      
+      // If check was performed, update the status of this cell
+      const newCellStatus = [...cellStatus];
+      newCellStatus[row][col] = null;
+      setCellStatus(newCellStatus);
+      
+      // Move to next cell
+      if (direction === 'across' && col < 4) {
+        let newCol = col + 1;
+        while (newCol < 5 && userGrid[row][newCol] === 'blank') {
+          newCol++;
+        }
+        if (newCol < 5) {
+          setSelected({ row, col: newCol });
+          cellRefs.current[row][newCol]?.focus();
+        }
+      } else if (direction === 'down' && row < 4) {
+        let newRow = row + 1;
+        while (newRow < 5 && userGrid[newRow][col] === 'blank') {
+          newRow++;
+        }
+        if (newRow < 5) {
+          setSelected({ row: newRow, col });
+          cellRefs.current[newRow][col]?.focus();
+        }
+      }
+      return;
+    }
+
+    // Handle backspace
     if (e.key === 'Backspace' && userGrid[row][col] === '') {
       // Move backwards based on direction
       if (direction === 'across' && col > 0) {
@@ -156,43 +193,19 @@ const CrosswordPuzzle = () => {
     }
   };
   
-  // Handle key input
+  // Remove or simplify handleKeyInput since we're handling it in handleKeyDown
   const handleKeyInput = (row: number, col: number, value: string) => {
     if (userGrid[row][col] === 'blank') return;
     
-    // Allow only letters
-    if (value === '' || /^[A-Za-z]$/.test(value)) {
+    // Handle backspace/delete through onChange
+    if (value === '') {
       const newGrid = [...userGrid];
-      newGrid[row][col] = value.toUpperCase();
+      newGrid[row][col] = '';
       setUserGrid(newGrid);
       
-      // Remove check forthe cell
       const newCellStatus = [...cellStatus];
       newCellStatus[row][col] = null;
       setCellStatus(newCellStatus);
-      
-      // Move to next cell if letter entered (regardless of previous content)
-      if (value !== '') {
-        if (direction === 'across' && col < 4) {
-          let newCol = col + 1;
-          while (newCol < 5 && userGrid[row][newCol] === 'blank') {
-            newCol++;
-          }
-          if (newCol < 5) {
-            setSelected({ row, col: newCol });
-            cellRefs.current[row][newCol]?.focus();
-          }
-        } else if (direction === 'down' && row < 4) {
-          let newRow = row + 1;
-          while (newRow < 5 && userGrid[newRow][col] === 'blank') {
-            newRow++;
-          }
-          if (newRow < 5) {
-            setSelected({ row: newRow, col });
-            cellRefs.current[newRow][col]?.focus();
-          }
-        }
-      }
     }
   };
 
