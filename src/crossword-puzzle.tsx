@@ -68,11 +68,63 @@ const CrosswordPuzzle = () => {
     }
   };
   
+  const findNextDefinition = (currentRow: number, currentCol: number, currentDirection: Direction, backward: boolean = false): { row: number; col: number; newDirection: Direction } => {
+    if (currentDirection === 'across') {
+      // Moving through rows
+      let newRow = currentRow + (backward ? -1 : 1);
+      
+      // If we went past the edges, switch to columns
+      if (newRow < 0 || newRow >= 5) {
+        // Switch to down direction
+        const newCol = backward ? 4 : 0;  // Start from first/last column
+        const newRow = backward ? 4 : 0;  // Start from first/last row
+        return { row: newRow, col: newCol, newDirection: 'down' };
+      }
+      
+      // Stay in across mode, keep same column position
+      return { row: newRow, col: currentCol, newDirection: 'across' };
+    } else {
+      // Moving through columns
+      let newCol = currentCol + (backward ? -1 : 1);
+      
+      // If we went past the edges, switch to rows
+      if (newCol < 0 || newCol >= 5) {
+        // Switch to across direction
+        const newRow = backward ? 4 : 0;  // Start from first/last row
+        const newCol = backward ? 4 : 0;  // Start from first/last column
+        return { row: newRow, col: newCol, newDirection: 'across' };
+      }
+      
+      // Stay in down mode, keep same row position
+      return { row: currentRow, col: newCol, newDirection: 'down' };
+    }
+  };
+
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const row = selected.row!;
     const col = selected.col!;
     
+    // Handle tab key
+    if (e.key === 'Tab') {
+      e.preventDefault(); // Prevent losing focus
+      const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(row, col, direction, e.shiftKey);
+      
+      // Skip blank cells
+      if (userGrid[nextRow][nextCol] === 'blank') {
+        const { row: skipRow, col: skipCol, newDirection: skipDirection } = 
+          findNextDefinition(nextRow, nextCol, newDirection, e.shiftKey);
+        setSelected({ row: skipRow, col: skipCol });
+        setDirection(skipDirection);
+        cellRefs.current[skipRow][skipCol]?.focus();
+      } else {
+        setSelected({ row: nextRow, col: nextCol });
+        setDirection(newDirection);
+        cellRefs.current[nextRow][nextCol]?.focus();
+      }
+      return;
+    }
+
     // Handle letter keys
     if (e.key.length === 1 && /^[A-Za-z]$/.test(e.key)) {
       e.preventDefault();
