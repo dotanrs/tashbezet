@@ -105,13 +105,15 @@ const CrosswordPuzzle = () => {
     for (let row = 0; row < 5; row++) {
       for (let col = 0; col < 5; col++) {
         if (sampleConfig.grid[row][col] !== 'blank') {
-          // Check if cell is correct
-          const cellCorrect = userGrid[row][col] === sampleConfig.grid[row][col];
-          newCellStatus[row][col] = cellCorrect;
-          
-          if (!cellCorrect && userGrid[row][col] !== '') {
-            isCorrect = false;
-          } else if (userGrid[row][col] === '') {
+          // Only mark as incorrect if the user entered a wrong letter
+          // Leave blank cells as null status
+          if (userGrid[row][col] !== '') {
+            const cellCorrect = userGrid[row][col] === sampleConfig.grid[row][col];
+            newCellStatus[row][col] = cellCorrect;
+            if (!cellCorrect) {
+              isCorrect = false;
+            }
+          } else {
             isCorrect = false;
           }
         }
@@ -120,7 +122,7 @@ const CrosswordPuzzle = () => {
     
     setCellStatus(newCellStatus);
     setIsChecked(true);
-    setMessage(isCorrect ? 'Congratulations! The puzzle is correct!' : 'Not quite right. Correct cells are green, incorrect ones are red.');
+    setMessage(isCorrect ? 'Congratulations! The puzzle is correct!' : 'Not quite right. Keep trying!');
   };
 
   // Get the background color for a cell based on selection and validation status
