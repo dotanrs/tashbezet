@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Grid, Selected, CellStatusGrid, Direction, CrosswordConfig } from './types/crossword';
-import { findNextCell, handleArrowNavigation } from './utils/crosswordNavigation';
-import { loadPuzzleState, savePuzzleState } from './utils/storage';
+import { findNextCell, findNextDefinition, handleArrowNavigation } from './utils/navigationUtils';
+import { loadPuzzleState, savePuzzleState } from './utils/storageUtils';
+import { createEmptyGrid, createEmptyCellStatus, checkPuzzle, revealPuzzle } from './utils/puzzleUtils';
 import ReactConfetti from 'react-confetti';
 import { puzzles, PuzzleId } from './crosswords';
 import PreviousPuzzles from './components/PreviousPuzzles';
@@ -15,13 +16,13 @@ const CrosswordPuzzle = () => {
   const [currentConfig, setCurrentConfig] = useState<CrosswordConfig | null>(null);
 
   // State for the user's input grid
-  const [userGrid, setUserGrid] = useState<Grid>(Array(5).fill(null).map(() => Array(5).fill('')));
+  const [userGrid, setUserGrid] = useState<Grid>(createEmptyGrid());
   // Track selected cell
   const [selected, setSelected] = useState<Selected>({ row: 0, col: 0 });
   // Status message
   const [message, setMessage] = useState('');
   // Track cell validation status
-  const [cellStatus, setCellStatus] = useState<CellStatusGrid>(Array(5).fill(null).map(() => Array(5).fill(null)));
+  const [cellStatus, setCellStatus] = useState<CellStatusGrid>(createEmptyCellStatus());
   // Track direction
   const [direction, setDirection] = useState<Direction>('across');
 
@@ -49,7 +50,7 @@ const CrosswordPuzzle = () => {
         row.map(cell => cell === 'blank' ? 'blank' : '')
       );
       setUserGrid(initialGrid);
-      setCellStatus(Array(5).fill(null).map(() => Array(5).fill(null)));
+      setCellStatus(createEmptyCellStatus());
     }
     
     setSelected({ row: 0, col: 0 });
@@ -112,68 +113,27 @@ const CrosswordPuzzle = () => {
     }
   };
 
-  const findFirstAvailableCell = (row: number, col: number, direction: Direction): { row: number; col: number; newDirection: Direction } => {
-    if (direction === 'across') {
-      // Search along the row
-      for (let c = 0; c < 5; c++) {
-        if (userGrid[row][c] === 'blank') continue;
-        if (userGrid[row][c] === '') {
-          return { row, col: c, newDirection: 'across' };
-        };
-      }
+  const findNextEditableCell = (
+    row: number,
+    col: number,
+    direction: Direction,
+    forward: boolean = false
+  ): { row: number; col: number } | null => {
+    let nextCell = findNextCell(userGrid, row, col, direction, forward);
 
-      if (row < 4) {
-        return findFirstAvailableCell(row + 1, 0, direction);
-      } else {
-        return findFirstAvailableCell(0, 0, "down");
-      }
-    } else {
-      // Search along the column
-      for (let r = 0; r < 5; r++) {
-        if (userGrid[r][col] === 'blank') continue;
-        if (userGrid[r][col] === '') {
-          return { row: r, col, newDirection: 'down' };
-        }
-      }
-      if (col < 4) {
-        return findFirstAvailableCell(0, col + 1, direction);
-      } else {
-        return findFirstAvailableCell(0, 0, "across");
-      }
+    // Keep looking for the next cell until we find an editable one or run out of cells
+    while (nextCell && cellStatus[nextCell.row][nextCell.col] === true) {
+      nextCell = findNextCell(userGrid, nextCell.row, nextCell.col, direction, forward);
     }
+
+    return nextCell;
   };
 
-  const findNextDefinition = (currentRow: number, currentCol: number, currentDirection: Direction, forward: boolean = false): { row: number; col: number; newDirection: Direction } => {
-    if (currentDirection === 'across') {
-      // Moving through rows
-      let newRow = currentRow + (forward ? -1 : 1);
-
-      // If we went past the edges, switch to columns
-      if (newRow < 0 || newRow >= 5) {
-        // Switch to down direction
-        const newCol = forward ? 4 : 0;  // Start from first/last column
-        const startDirection = 'down';
-        // Find first available cell in the column
-        return findFirstAvailableCell(0, newCol, startDirection);
-      }
-
-      // Stay in across mode, find first available cell in the new row
-      return findFirstAvailableCell(newRow, 0, 'across');
-    } else {
-      // Moving through columns
-      let newCol = currentCol + (forward ? -1 : 1);
-
-      // If we went past the edges, switch to rows
-      if (newCol < 0 || newCol >= 5) {
-        // Switch to across direction
-        const newRow = forward ? 4 : 0;  // Start from first/last row
-        const startDirection = 'across';
-        // Find first available cell in the row
-        return findFirstAvailableCell(newRow, newCol, startDirection);
-      }
-
-      // Stay in down mode, find first available cell in the new column
-      return findFirstAvailableCell(0, newCol, 'down');
+  const moveToNextCell = (row: number, col: number) => {
+    const nextCell = findNextEditableCell(row, col, direction, true);
+    if (nextCell) {
+      setSelected(nextCell);
+      cellRefs.current[nextCell.row][nextCell.col]?.focus();
     }
   };
 
@@ -187,7 +147,7 @@ const CrosswordPuzzle = () => {
     // Handle tab key
     if (e.key === 'Tab') {
       e.preventDefault(); // Prevent losing focus
-      const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(row, col, direction, e.shiftKey);
+      const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(userGrid, row, col, direction, e.shiftKey);
       setSelected({ row: nextRow, col: nextCol });
       setDirection(newDirection);
       cellRefs.current[nextRow][nextCol]?.focus();
@@ -214,7 +174,7 @@ const CrosswordPuzzle = () => {
       setCellStatus(newCellStatus);
 
       moveToNextCell(row, col);
-      checkComplete()
+      checkComplete();
       return;
     }
 
@@ -283,30 +243,6 @@ const CrosswordPuzzle = () => {
     }
   };
 
-  const findNextEditableCell = (
-    row: number,
-    col: number,
-    direction: Direction,
-    forward: boolean = false
-  ): { row: number; col: number } | null => {
-    let nextCell = findNextCell(userGrid, row, col, direction, forward);
-
-    // Keep looking for the next cell until we find an editable one or run out of cells
-    while (nextCell && cellStatus[nextCell.row][nextCell.col] === true) {
-      nextCell = findNextCell(userGrid, nextCell.row, nextCell.col, direction, forward);
-    }
-
-    return nextCell;
-  };
-
-  const moveToNextCell = (row: number, col: number) => {
-    const nextCell = findNextEditableCell(row, col, direction, true);
-    if (nextCell) {
-      setSelected(nextCell);
-      cellRefs.current[nextCell.row][nextCell.col]?.focus();
-    }
-  };
-
   // Track confetti state
   const [showConfetti, setShowConfetti] = useState(false);
   const [windowSize, setWindowSize] = useState({
@@ -328,38 +264,11 @@ const CrosswordPuzzle = () => {
   }, []);
 
   const resetCellStatus = () => {
-    setCellStatus(Array(5).fill(null).map(() => Array(5).fill(null)));
-  }
-
-  // Modify checkPuzzle to trigger confetti
-  const checkPuzzle = () => {
-    if (!currentConfig) return {
-      newCellStatus: Array(5).fill(null).map(() => Array(5).fill(null)), isCorrect: false
-    };
-    
-    let isCorrect = true;
-    const newCellStatus = Array(5).fill(null).map(() => Array(5).fill(null)) as CellStatusGrid;
-
-    for (let row = 0; row < 5; row++) {
-      for (let col = 0; col < 5; col++) {
-        if (currentConfig.grid[row][col] !== 'blank') {
-          if (userGrid[row][col] !== '') {
-            const cellCorrect = userGrid[row][col] === currentConfig.grid[row][col];
-            newCellStatus[row][col] = cellCorrect;
-            if (!cellCorrect) {
-              isCorrect = false;
-            }
-          } else {
-            isCorrect = false;
-          }
-        }
-      }
-    }
-    return { newCellStatus, isCorrect };
+    setCellStatus(createEmptyCellStatus());
   };
 
   const checkComplete = () => {
-    const result = checkPuzzle();
+    const result = checkPuzzle(userGrid, currentConfig);
     if (result.isCorrect) {
       markPuzzle();
       setMessage('כל הכבוד, פתרת את התשבץ!');
@@ -368,7 +277,7 @@ const CrosswordPuzzle = () => {
   };
 
   const markPuzzle = () => {
-    const result = checkPuzzle();
+    const result = checkPuzzle(userGrid, currentConfig);
     setCellStatus(result.newCellStatus);
   };
 
@@ -376,20 +285,7 @@ const CrosswordPuzzle = () => {
   const handleReveal = () => {
     if (!currentConfig) return;
     
-    const newGrid = [...userGrid];
-    const newCellStatus = [...cellStatus];
-
-    for (let row = 0; row < 5; row++) {
-      for (let col = 0; col < 5; col++) {
-        if (currentConfig.grid[row][col] !== 'blank') {
-          if (cellStatus[row][col] !== true) {
-            newGrid[row][col] = currentConfig.grid[row][col];
-            newCellStatus[row][col] = true;
-          }
-        }
-      }
-    }
-
+    const { newGrid, newCellStatus } = revealPuzzle(userGrid, cellStatus, currentConfig);
     setUserGrid(newGrid);
     setCellStatus(newCellStatus);
   };
