@@ -1,6 +1,7 @@
 import { CrosswordConfig } from '../types/crossword';
 
 export const puzzle1: CrosswordConfig = {
+  name: "תשבץ חיות",
   grid: [
     ['כ', 'ל', 'ב', 'י', 'ם'],
     ['ת', 'פ', 'ו', 'ח', 'י'],

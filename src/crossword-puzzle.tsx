@@ -45,7 +45,7 @@ const CrosswordPuzzle = () => {
   const handleCellClick = (row: number, col: number) => {
     if (userGrid[row][col] === 'blank') return;
 
-    if (selected.row === row && selected.col === col) {
+    if (selected && selected.row === row && selected.col === col) {
       // If clicking the same cell, switch direction
       setDirection(prev => prev === 'across' ? 'down' : 'across');
     } else {
@@ -128,9 +128,10 @@ const CrosswordPuzzle = () => {
 
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const row = selected.row!;
-    const col = selected.col!;
+    if (!selected) return;
     
+    const row = selected.row;
+    const col = selected.col;
 
     // Handle tab key
     if (e.key === 'Tab') {
@@ -209,8 +210,10 @@ const CrosswordPuzzle = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const row = selected.row!;
-    const col = selected.col!;
+    if (!selected) return;
+    
+    const row = selected.row;
+    const col = selected.col;
     const value = e.target.value;
 
     if (userGrid[row][col] === 'blank') return;
@@ -311,7 +314,7 @@ const CrosswordPuzzle = () => {
   };
 
   // Get the background color for a cell based on selection and validation status
-  const getCellStyle = (row: number, col: number, isSelected: boolean) => {
+  const getCellStyle = (row: number, col: number, isSelected: boolean | null) => {
     if (userGrid[row][col] === 'blank') {
       return 'bg-black';
     }
@@ -325,8 +328,10 @@ const CrosswordPuzzle = () => {
     if (isSelected) {
       return 'bg-blue-200';
     } else if (
-      (direction === 'across' && selected.row === row) ||
-      (direction === 'down' && selected.col === col)
+      selected && (
+        (direction === 'across' && selected.row === row) ||
+        (direction === 'down' && selected.col === col)
+      )
     ) {
       return 'bg-blue-100';
     }
@@ -337,6 +342,9 @@ const CrosswordPuzzle = () => {
   // Helper function to convert between display and logical column positions
   const displayToLogicalCol = (displayCol: number) => 4 - displayCol;
   const logicalToDisplayCol = (logicalCol: number) => 4 - logicalCol;
+
+  // Get all available puzzle IDs
+  const puzzleIds = Object.keys(puzzles) as PuzzleId[];
 
   return (
     <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto">
@@ -364,7 +372,7 @@ const CrosswordPuzzle = () => {
                 key={`${rowIndex}-${colIndex}`}
                 className={`
                   w-12 h-12 border-[0.5px] border-gray-400 flex items-center justify-center
-                  ${getCellStyle(rowIndex, colIndex, selected.row === rowIndex && selected.col === colIndex)}
+                  ${getCellStyle(rowIndex, colIndex, selected && selected.row === rowIndex && selected.col === colIndex)}
                 `}
                 onClick={() => handleCellClick(rowIndex, colIndex)}
               >
@@ -392,12 +400,12 @@ const CrosswordPuzzle = () => {
       
       {/* Clues display */}
       <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right">
-        {selected.row !== null && direction === 'across' && (
+        {selected && direction === 'across' && (
           <div className="mb-2">
             <span className="font-bold">מאוזן:</span> {currentConfig.rowClues[selected.row]}
           </div>
         )}
-        {selected.col !== null && direction === 'down' && (
+        {selected && direction === 'down' && (
           <div>
             <span className="font-bold">מאונך:</span> {currentConfig.columnClues[selected.col]}
           </div>
@@ -422,27 +430,20 @@ const CrosswordPuzzle = () => {
       {/* Previous Puzzles Section */}
       <div className="mt-8 w-full">
         <h2 className="text-xl mb-4 text-center">תשבצים קודמים</h2>
-        <div className="flex justify-center gap-2">
-          <button
-            onClick={() => handlePuzzleChange('puzzle1')}
-            className={`px-4 py-2 rounded ${
-              currentPuzzleId === 'puzzle1'
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 hover:bg-gray-300'
-            }`}
-          >
-            תשבץ 1
-          </button>
-          <button
-            onClick={() => handlePuzzleChange('puzzle2')}
-            className={`px-4 py-2 rounded ${
-              currentPuzzleId === 'puzzle2'
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 hover:bg-gray-300'
-            }`}
-          >
-            תשבץ 2
-          </button>
+        <div className="flex justify-center gap-2 flex-wrap">
+          {puzzleIds.map((puzzleId) => (
+            <button
+              key={puzzleId}
+              onClick={() => handlePuzzleChange(puzzleId)}
+              className={`px-4 py-2 rounded ${
+                currentPuzzleId === puzzleId
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-200 hover:bg-gray-300'
+              }`}
+            >
+              {puzzles[puzzleId].name}
+            </button>
+          ))}
         </div>
       </div>
     </div>
