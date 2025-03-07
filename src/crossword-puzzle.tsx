@@ -381,7 +381,7 @@ const CrosswordPuzzle = () => {
                     value={cell}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
-                    className={`w-full h-full text-center text-xl font-bold outline-none bg-transparent
+                    className={`w-full h-full text-center text-xl outline-none bg-transparent font-rubik
                       ${cellStatus[rowIndex][colIndex] === true ? 'cursor-not-allowed' : ''}
                       ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : ''}`}
                     maxLength={1}
