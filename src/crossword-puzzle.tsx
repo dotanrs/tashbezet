@@ -2,32 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Cell, Grid, Selected, CellStatus, CellStatusGrid, Direction, CrosswordConfig } from './types/crossword';
 import { findNextCell, handleArrowNavigation } from './utils/crosswordNavigation';
 import ReactConfetti from 'react-confetti';
+import { puzzles, PuzzleId } from './crosswords';
 
 const CrosswordPuzzle = () => {
-  // Sample configuration - now with Hebrew letters
-  const sampleConfig = {
-    grid: [
-      ['כ', 'ל', 'ב', 'י', 'ם'],
-      ['ת', 'פ', 'ו', 'ח', 'י'],
-      ['ר', 'ק', 'blank', 'ל', 'ם'],
-      ['י', 'ד', 'י', 'ם', 'י'],
-      ['ם', 'ה', 'ם', 'י', 'ם']
-    ] as Grid,
-    rowClues: [
-      "חיות מחמד נאמנות",
-      "פרי עסיסי",
-      "חלק מהמכונית",
-      "איברי גוף",
-      "שייכים להם"
-    ],
-    columnClues: [
-      "כותבים",
-      "דלת",
-      "בא",
-      "בריא",
-      "רבים"
-    ]
-  };
+  // State for the current puzzle
+  const [currentPuzzleId, setCurrentPuzzleId] = useState<PuzzleId>('puzzle1');
+  const [currentConfig, setCurrentConfig] = useState<CrosswordConfig>(puzzles.puzzle1);
 
   // State for the user's input grid
   const [userGrid, setUserGrid] = useState<Grid>(Array(5).fill(null).map(() => Array(5).fill('')));
@@ -45,11 +25,21 @@ const CrosswordPuzzle = () => {
   
   // Initialize the grid with empty cells (except for blanks)
   useEffect(() => {
-    const initialGrid = sampleConfig.grid.map(row => 
+    const initialGrid = currentConfig.grid.map(row => 
       row.map(cell => cell === 'blank' ? 'blank' : '')
     );
     setUserGrid(initialGrid);
-  }, []);
+    setCellStatus(Array(5).fill(null).map(() => Array(5).fill(null)));
+    setSelected({ row: 0, col: 0 });
+    setDirection('across');
+    setMessage('');
+  }, [currentConfig]);
+
+  // Handle puzzle change
+  const handlePuzzleChange = (puzzleId: PuzzleId) => {
+    setCurrentPuzzleId(puzzleId);
+    setCurrentConfig(puzzles[puzzleId]);
+  };
   
   // Handle cell selection and direction changes
   const handleCellClick = (row: number, col: number) => {
@@ -290,9 +280,9 @@ const CrosswordPuzzle = () => {
     
     for (let row = 0; row < 5; row++) {
       for (let col = 0; col < 5; col++) {
-        if (sampleConfig.grid[row][col] !== 'blank') {
+        if (currentConfig.grid[row][col] !== 'blank') {
           if (userGrid[row][col] !== '') {
-            const cellCorrect = userGrid[row][col] === sampleConfig.grid[row][col];
+            const cellCorrect = userGrid[row][col] === currentConfig.grid[row][col];
             newCellStatus[row][col] = cellCorrect;
             if (!cellCorrect) {
               isCorrect = false;
@@ -404,12 +394,12 @@ const CrosswordPuzzle = () => {
       <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right">
         {selected.row !== null && direction === 'across' && (
           <div className="mb-2">
-            <span className="font-bold">מאוזן:</span> {sampleConfig.rowClues[selected.row]}
+            <span className="font-bold">מאוזן:</span> {currentConfig.rowClues[selected.row]}
           </div>
         )}
         {selected.col !== null && direction === 'down' && (
           <div>
-            <span className="font-bold">מאונך:</span> {sampleConfig.columnClues[selected.col]}
+            <span className="font-bold">מאונך:</span> {currentConfig.columnClues[selected.col]}
           </div>
         )}
       </div>
@@ -428,6 +418,33 @@ const CrosswordPuzzle = () => {
           {message}
         </div>
       )}
+
+      {/* Previous Puzzles Section */}
+      <div className="mt-8 w-full">
+        <h2 className="text-xl mb-4 text-center">תשבצים קודמים</h2>
+        <div className="flex justify-center gap-2">
+          <button
+            onClick={() => handlePuzzleChange('puzzle1')}
+            className={`px-4 py-2 rounded ${
+              currentPuzzleId === 'puzzle1'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 hover:bg-gray-300'
+            }`}
+          >
+            תשבץ 1
+          </button>
+          <button
+            onClick={() => handlePuzzleChange('puzzle2')}
+            className={`px-4 py-2 rounded ${
+              currentPuzzleId === 'puzzle2'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 hover:bg-gray-300'
+            }`}
+          >
+            תשבץ 2
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
