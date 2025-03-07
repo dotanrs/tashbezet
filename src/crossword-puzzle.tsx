@@ -6,9 +6,11 @@ import ReactConfetti from 'react-confetti';
 import { puzzles, PuzzleId } from './crosswords';
 
 const CrosswordPuzzle = () => {
-  // State for the current puzzle
-  const [currentPuzzleId, setCurrentPuzzleId] = useState<PuzzleId>('puzzle1');
-  const [currentConfig, setCurrentConfig] = useState<CrosswordConfig>(puzzles.puzzle1);
+  // Add new state for game started
+  const [gameStarted, setGameStarted] = useState(false);
+  // Modify current puzzle state to be null initially
+  const [currentPuzzleId, setCurrentPuzzleId] = useState<PuzzleId | null>(null);
+  const [currentConfig, setCurrentConfig] = useState<CrosswordConfig | null>(null);
 
   // State for the user's input grid
   const [userGrid, setUserGrid] = useState<Grid>(Array(5).fill(null).map(() => Array(5).fill('')));
@@ -24,14 +26,14 @@ const CrosswordPuzzle = () => {
   // Create refs for all cells
   const cellRefs = useRef<(HTMLInputElement | null)[][]>(Array(5).fill(null).map(() => Array(5).fill(null)));
   
-  // Initialize the grid with empty cells (except for blanks)
+  // Modify useEffect to only run when a puzzle is selected
   useEffect(() => {
+    if (!currentPuzzleId) return;
+
     const savedState = loadPuzzleState(currentPuzzleId);
     
     if (savedState && puzzles[savedState.puzzleId]) {
-      // Restore saved state
       setCurrentConfig(puzzles[savedState.puzzleId]);
-      // Create new grid based on puzzle config and saved state
       const newGrid = puzzles[savedState.puzzleId].grid.map((row, rowIndex) => 
         row.map((cell, colIndex) => {
           if (cell === 'blank') return 'blank';
@@ -44,8 +46,7 @@ const CrosswordPuzzle = () => {
         setMessage('כל הכבוד, פתרת את התשבץ!');
       }
     } else {
-      // Initialize new puzzle
-      const initialGrid = currentConfig.grid.map(row => 
+      const initialGrid = puzzles[currentPuzzleId].grid.map(row => 
         row.map(cell => cell === 'blank' ? 'blank' : '')
       );
       setUserGrid(initialGrid);
@@ -56,14 +57,14 @@ const CrosswordPuzzle = () => {
     setDirection('across');
     setMessage('');
     resetCellStatus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPuzzleId]);
 
   // Save puzzle state whenever it changes
   useEffect(() => {
+    if (!currentPuzzleId || !currentConfig) return;
+    
     const isComplete = cellStatus.every((row, rowIndex) => 
       row.every((status, colIndex) => {
-        // Only check non-blank cells
         if (currentConfig.grid[rowIndex][colIndex] === 'blank') {
           return true;
         }
@@ -71,18 +72,27 @@ const CrosswordPuzzle = () => {
       })
     );
     
-    savePuzzleState(currentPuzzleId, {
-      userGrid,
-      cellStatus,
-      isComplete,
-      puzzleId: currentPuzzleId
-    });
+    if (currentPuzzleId) {
+      savePuzzleState(currentPuzzleId, {
+        userGrid,
+        cellStatus,
+        isComplete,
+        puzzleId: currentPuzzleId
+      });
+    }
   }, [currentPuzzleId, userGrid, cellStatus, currentConfig]);
 
-  // Handle puzzle change
+  // Modify handlePuzzleChange
   const handlePuzzleChange = (puzzleId: PuzzleId) => {
     setCurrentPuzzleId(puzzleId);
     setCurrentConfig(puzzles[puzzleId]);
+    setGameStarted(true);
+  };
+
+  // Add handleStartGame
+  const handleStartGame = () => {
+    const firstPuzzleId = Object.keys(puzzles)[0] as PuzzleId;
+    handlePuzzleChange(firstPuzzleId);
   };
 
   // Handle cell selection and direction changes
@@ -324,6 +334,8 @@ const CrosswordPuzzle = () => {
 
   // Modify checkPuzzle to trigger confetti
   const checkPuzzle = () => {
+    if (!currentConfig) return { newCellStatus: Array(5).fill(null).map(() => Array(5).fill(null)), isCorrect: false };
+    
     let isCorrect = true;
     const newCellStatus = Array(5).fill(null).map(() => Array(5).fill(null)) as CellStatusGrid;
 
@@ -393,13 +405,14 @@ const CrosswordPuzzle = () => {
 
   // Add reveal functionality
   const handleReveal = () => {
+    if (!currentConfig) return;
+    
     const newGrid = [...userGrid];
     const newCellStatus = [...cellStatus];
 
     for (let row = 0; row < 5; row++) {
       for (let col = 0; col < 5; col++) {
         if (currentConfig.grid[row][col] !== 'blank') {
-          // Only reveal incorrect or empty cells
           if (cellStatus[row][col] !== true) {
             newGrid[row][col] = currentConfig.grid[row][col];
             newCellStatus[row][col] = true;
@@ -414,111 +427,126 @@ const CrosswordPuzzle = () => {
 
   return (
     <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto">
-      {showConfetti && (
-        <ReactConfetti
-          width={windowSize.width}
-          height={windowSize.height}
-          recycle={false}
-          numberOfPieces={200}
-          gravity={0.2}
-          colors={['#FFD700', '#FFA500', '#FF6347', '#87CEEB', '#98FB98']}
-        />
-      )}
+      <h1 className="text-3xl mb-6">תשבצת</h1>
 
-      <h1 className="text-3 xl mb-6">תשבצת</h1>
+      {!gameStarted ? (
+        <button
+          onClick={handleStartGame}
+          className="px-6 py-3 bg-blue-500 text-white rounded-lg text-xl hover:bg-blue-600 transition-colors"
+        >
+          Ready to start?
+        </button>
+      ) : (
+        <>
+          {showConfetti && (
+            <ReactConfetti
+              width={windowSize.width}
+              height={windowSize.height}
+              recycle={false}
+              numberOfPieces={200}
+              gravity={0.2}
+              colors={['#FFD700', '#FFA500', '#FF6347', '#87CEEB', '#98FB98']}
+            />
+          )}
 
-      {/* Crossword grid */}
-      <div className="grid grid-cols-5 gap-0 border border-black mb-4">
-        {userGrid.map((row, rowIndex) => (
-          row.map((_, displayColIndex) => {
-            const colIndex = displayToLogicalCol(displayColIndex);
-            const cell = userGrid[rowIndex][colIndex];
-            return (
-              <div
-                key={`${rowIndex}-${colIndex}`}
-                className={`
-                  w-12 h-12 border-[0.5px] border-gray-400 flex items-center justify-center
-                  ${getCellStyle(rowIndex, colIndex, selected && selected.row === rowIndex && selected.col === colIndex)}
-                `}
-                onClick={() => handleCellClick(rowIndex, colIndex)}
-              >
-                {cell !== 'blank' && (
-                  <input
-                    ref={el => cellRefs.current[rowIndex][colIndex] = el}
-                    type="text"
-                    value={cell}
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    className={`w-full h-full text-center text-xl outline-none bg-transparent font-rubik
-                      ${cellStatus[rowIndex][colIndex] === true ? 'cursor-not-allowed' : ''}
-                      ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : ''}`}
-                    maxLength={1}
-                    dir="rtl"
-                    lang="he"
-                    disabled={cellStatus[rowIndex][colIndex] === true}
-                  />
+          {currentConfig && (
+            <>
+              {/* Crossword grid */}
+              <div className="grid grid-cols-5 gap-0 border border-black mb-4">
+                {userGrid.map((row, rowIndex) => (
+                  row.map((_, displayColIndex) => {
+                    const colIndex = displayToLogicalCol(displayColIndex);
+                    const cell = userGrid[rowIndex][colIndex];
+                    return (
+                      <div
+                        key={`${rowIndex}-${colIndex}`}
+                        className={`
+                          w-12 h-12 border-[0.5px] border-gray-400 flex items-center justify-center
+                          ${getCellStyle(rowIndex, colIndex, selected && selected.row === rowIndex && selected.col === colIndex)}
+                        `}
+                        onClick={() => handleCellClick(rowIndex, colIndex)}
+                      >
+                        {cell !== 'blank' && (
+                          <input
+                            ref={el => cellRefs.current[rowIndex][colIndex] = el}
+                            type="text"
+                            value={cell}
+                            onChange={handleChange}
+                            onKeyDown={handleKeyDown}
+                            className={`w-full h-full text-center text-xl outline-none bg-transparent font-rubik
+                              ${cellStatus[rowIndex][colIndex] === true ? 'cursor-not-allowed' : ''}
+                              ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : ''}`}
+                            maxLength={1}
+                            dir="rtl"
+                            lang="he"
+                            disabled={cellStatus[rowIndex][colIndex] === true}
+                          />
+                        )}
+                      </div>
+                    );
+                  })
+                ))}
+              </div>
+
+              {/* Clues display */}
+              <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right">
+                {selected && direction === 'across' && (
+                  <div className="mb-2">
+                    <span className="font-bold">מאוזן:</span> {currentConfig.rowClues[selected.row]}
+                  </div>
+                )}
+                {selected && direction === 'down' && (
+                  <div>
+                    <span className="font-bold">מאונך:</span> {currentConfig.columnClues[selected.col]}
+                  </div>
                 )}
               </div>
-            );
-          })
-        ))}
-      </div>
 
-      {/* Clues display */}
-      <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right">
-        {selected && direction === 'across' && (
-          <div className="mb-2">
-            <span className="font-bold">מאוזן:</span> {currentConfig.rowClues[selected.row]}
-          </div>
-        )}
-        {selected && direction === 'down' && (
-          <div>
-            <span className="font-bold">מאונך:</span> {currentConfig.columnClues[selected.col]}
-          </div>
-        )}
-      </div>
+              {/* Buttons section */}
+              <div className="flex gap-2">
+                <button
+                  onClick={markPuzzle}
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  בדיקה
+                </button>
+                <button
+                  onClick={handleReveal}
+                  className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                >
+                  גילוי
+                </button>
+              </div>
 
-      {/* Buttons section */}
-      <div className="flex gap-2">
-        <button
-          onClick={markPuzzle}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          בדיקה
-        </button>
-        <button
-          onClick={handleReveal}
-          className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-        >
-          גילוי
-        </button>
-      </div>
+              {/* Status message */}
+              {message && (
+                <div className="mt-4 p-2 rounded bg-green-100 text-green-800">
+                  {message}
+                </div>
+              )}
 
-      {/* Status message */}
-      {message && (
-        <div className="mt-4 p-2 rounded bg-green-100 text-green-800">
-          {message}
-        </div>
+              {/* Previous Puzzles Section */}
+              <div className="mt-8 w-full">
+                <h2 className="text-xl mb-4 text-center">תשבצים קודמים</h2>
+                <div className="flex justify-center gap-2 flex-wrap">
+                  {puzzleIds.map((puzzleId) => (
+                    <button
+                      key={puzzleId}
+                      onClick={() => handlePuzzleChange(puzzleId)}
+                      className={`px-4 py-2 rounded ${currentPuzzleId === puzzleId
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-gray-200 hover:bg-gray-300'
+                        }`}
+                    >
+                      {puzzles[puzzleId].name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+        </>
       )}
-
-      {/* Previous Puzzles Section */}
-      <div className="mt-8 w-full">
-        <h2 className="text-xl mb-4 text-center">תשבצים קודמים</h2>
-        <div className="flex justify-center gap-2 flex-wrap">
-          {puzzleIds.map((puzzleId) => (
-            <button
-              key={puzzleId}
-              onClick={() => handlePuzzleChange(puzzleId)}
-              className={`px-4 py-2 rounded ${currentPuzzleId === puzzleId
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 hover:bg-gray-300'
-                }`}
-            >
-              {puzzles[puzzleId].name}
-            </button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };
