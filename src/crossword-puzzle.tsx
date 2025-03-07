@@ -47,20 +47,29 @@ const CrosswordPuzzle = () => {
     
     setSelected({ row: 0, col: 0 });
     setDirection('across');
+    setMessage('');
+    setShowConfetti(false);
   }, [currentPuzzleId, currentConfig]);
 
   // Save puzzle state whenever it changes
   useEffect(() => {
-    const isComplete = cellStatus.every(row => 
-      row.every(status => status === true || status === null)
+    const isComplete = cellStatus.every((row, rowIndex) => 
+      row.every((status, colIndex) => {
+        // Only check non-blank cells
+        if (currentConfig.grid[rowIndex][colIndex] === 'blank') {
+          return true;
+        }
+        return status === true;
+      })
     );
     
     savePuzzleState(currentPuzzleId, {
       userGrid,
       cellStatus,
-      isComplete
+      isComplete,
+      puzzleId: currentPuzzleId
     });
-  }, [currentPuzzleId, userGrid, cellStatus]);
+  }, [currentPuzzleId, userGrid, cellStatus, currentConfig]);
 
   // Handle puzzle change
   const handlePuzzleChange = (puzzleId: PuzzleId) => {
@@ -373,6 +382,27 @@ const CrosswordPuzzle = () => {
   // Get all available puzzle IDs
   const puzzleIds = Object.keys(puzzles) as PuzzleId[];
 
+  // Add reveal functionality
+  const handleReveal = () => {
+    const newGrid = [...userGrid];
+    const newCellStatus = [...cellStatus];
+    
+    for (let row = 0; row < 5; row++) {
+      for (let col = 0; col < 5; col++) {
+        if (currentConfig.grid[row][col] !== 'blank') {
+          // Only reveal incorrect or empty cells
+          if (cellStatus[row][col] !== true) {
+            newGrid[row][col] = currentConfig.grid[row][col];
+            newCellStatus[row][col] = true;
+          }
+        }
+      }
+    }
+    
+    setUserGrid(newGrid);
+    setCellStatus(newCellStatus);
+  };
+
   return (
     <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto">
       {showConfetti && (
@@ -439,13 +469,21 @@ const CrosswordPuzzle = () => {
         )}
       </div>
 
-      {/* Check button */}
-      <button 
-        onClick={markPuzzle}
-        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      >
-        בדיקה
-      </button>
+      {/* Buttons section */}
+      <div className="flex gap-2">
+        <button 
+          onClick={markPuzzle}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          בדיקה
+        </button>
+        <button 
+          onClick={handleReveal}
+          className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+        >
+          גילוי
+        </button>
+      </div>
       
       {/* Status message */}
       {message && (

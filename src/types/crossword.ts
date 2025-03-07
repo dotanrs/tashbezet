@@ -1,3 +1,5 @@
+import { PuzzleId } from '../crosswords';
+
 export type Cell = string;
 export type Grid = Cell[][];
 export type Selected = { row: number; col: number } | null;
@@ -13,6 +15,7 @@ export interface CrosswordConfig {
 }
 
 export interface SavedPuzzleState {
+  puzzleId: PuzzleId;
   userGrid: Grid;
   cellStatus: CellStatusGrid;
   isComplete: boolean;
