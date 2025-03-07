@@ -96,6 +96,22 @@ const CrosswordPuzzle = () => {
       }
     }
   };
+
+  // Handle keyboard navigation
+  const handleKeyDown = (row: number, col: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && userGrid[row][col] === '' && col > 0) {
+      // Move to previous cell if current cell is empty and backspace is pressed
+      let newCol = col - 1;
+      // Skip blank cells when moving backwards
+      while (newCol >= 0 && userGrid[row][newCol] === 'blank') {
+        newCol--;
+      }
+      if (newCol >= 0) {
+        setSelected({ row, col: newCol });
+        cellRefs.current[row][newCol]?.focus();
+      }
+    }
+  };
   
   // Check if the puzzle is solved correctly
   const checkPuzzle = () => {
@@ -180,6 +196,7 @@ const CrosswordPuzzle = () => {
                   type="text"
                   value={cell}
                   onChange={(e) => handleKeyInput(rowIndex, colIndex, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(rowIndex, colIndex, e)}
                   className="w-full h-full text-center text-xl font-bold outline-none bg-transparent"
                   maxLength={1}
                 />
