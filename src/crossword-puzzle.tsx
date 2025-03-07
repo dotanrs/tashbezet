@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Grid, Selected, CellStatusGrid, Direction, CrosswordConfig } from './types/crossword';
 import { findNextCell, findNextDefinition, handleArrowNavigation } from './utils/navigationUtils';
-import { loadPuzzleState, savePuzzleState } from './utils/storageUtils';
+import { clearPuzzleState, loadPuzzleState, savePuzzleState } from './utils/storageUtils';
 import { createEmptyGrid, createEmptyCellStatus, checkPuzzle, revealPuzzle } from './utils/puzzleUtils';
 import ReactConfetti from 'react-confetti';
 import { puzzles, PuzzleId } from './crosswords';
@@ -87,6 +87,21 @@ const CrosswordPuzzle = () => {
     setCurrentPuzzleId(puzzleId);
     setCurrentConfig(puzzles[puzzleId]);
     setGameStarted(true);
+  };
+
+  const handlePuzzleReset = () => {
+    if (currentPuzzleId == null) {
+      return;
+    }
+    clearPuzzleState(currentPuzzleId);
+    const newGrid = puzzles[currentPuzzleId].grid.map((row, rowIndex) => 
+      row.map((cell, colIndex) => {
+        if (cell === 'blank') return 'blank';
+        return '';
+      })
+    );
+    setUserGrid(newGrid);
+    setCellStatus(createEmptyCellStatus());
   };
 
   // Add handleStartGame
@@ -299,7 +314,7 @@ const CrosswordPuzzle = () => {
           onClick={handleStartGame}
           className="px-6 py-3 bg-blue-500 text-white rounded-lg text-xl hover:bg-blue-600 transition-colors"
         >
-          Ready to start?
+          מוכנים להתחיל?
         </button>
       ) : (
         <>
@@ -354,6 +369,12 @@ const CrosswordPuzzle = () => {
                   className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
                 >
                   גילוי
+                </button>
+                <button
+                  onClick={handlePuzzleReset}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  איפוס
                 </button>
               </div>
 

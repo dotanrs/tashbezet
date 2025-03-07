@@ -21,3 +21,7 @@ export const loadPuzzleState = (puzzleId: PuzzleId): SavedPuzzleState | null => 
   }
   return null;
 }; 
+
+export const clearPuzzleState = (puzzleId: PuzzleId): void => {
+  localStorage.removeItem(`${STORAGE_KEY}${puzzleId}`);
+};
