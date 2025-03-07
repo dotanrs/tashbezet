@@ -284,16 +284,16 @@ const CrosswordPuzzle = () => {
   
   return (
     <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto">
-      <h1 className="text-2xl font-bold mb-6">5×5 Crossword Puzzle</h1>
+      <h1 className="text-3xl mb-6">תשבצת </h1>
       
       {/* Crossword grid */}
-      <div className="grid grid-cols-5 gap-0 border-2 border-black mb-4">
+      <div className="grid grid-cols-5 gap-0 border-[0.8px] border-black mb-4">
         {userGrid.map((row, rowIndex) => (
           row.map((cell, colIndex) => (
             <div 
               key={`${rowIndex}-${colIndex}`}
               className={`
-                w-12 h-12 border border-gray-400 flex items-center justify-center
+                w-12 h-12 border-[0.5px] border-gray-400 flex items-center justify-center
                 ${getCellBackgroundColor(rowIndex, colIndex, selected.row === rowIndex && selected.col === colIndex)}
               `}
               onClick={() => handleCellClick(rowIndex, colIndex)}
