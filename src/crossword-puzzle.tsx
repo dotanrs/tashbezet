@@ -166,18 +166,12 @@ const CrosswordPuzzle = () => {
       newGrid[row][col] = value.toUpperCase();
       setUserGrid(newGrid);
       
-      // If check was performed, update the status of this cell
-      if (isChecked) {
-        const newCellStatus = [...cellStatus];
-        if (value === '') {
-          newCellStatus[row][col] = null;
-        } else {
-          newCellStatus[row][col] = (value.toUpperCase() === sampleConfig.grid[row][col]);
-        }
-        setCellStatus(newCellStatus);
-      }
+      // Remove check forthe cell
+      const newCellStatus = [...cellStatus];
+      newCellStatus[row][col] = null;
+      setCellStatus(newCellStatus);
       
-      // Move to next cell if letter entered
+      // Move to next cell if letter entered (regardless of previous content)
       if (value !== '') {
         if (direction === 'across' && col < 4) {
           let newCol = col + 1;
