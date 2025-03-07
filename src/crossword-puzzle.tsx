@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Cell, Grid, Selected, CellStatus, CellStatusGrid, Direction, CrosswordConfig, SavedPuzzleState } from './types/crossword';
+import { Grid, Selected, CellStatusGrid, Direction, CrosswordConfig } from './types/crossword';
 import { findNextCell, handleArrowNavigation } from './utils/crosswordNavigation';
 import { loadPuzzleState, savePuzzleState } from './utils/storage';
 import ReactConfetti from 'react-confetti';
@@ -20,7 +20,7 @@ const CrosswordPuzzle = () => {
   const [cellStatus, setCellStatus] = useState<CellStatusGrid>(Array(5).fill(null).map(() => Array(5).fill(null)));
   // Track direction
   const [direction, setDirection] = useState<Direction>('across');
-  
+
   // Create refs for all cells
   const cellRefs = useRef<(HTMLInputElement | null)[][]>(Array(5).fill(null).map(() => Array(5).fill(null)));
   
@@ -56,6 +56,7 @@ const CrosswordPuzzle = () => {
     setDirection('across');
     setMessage('');
     resetCellStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPuzzleId]);
 
   // Save puzzle state whenever it changes
@@ -83,7 +84,7 @@ const CrosswordPuzzle = () => {
     setCurrentPuzzleId(puzzleId);
     setCurrentConfig(puzzles[puzzleId]);
   };
-  
+
   // Handle cell selection and direction changes
   const handleCellClick = (row: number, col: number) => {
     if (userGrid[row][col] === 'blank') return;
@@ -95,13 +96,13 @@ const CrosswordPuzzle = () => {
       setSelected({ row, col });
       // Keep the same direction when moving to a new cell
     }
-    
+
     const cellRef = cellRefs.current[row]?.[col];
     if (cellRef) {
       cellRef.focus();
     }
   };
-  
+
   const findFirstAvailableCell = (row: number, col: number, direction: Direction): { row: number; col: number; newDirection: Direction } => {
     if (direction === 'across') {
       // Search along the row
@@ -131,15 +132,13 @@ const CrosswordPuzzle = () => {
         return findFirstAvailableCell(0, 0, "across");
       }
     }
-    // Fallback (shouldn't happen in valid puzzle)
-    return { row, col, newDirection: direction };
   };
 
   const findNextDefinition = (currentRow: number, currentCol: number, currentDirection: Direction, forward: boolean = false): { row: number; col: number; newDirection: Direction } => {
     if (currentDirection === 'across') {
       // Moving through rows
       let newRow = currentRow + (forward ? -1 : 1);
-      
+
       // If we went past the edges, switch to columns
       if (newRow < 0 || newRow >= 5) {
         // Switch to down direction
@@ -148,13 +147,13 @@ const CrosswordPuzzle = () => {
         // Find first available cell in the column
         return findFirstAvailableCell(0, newCol, startDirection);
       }
-      
+
       // Stay in across mode, find first available cell in the new row
       return findFirstAvailableCell(newRow, 0, 'across');
     } else {
       // Moving through columns
       let newCol = currentCol + (forward ? -1 : 1);
-      
+
       // If we went past the edges, switch to rows
       if (newCol < 0 || newCol >= 5) {
         // Switch to across direction
@@ -163,7 +162,7 @@ const CrosswordPuzzle = () => {
         // Find first available cell in the row
         return findFirstAvailableCell(newRow, newCol, startDirection);
       }
-      
+
       // Stay in down mode, find first available cell in the new column
       return findFirstAvailableCell(0, newCol, 'down');
     }
@@ -172,7 +171,7 @@ const CrosswordPuzzle = () => {
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!selected) return;
-    
+
     const row = selected.row;
     const col = selected.col;
 
@@ -199,12 +198,12 @@ const CrosswordPuzzle = () => {
       const newGrid = [...userGrid];
       newGrid[row][col] = value;
       setUserGrid(newGrid);
-      
+
       // Clear validation state for this cell
       const newCellStatus = [...cellStatus];
       newCellStatus[row][col] = null;
       setCellStatus(newCellStatus);
-      
+
       moveToNextCell(row, col);
       checkComplete()
       return;
@@ -213,7 +212,7 @@ const CrosswordPuzzle = () => {
     // Handle backspace
     if (e.key === 'Backspace') {
       e.preventDefault();
-      
+
       const newGrid = [...userGrid];
       const newCellStatus = [...cellStatus];
 
@@ -241,7 +240,7 @@ const CrosswordPuzzle = () => {
     if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
       e.preventDefault();
       const { newDirection, newPosition } = handleArrowNavigation(e.key, direction, row, col, userGrid);
-      
+
       if (newDirection) {
         setDirection(newDirection);
       }
@@ -254,20 +253,20 @@ const CrosswordPuzzle = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!selected) return;
-    
+
     const row = selected.row;
     const col = selected.col;
     const value = e.target.value;
 
     if (userGrid[row][col] === 'blank') return;
-    
+
     // Only handle actual input changes, not backspace
     // (backspace is handled in handleKeyDown)
     if (value !== '') {
       const newGrid = [...userGrid];
       newGrid[row][col] = value.toUpperCase();
       setUserGrid(newGrid);
-      
+
       // Clear validation state for this cell
       const newCellStatus = [...cellStatus];
       newCellStatus[row][col] = null;
@@ -276,18 +275,18 @@ const CrosswordPuzzle = () => {
   };
 
   const findNextEditableCell = (
-    row: number, 
-    col: number, 
-    direction: Direction, 
+    row: number,
+    col: number,
+    direction: Direction,
     forward: boolean = false
   ): { row: number; col: number } | null => {
     let nextCell = findNextCell(userGrid, row, col, direction, forward);
-    
+
     // Keep looking for the next cell until we find an editable one or run out of cells
     while (nextCell && cellStatus[nextCell.row][nextCell.col] === true) {
       nextCell = findNextCell(userGrid, nextCell.row, nextCell.col, direction, forward);
     }
-    
+
     return nextCell;
   };
 
@@ -327,7 +326,7 @@ const CrosswordPuzzle = () => {
   const checkPuzzle = () => {
     let isCorrect = true;
     const newCellStatus = Array(5).fill(null).map(() => Array(5).fill(null)) as CellStatusGrid;
-    
+
     for (let row = 0; row < 5; row++) {
       for (let col = 0; col < 5; col++) {
         if (currentConfig.grid[row][col] !== 'blank') {
@@ -343,7 +342,7 @@ const CrosswordPuzzle = () => {
         }
       }
     }
-    return {newCellStatus, isCorrect};
+    return { newCellStatus, isCorrect };
   };
 
   const checkComplete = () => {
@@ -365,13 +364,13 @@ const CrosswordPuzzle = () => {
     if (userGrid[row][col] === 'blank') {
       return 'bg-black';
     }
-    
+
     if (cellStatus[row][col] !== null) {
       if (cellStatus[row][col]) {
         return 'bg-green-200';
       }
     }
-    
+
     if (isSelected) {
       return 'bg-blue-200';
     } else if (
@@ -382,13 +381,12 @@ const CrosswordPuzzle = () => {
     ) {
       return 'bg-blue-100';
     }
-    
+
     return 'bg-white';
   };
 
   // Helper function to convert between display and logical column positions
   const displayToLogicalCol = (displayCol: number) => 4 - displayCol;
-  const logicalToDisplayCol = (logicalCol: number) => 4 - logicalCol;
 
   // Get all available puzzle IDs
   const puzzleIds = Object.keys(puzzles) as PuzzleId[];
@@ -397,7 +395,7 @@ const CrosswordPuzzle = () => {
   const handleReveal = () => {
     const newGrid = [...userGrid];
     const newCellStatus = [...cellStatus];
-    
+
     for (let row = 0; row < 5; row++) {
       for (let col = 0; col < 5; col++) {
         if (currentConfig.grid[row][col] !== 'blank') {
@@ -409,7 +407,7 @@ const CrosswordPuzzle = () => {
         }
       }
     }
-    
+
     setUserGrid(newGrid);
     setCellStatus(newCellStatus);
   };
@@ -426,9 +424,9 @@ const CrosswordPuzzle = () => {
           colors={['#FFD700', '#FFA500', '#FF6347', '#87CEEB', '#98FB98']}
         />
       )}
-      
+
       <h1 className="text-3 xl mb-6">תשבצת</h1>
-      
+
       {/* Crossword grid */}
       <div className="grid grid-cols-5 gap-0 border border-black mb-4">
         {userGrid.map((row, rowIndex) => (
@@ -436,7 +434,7 @@ const CrosswordPuzzle = () => {
             const colIndex = displayToLogicalCol(displayColIndex);
             const cell = userGrid[rowIndex][colIndex];
             return (
-              <div 
+              <div
                 key={`${rowIndex}-${colIndex}`}
                 className={`
                   w-12 h-12 border-[0.5px] border-gray-400 flex items-center justify-center
@@ -465,7 +463,7 @@ const CrosswordPuzzle = () => {
           })
         ))}
       </div>
-      
+
       {/* Clues display */}
       <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right">
         {selected && direction === 'across' && (
@@ -482,20 +480,20 @@ const CrosswordPuzzle = () => {
 
       {/* Buttons section */}
       <div className="flex gap-2">
-        <button 
+        <button
           onClick={markPuzzle}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           בדיקה
         </button>
-        <button 
+        <button
           onClick={handleReveal}
           className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
         >
           גילוי
         </button>
       </div>
-      
+
       {/* Status message */}
       {message && (
         <div className="mt-4 p-2 rounded bg-green-100 text-green-800">
@@ -511,11 +509,10 @@ const CrosswordPuzzle = () => {
             <button
               key={puzzleId}
               onClick={() => handlePuzzleChange(puzzleId)}
-              className={`px-4 py-2 rounded ${
-                currentPuzzleId === puzzleId
+              className={`px-4 py-2 rounded ${currentPuzzleId === puzzleId
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-200 hover:bg-gray-300'
-              }`}
+                }`}
             >
               {puzzles[puzzleId].name}
             </button>
