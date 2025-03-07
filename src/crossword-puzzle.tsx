@@ -5,6 +5,7 @@ type Grid = Cell[][];
 type Selected = { row: number | null; col: number | null };
 type CellStatus = boolean | null;
 type CellStatusGrid = CellStatus[][];
+type Direction = 'across' | 'down';
 
 const CrosswordPuzzle = () => {
   // Sample configuration - you would pass this in as a prop in a real implementation
@@ -42,6 +43,8 @@ const CrosswordPuzzle = () => {
   const [cellStatus, setCellStatus] = useState<CellStatusGrid>(Array(5).fill(null).map(() => Array(5).fill(null)));
   // Flag to indicate if check was performed
   const [isChecked, setIsChecked] = useState(false);
+  // Track direction
+  const [direction, setDirection] = useState<Direction>('across');
   
   // Create refs for all cells
   const cellRefs = useRef<(HTMLInputElement | null)[][]>(Array(5).fill(null).map(() => Array(5).fill(null)));
@@ -54,17 +57,51 @@ const CrosswordPuzzle = () => {
     setUserGrid(initialGrid);
   }, []);
   
-  // Handle cell selection
+  // Handle cell selection and direction changes
   const handleCellClick = (row: number, col: number) => {
-    if (userGrid[row][col] !== 'blank') {
+    if (userGrid[row][col] === 'blank') return;
+
+    if (selected.row === row && selected.col === col) {
+      // If clicking the same cell, switch direction
+      setDirection(prev => prev === 'across' ? 'down' : 'across');
+    } else {
       setSelected({ row, col });
-      // Focus the input if it's a valid cell
-      const cellRef = cellRefs.current[row]?.[col];
-      if (cellRef) {
-        cellRef.focus();
-      } else {
-        console.log(`cellRef is null on {row} {col}`);
+      // Keep the same direction when moving to a new cell
+    }
+    
+    const cellRef = cellRefs.current[row]?.[col];
+    if (cellRef) {
+      cellRef.focus();
+    }
+  };
+  
+  // Handle keyboard navigation
+  const handleKeyDown = (row: number, col: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && userGrid[row][col] === '') {
+      // Move backwards based on direction
+      if (direction === 'across' && col > 0) {
+        let newCol = col - 1;
+        while (newCol >= 0 && userGrid[row][newCol] === 'blank') {
+          newCol--;
+        }
+        if (newCol >= 0) {
+          setSelected({ row, col: newCol });
+          cellRefs.current[row][newCol]?.focus();
+        }
+      } else if (direction === 'down' && row > 0) {
+        let newRow = row - 1;
+        while (newRow >= 0 && userGrid[newRow][col] === 'blank') {
+          newRow--;
+        }
+        if (newRow >= 0) {
+          setSelected({ row: newRow, col });
+          cellRefs.current[newRow][col]?.focus();
+        }
       }
+    } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      setDirection('across');
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      setDirection('down');
     }
   };
   
@@ -90,29 +127,30 @@ const CrosswordPuzzle = () => {
       }
       
       // Move to next cell if letter entered
-      if (value !== '' && col < 4 && userGrid[row][col + 1] !== 'blank') {
-        setSelected({ row, col: col + 1 });
-        cellRefs.current[row][col + 1]?.focus();
+      if (value !== '') {
+        if (direction === 'across' && col < 4) {
+          let newCol = col + 1;
+          while (newCol < 5 && userGrid[row][newCol] === 'blank') {
+            newCol++;
+          }
+          if (newCol < 5) {
+            setSelected({ row, col: newCol });
+            cellRefs.current[row][newCol]?.focus();
+          }
+        } else if (direction === 'down' && row < 4) {
+          let newRow = row + 1;
+          while (newRow < 5 && userGrid[newRow][col] === 'blank') {
+            newRow++;
+          }
+          if (newRow < 5) {
+            setSelected({ row: newRow, col });
+            cellRefs.current[newRow][col]?.focus();
+          }
+        }
       }
     }
   };
 
-  // Handle keyboard navigation
-  const handleKeyDown = (row: number, col: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && userGrid[row][col] === '' && col > 0) {
-      // Move to previous cell if current cell is empty and backspace is pressed
-      let newCol = col - 1;
-      // Skip blank cells when moving backwards
-      while (newCol >= 0 && userGrid[row][newCol] === 'blank') {
-        newCol--;
-      }
-      if (newCol >= 0) {
-        setSelected({ row, col: newCol });
-        cellRefs.current[row][newCol]?.focus();
-      }
-    }
-  };
-  
   // Check if the puzzle is solved correctly
   const checkPuzzle = () => {
     let isCorrect = true;
@@ -153,7 +191,10 @@ const CrosswordPuzzle = () => {
     
     if (isSelected) {
       return 'bg-blue-200';
-    } else if (selected.row === row || selected.col === col) {
+    } else if (
+      (direction === 'across' && selected.row === row) ||
+      (direction === 'down' && selected.col === col)
+    ) {
       return 'bg-blue-100';
     }
     
@@ -166,12 +207,12 @@ const CrosswordPuzzle = () => {
       
       {/* Clues display */}
       <div className="mb-4 p-4 bg-gray-100 rounded w-full">
-        {selected.row !== null && (
+        {selected.row !== null && direction === 'across' && (
           <div className="mb-2">
             <span className="font-bold">Across:</span> {sampleConfig.rowClues[selected.row]}
           </div>
         )}
-        {selected.col !== null && (
+        {selected.col !== null && direction === 'down' && (
           <div>
             <span className="font-bold">Down:</span> {sampleConfig.columnClues[selected.col]}
           </div>
