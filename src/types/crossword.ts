@@ -10,4 +10,14 @@ export interface CrosswordConfig {
   grid: Grid;
   rowClues: string[];
   columnClues: string[];
+}
+
+export interface SavedPuzzleState {
+  userGrid: Grid;
+  cellStatus: CellStatusGrid;
+  isComplete: boolean;
+}
+
+export interface SavedPuzzles {
+  [puzzleId: string]: SavedPuzzleState;
 } 

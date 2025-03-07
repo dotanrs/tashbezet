@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Cell, Grid, Selected, CellStatus, CellStatusGrid, Direction, CrosswordConfig } from './types/crossword';
+import { Cell, Grid, Selected, CellStatus, CellStatusGrid, Direction, CrosswordConfig, SavedPuzzleState } from './types/crossword';
 import { findNextCell, handleArrowNavigation } from './utils/crosswordNavigation';
+import { loadPuzzleState, savePuzzleState } from './utils/storage';
 import ReactConfetti from 'react-confetti';
 import { puzzles, PuzzleId } from './crosswords';
 
@@ -25,15 +26,41 @@ const CrosswordPuzzle = () => {
   
   // Initialize the grid with empty cells (except for blanks)
   useEffect(() => {
-    const initialGrid = currentConfig.grid.map(row => 
-      row.map(cell => cell === 'blank' ? 'blank' : '')
-    );
-    setUserGrid(initialGrid);
-    setCellStatus(Array(5).fill(null).map(() => Array(5).fill(null)));
+    const savedState = loadPuzzleState(currentPuzzleId);
+    
+    if (savedState) {
+      // Restore saved state
+      setUserGrid(savedState.userGrid);
+      setCellStatus(savedState.cellStatus);
+      if (savedState.isComplete) {
+        setMessage('כל הכבוד, פתרת את התשבץ!');
+        setShowConfetti(true);
+      }
+    } else {
+      // Initialize new puzzle
+      const initialGrid = currentConfig.grid.map(row => 
+        row.map(cell => cell === 'blank' ? 'blank' : '')
+      );
+      setUserGrid(initialGrid);
+      setCellStatus(Array(5).fill(null).map(() => Array(5).fill(null)));
+    }
+    
     setSelected({ row: 0, col: 0 });
     setDirection('across');
-    setMessage('');
-  }, [currentConfig]);
+  }, [currentPuzzleId, currentConfig]);
+
+  // Save puzzle state whenever it changes
+  useEffect(() => {
+    const isComplete = cellStatus.every(row => 
+      row.every(status => status === true || status === null)
+    );
+    
+    savePuzzleState(currentPuzzleId, {
+      userGrid,
+      cellStatus,
+      isComplete
+    });
+  }, [currentPuzzleId, userGrid, cellStatus]);
 
   // Handle puzzle change
   const handlePuzzleChange = (puzzleId: PuzzleId) => {
