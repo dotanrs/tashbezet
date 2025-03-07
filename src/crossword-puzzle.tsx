@@ -317,13 +317,15 @@ const CrosswordPuzzle = () => {
   };
 
   // Get the background color for a cell based on selection and validation status
-  const getCellBackgroundColor = (row: number, col: number, isSelected: boolean) => {
+  const getCellStyle = (row: number, col: number, isSelected: boolean) => {
     if (userGrid[row][col] === 'blank') {
       return 'bg-black';
     }
     
     if (cellStatus[row][col] !== null) {
-      return cellStatus[row][col] ? 'bg-green-200' : 'bg-red-200';
+      if (cellStatus[row][col]) {
+        return 'bg-green-200';
+      }
     }
     
     if (isSelected) {
@@ -368,7 +370,7 @@ const CrosswordPuzzle = () => {
                 key={`${rowIndex}-${colIndex}`}
                 className={`
                   w-12 h-12 border-[0.5px] border-gray-400 flex items-center justify-center
-                  ${getCellBackgroundColor(rowIndex, colIndex, selected.row === rowIndex && selected.col === colIndex)}
+                  ${getCellStyle(rowIndex, colIndex, selected.row === rowIndex && selected.col === colIndex)}
                 `}
                 onClick={() => handleCellClick(rowIndex, colIndex)}
               >
@@ -380,7 +382,8 @@ const CrosswordPuzzle = () => {
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
                     className={`w-full h-full text-center text-xl font-bold outline-none bg-transparent
-                      ${cellStatus[rowIndex][colIndex] === true ? 'cursor-not-allowed' : ''}`}
+                      ${cellStatus[rowIndex][colIndex] === true ? 'cursor-not-allowed' : ''}
+                      ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : ''}`}
                     maxLength={1}
                     dir="rtl"
                     lang="he"
