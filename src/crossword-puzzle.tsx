@@ -4,6 +4,8 @@ import { findNextCell, handleArrowNavigation } from './utils/crosswordNavigation
 import { loadPuzzleState, savePuzzleState } from './utils/storage';
 import ReactConfetti from 'react-confetti';
 import { puzzles, PuzzleId } from './crosswords';
+import PreviousPuzzles from './components/PreviousPuzzles';
+import CrosswordGrid from './components/CrosswordGrid';
 
 const CrosswordPuzzle = () => {
   // Add new state for game started
@@ -41,10 +43,7 @@ const CrosswordPuzzle = () => {
         })
       );
       setUserGrid(newGrid);
-      const result = checkPuzzle();
-      if (result.isCorrect) {
-        setMessage('כל הכבוד, פתרת את התשבץ!');
-      }
+      checkComplete();
     } else {
       const initialGrid = puzzles[currentPuzzleId].grid.map(row => 
         row.map(cell => cell === 'blank' ? 'blank' : '')
@@ -334,7 +333,9 @@ const CrosswordPuzzle = () => {
 
   // Modify checkPuzzle to trigger confetti
   const checkPuzzle = () => {
-    if (!currentConfig) return { newCellStatus: Array(5).fill(null).map(() => Array(5).fill(null)), isCorrect: false };
+    if (!currentConfig) return {
+      newCellStatus: Array(5).fill(null).map(() => Array(5).fill(null)), isCorrect: false
+    };
     
     let isCorrect = true;
     const newCellStatus = Array(5).fill(null).map(() => Array(5).fill(null)) as CellStatusGrid;
@@ -403,6 +404,13 @@ const CrosswordPuzzle = () => {
   // Get all available puzzle IDs
   const puzzleIds = Object.keys(puzzles) as PuzzleId[];
 
+  // Add function to check puzzle status
+  const getPuzzleStatus = (puzzleId: PuzzleId) => {
+    const savedState = loadPuzzleState(puzzleId);
+    if (!savedState) return null;
+    return savedState.isComplete ? '✓' : '•';
+  };
+
   // Add reveal functionality
   const handleReveal = () => {
     if (!currentConfig) return;
@@ -451,42 +459,16 @@ const CrosswordPuzzle = () => {
 
           {currentConfig && (
             <>
-              {/* Crossword grid */}
-              <div className="grid grid-cols-5 gap-0 border border-black mb-4">
-                {userGrid.map((row, rowIndex) => (
-                  row.map((_, displayColIndex) => {
-                    const colIndex = displayToLogicalCol(displayColIndex);
-                    const cell = userGrid[rowIndex][colIndex];
-                    return (
-                      <div
-                        key={`${rowIndex}-${colIndex}`}
-                        className={`
-                          w-12 h-12 border-[0.5px] border-gray-400 flex items-center justify-center
-                          ${getCellStyle(rowIndex, colIndex, selected && selected.row === rowIndex && selected.col === colIndex)}
-                        `}
-                        onClick={() => handleCellClick(rowIndex, colIndex)}
-                      >
-                        {cell !== 'blank' && (
-                          <input
-                            ref={el => cellRefs.current[rowIndex][colIndex] = el}
-                            type="text"
-                            value={cell}
-                            onChange={handleChange}
-                            onKeyDown={handleKeyDown}
-                            className={`w-full h-full text-center text-xl outline-none bg-transparent font-rubik
-                              ${cellStatus[rowIndex][colIndex] === true ? 'cursor-not-allowed' : ''}
-                              ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : ''}`}
-                            maxLength={1}
-                            dir="rtl"
-                            lang="he"
-                            disabled={cellStatus[rowIndex][colIndex] === true}
-                          />
-                        )}
-                      </div>
-                    );
-                  })
-                ))}
-              </div>
+              <CrosswordGrid
+                userGrid={userGrid}
+                cellStatus={cellStatus}
+                selected={selected}
+                direction={direction}
+                cellRefs={cellRefs}
+                onCellClick={handleCellClick}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+              />
 
               {/* Clues display */}
               <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right">
@@ -525,24 +507,10 @@ const CrosswordPuzzle = () => {
                 </div>
               )}
 
-              {/* Previous Puzzles Section */}
-              <div className="mt-8 w-full">
-                <h2 className="text-xl mb-4 text-center">תשבצים קודמים</h2>
-                <div className="flex justify-center gap-2 flex-wrap">
-                  {puzzleIds.map((puzzleId) => (
-                    <button
-                      key={puzzleId}
-                      onClick={() => handlePuzzleChange(puzzleId)}
-                      className={`px-4 py-2 rounded ${currentPuzzleId === puzzleId
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-gray-200 hover:bg-gray-300'
-                        }`}
-                    >
-                      {puzzles[puzzleId].name}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <PreviousPuzzles
+                currentPuzzleId={currentPuzzleId}
+                onPuzzleChange={handlePuzzleChange}
+              />
             </>
           )}
         </>

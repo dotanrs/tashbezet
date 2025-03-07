@@ -1,7 +1,7 @@
 import { CrosswordConfig } from '../types/crossword';
 
 export const puzzle2: CrosswordConfig = {
-  name: "תשבץ אוכל",
+  name: "2025-03-06",
   grid: [
     ['פ', 'י', 'צ', 'ה', 'ר'],
     ['ל', 'ח', 'ם', 'י', 'ם'],
