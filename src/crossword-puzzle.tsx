@@ -69,30 +69,37 @@ const CrosswordPuzzle = () => {
     }
   };
   
-  const findFirstAvailableCell = (row: number, col: number, direction: Direction): { row: number; col: number } => {
+  const findFirstAvailableCell = (row: number, col: number, direction: Direction): { row: number; col: number; newDirection: Direction } => {
     if (direction === 'across') {
       // Search along the row
       for (let c = 0; c < 5; c++) {
         if (userGrid[row][c] === 'blank') continue;
-        if (userGrid[row][c] === '') return { row, col: c };
+        if (userGrid[row][c] === '') {
+          return { row, col: c, newDirection: 'across' };
+        };
       }
-      // If no empty cell, return first non-blank cell
-      for (let c = 0; c < 5; c++) {
-        if (userGrid[row][c] !== 'blank') return { row, col: c };
+
+      if (row < 4) {
+        return findFirstAvailableCell(row + 1, 0, direction);
+      } else {
+        return findFirstAvailableCell(0, 0, "down");
       }
     } else {
       // Search along the column
       for (let r = 0; r < 5; r++) {
         if (userGrid[r][col] === 'blank') continue;
-        if (userGrid[r][col] === '') return { row: r, col };
+        if (userGrid[r][col] === '') {
+          return { row: r, col, newDirection: 'down' };
+        }
       }
-      // If no empty cell, return first non-blank cell
-      for (let r = 0; r < 5; r++) {
-        if (userGrid[r][col] !== 'blank') return { row: r, col };
+      if (col < 4) {
+        return findFirstAvailableCell(0, col + 1, direction);
+      } else {
+        return findFirstAvailableCell(0, 0, "across");
       }
     }
     // Fallback (shouldn't happen in valid puzzle)
-    return { row, col };
+    return { row, col, newDirection: direction };
   };
 
   const findNextDefinition = (currentRow: number, currentCol: number, currentDirection: Direction, forward: boolean = false): { row: number; col: number; newDirection: Direction } => {
@@ -104,15 +111,13 @@ const CrosswordPuzzle = () => {
       if (newRow < 0 || newRow >= 5) {
         // Switch to down direction
         const newCol = forward ? 4 : 0;  // Start from first/last column
-        const newDirection = 'down';
+        const startDirection = 'down';
         // Find first available cell in the column
-        const { row: availableRow } = findFirstAvailableCell(0, newCol, newDirection);
-        return { row: availableRow, col: newCol, newDirection };
+        return findFirstAvailableCell(0, newCol, startDirection);
       }
       
       // Stay in across mode, find first available cell in the new row
-      const { col: availableCol } = findFirstAvailableCell(newRow, 0, 'across');
-      return { row: newRow, col: availableCol, newDirection: 'across' };
+      return findFirstAvailableCell(newRow, 0, 'across');
     } else {
       // Moving through columns
       let newCol = currentCol + (forward ? -1 : 1);
@@ -121,15 +126,13 @@ const CrosswordPuzzle = () => {
       if (newCol < 0 || newCol >= 5) {
         // Switch to across direction
         const newRow = forward ? 4 : 0;  // Start from first/last row
-        const newDirection = 'across';
+        const startDirection = 'across';
         // Find first available cell in the row
-        const { col: availableCol } = findFirstAvailableCell(newRow, 0, newDirection);
-        return { row: newRow, col: availableCol, newDirection };
+        return findFirstAvailableCell(newRow, newCol, startDirection);
       }
       
       // Stay in down mode, find first available cell in the new column
-      const { row: availableRow } = findFirstAvailableCell(0, newCol, 'down');
-      return { row: availableRow, col: newCol, newDirection: 'down' };
+      return findFirstAvailableCell(0, newCol, 'down');
     }
   };
 
@@ -138,11 +141,6 @@ const CrosswordPuzzle = () => {
     const row = selected.row!;
     const col = selected.col!;
     
-    // Don't allow changes to correct cells
-    if (cellStatus[row][col] === true) {
-      e.preventDefault();
-      return;
-    }
 
     // Handle tab key
     if (e.key === 'Tab') {
@@ -151,6 +149,12 @@ const CrosswordPuzzle = () => {
       setSelected({ row: nextRow, col: nextCol });
       setDirection(newDirection);
       cellRefs.current[nextRow][nextCol]?.focus();
+      return;
+    }
+
+    // Don't allow changes to correct cells
+    if (cellStatus[row][col] === true) {
+      e.preventDefault();
       return;
     }
 
