@@ -24,7 +24,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
 }) => {
   const getCellStyle = (row: number, col: number, isSelected: boolean | null) => {
     if (userGrid[row][col] === 'blank') {
-      return 'bg-black';
+      return 'bg-gray-800';
     }
 
     if (cellStatus[row][col] !== null) {
@@ -59,7 +59,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
             <div
               key={`${rowIndex}-${colIndex}`}
               className={`
-                w-12 h-12 border-[0.5px] border-gray-400 flex items-center justify-center
+                w-12 h-12 border-[0.5px] border-gray-800 flex items-center justify-center
                 ${getCellStyle(rowIndex, colIndex, selected && selected.row === rowIndex && selected.col === colIndex)}
               `}
               onClick={() => onCellClick(rowIndex, colIndex)}

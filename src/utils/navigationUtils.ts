@@ -27,6 +27,10 @@ export const findNextCell = (
   if (nextRow < 0 || nextRow >= 5 || nextCol < 0 || nextCol >= 5) {
     return null;
   }
+  if (grid[nextRow][nextCol] === 'blank') {
+    return null;
+  }
+  // TODO: Handle the case where the cell is correct
 
   return { row: nextRow, col: nextCol };
 };
@@ -120,11 +124,11 @@ export const handleArrowNavigation = (
   switch (key) {
     case 'ArrowLeft':
       newDirection = 'across';
-      newPosition = findNextCell(grid, row, col, 'across', false) || undefined;
+      newPosition = findNextCell(grid, row, col, 'across', true) || undefined;
       break;
     case 'ArrowRight':
       newDirection = 'across';
-      newPosition = findNextCell(grid, row, col, 'across', true) || undefined;
+      newPosition = findNextCell(grid, row, col, 'across', false) || undefined;
       break;
     case 'ArrowUp':
       newDirection = 'down';
