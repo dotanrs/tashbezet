@@ -161,6 +161,7 @@ const CrosswordPuzzle = () => {
       setCellStatus(newCellStatus);
       
       moveToNextCell(row, col);
+      checkComplete()
       return;
     }
 
@@ -255,9 +256,19 @@ const CrosswordPuzzle = () => {
         }
       }
     }
-    
-    setCellStatus(newCellStatus);
-    setMessage(isCorrect ? 'Congratulations! The puzzle is correct!' : 'Not quite right. Keep trying!');
+    return {newCellStatus, isCorrect};
+  };
+
+  const checkComplete = () => {
+    const result = checkPuzzle();
+    if (result.isCorrect) {
+      setMessage('Congratulations! The puzzle is correct!');
+    }
+  };
+
+  const markPuzzle = () => {
+    const result = checkPuzzle();
+    setCellStatus(result.newCellStatus);
   };
 
   // Get the background color for a cell based on selection and validation status
@@ -340,10 +351,10 @@ const CrosswordPuzzle = () => {
 
       {/* Check button */}
       <button 
-        onClick={checkPuzzle}
+        onClick={markPuzzle}
         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
       >
-        Check Puzzle
+        בדיקה
       </button>
       
       {/* Status message */}

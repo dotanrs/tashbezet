@@ -41,8 +41,8 @@ export const handleArrowNavigation = (
   }
 
   // Move in the current direction
-  const forward = ['ArrowRight', 'ArrowDown'].includes(key);
-  const nextCell = findNextCell(grid, row, col, currentDirection, !forward);
+  const forward = ['ArrowLeft', 'ArrowDown'].includes(key);
+  const nextCell = findNextCell(grid, row, col, currentDirection, forward);
   
   return nextCell ? { newPosition: nextCell } : {};
 }; 
