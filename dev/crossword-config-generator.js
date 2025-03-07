@@ -11,11 +11,11 @@
 
 // Row definitions and words (across)
 const rows = [
-  ["Feline animals", "CATS_"],
-  ["Actually existing", "AREAL"],
-  ["Car part", "RE_IA"],
-  ["Information bits", "DATLN"],
-  ["Hit forcefully", "SMASH"]
+  ["אותה לא בוחרים", "משפחה"],
+["בשביל זה יש כפילים", "פעלול"],
+["כשהמים קרים מדי בשביל לשחות, זה מה שנשאר", "לטבול"],
+["שם אפשרי לפעוטון של בירן", "גנלי_"],
+["״כל כך מופרך״", "הזיה_"],
 ];
 
 // Column definitions and words (down)
@@ -23,11 +23,11 @@ const rows = [
 // 1. Leave the word empty ("") to derive it from rows, or
 // 2. Specify the expected column word for extra validation
 const cols = [
-  ["Playing cards", "CARDS"],     // Column 1 (leftmost)
-  ["Metric measure", "AREAM"],    // Column 2
-  ["Drinking vessel", "TE_TA"],   // Column 3
-  ["All over", "SAILS"],          // Column 4
-  ["Writing implement", "_LANH"]  // Column 5 (rightmost)
+  ["אותה כן בוחרים", "מפלגה"],
+["ערבוב של צמר ופשתן", "שעטנז"],
+["תעשי את זה עם העיניים כדי לבלבל אותו", "פלבלי"],
+["כל אירוע שמכבד את עצמו, בזמן האחרון", "חוויה"],
+["תעשו את זה בשביל יה, כמו בשיר", "הלל__"],
 ];
 // =================================================
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Grid, Selected, CellStatusGrid, Direction, CrosswordConfig } from './types/crossword';
+import { Grid, Selected, CellStatusGrid, Direction, CrosswordConfig, SavedPuzzleState } from './types/crossword';
 import { findNextCell, findNextDefinition, handleArrowNavigation } from './utils/navigationUtils';
 import { clearPuzzleState, loadPuzzleState, savePuzzleState } from './utils/storageUtils';
 import { createEmptyGrid, createEmptyCellStatus, checkPuzzle, revealPuzzle } from './utils/puzzleUtils';
@@ -28,7 +28,36 @@ const CrosswordPuzzle = () => {
 
   // Create refs for all cells
   const cellRefs = useRef<(HTMLInputElement | null)[][]>(Array(5).fill(null).map(() => Array(5).fill(null)));
-  
+
+  const getNewGrid = (puzzleId: PuzzleId): Grid => {
+    return puzzles[puzzleId].grid.map((row, rowIndex) => 
+      row.map((cell) => {
+        if (cell === 'blank') return 'blank';
+        return '';
+      })
+    );
+  }
+
+  const mergeStateWithPuzzle = (puzzleId: PuzzleId, savedState: SavedPuzzleState): Grid => {
+    try {
+      const newGrid = puzzles[puzzleId].grid.map((row, rowIndex) => 
+        row.map((cell, colIndex) => {
+          if (cell === 'blank') return 'blank';
+          if (savedState.userGrid[rowIndex][colIndex] === 'blank') {
+            console.log(`Invalid puzzle state: {savedState}`);
+            throw new Error('Invalid puzzle state');
+          };
+          return savedState.userGrid[rowIndex][colIndex] || '';
+        })
+      );
+      return newGrid;
+    } catch (error) {
+      console.error('Error merging state with puzzle:', error);
+      clearPuzzleState(puzzleId);
+      return getNewGrid(puzzleId);
+    }
+  }
+
   // Modify useEffect to only run when a puzzle is selected
   useEffect(() => {
     if (!currentPuzzleId) return;
@@ -37,12 +66,7 @@ const CrosswordPuzzle = () => {
     
     if (savedState && puzzles[savedState.puzzleId]) {
       setCurrentConfig(puzzles[savedState.puzzleId]);
-      const newGrid = puzzles[savedState.puzzleId].grid.map((row, rowIndex) => 
-        row.map((cell, colIndex) => {
-          if (cell === 'blank') return 'blank';
-          return savedState.userGrid[rowIndex][colIndex] || '';
-        })
-      );
+      const newGrid = mergeStateWithPuzzle(currentPuzzleId, savedState);
       setUserGrid(newGrid);
       checkComplete();
     } else {
@@ -94,12 +118,7 @@ const CrosswordPuzzle = () => {
       return;
     }
     clearPuzzleState(currentPuzzleId);
-    const newGrid = puzzles[currentPuzzleId].grid.map((row, rowIndex) => 
-      row.map((cell, colIndex) => {
-        if (cell === 'blank') return 'blank';
-        return '';
-      })
-    );
+    const newGrid = getNewGrid(currentPuzzleId);
     setUserGrid(newGrid);
     setCellStatus(createEmptyCellStatus());
   };
