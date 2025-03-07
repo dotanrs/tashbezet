@@ -68,6 +68,32 @@ const CrosswordPuzzle = () => {
     }
   };
   
+  const findFirstAvailableCell = (row: number, col: number, direction: Direction): { row: number; col: number } => {
+    if (direction === 'across') {
+      // Search along the row
+      for (let c = 0; c < 5; c++) {
+        if (userGrid[row][c] === 'blank') continue;
+        if (userGrid[row][c] === '') return { row, col: c };
+      }
+      // If no empty cell, return first non-blank cell
+      for (let c = 0; c < 5; c++) {
+        if (userGrid[row][c] !== 'blank') return { row, col: c };
+      }
+    } else {
+      // Search along the column
+      for (let r = 0; r < 5; r++) {
+        if (userGrid[r][col] === 'blank') continue;
+        if (userGrid[r][col] === '') return { row: r, col };
+      }
+      // If no empty cell, return first non-blank cell
+      for (let r = 0; r < 5; r++) {
+        if (userGrid[r][col] !== 'blank') return { row: r, col };
+      }
+    }
+    // Fallback (shouldn't happen in valid puzzle)
+    return { row, col };
+  };
+
   const findNextDefinition = (currentRow: number, currentCol: number, currentDirection: Direction, backward: boolean = false): { row: number; col: number; newDirection: Direction } => {
     if (currentDirection === 'across') {
       // Moving through rows
@@ -77,12 +103,15 @@ const CrosswordPuzzle = () => {
       if (newRow < 0 || newRow >= 5) {
         // Switch to down direction
         const newCol = backward ? 4 : 0;  // Start from first/last column
-        const newRow = backward ? 4 : 0;  // Start from first/last row
-        return { row: newRow, col: newCol, newDirection: 'down' };
+        const newDirection = 'down';
+        // Find first available cell in the column
+        const { row: availableRow } = findFirstAvailableCell(0, newCol, newDirection);
+        return { row: availableRow, col: newCol, newDirection };
       }
       
-      // Stay in across mode, keep same column position
-      return { row: newRow, col: currentCol, newDirection: 'across' };
+      // Stay in across mode, find first available cell in the new row
+      const { col: availableCol } = findFirstAvailableCell(newRow, 0, 'across');
+      return { row: newRow, col: availableCol, newDirection: 'across' };
     } else {
       // Moving through columns
       let newCol = currentCol + (backward ? -1 : 1);
@@ -91,12 +120,15 @@ const CrosswordPuzzle = () => {
       if (newCol < 0 || newCol >= 5) {
         // Switch to across direction
         const newRow = backward ? 4 : 0;  // Start from first/last row
-        const newCol = backward ? 4 : 0;  // Start from first/last column
-        return { row: newRow, col: newCol, newDirection: 'across' };
+        const newDirection = 'across';
+        // Find first available cell in the row
+        const { col: availableCol } = findFirstAvailableCell(newRow, 0, newDirection);
+        return { row: newRow, col: availableCol, newDirection };
       }
       
-      // Stay in down mode, keep same row position
-      return { row: currentRow, col: newCol, newDirection: 'down' };
+      // Stay in down mode, find first available cell in the new column
+      const { row: availableRow } = findFirstAvailableCell(0, newCol, 'down');
+      return { row: availableRow, col: newCol, newDirection: 'down' };
     }
   };
 
@@ -109,19 +141,9 @@ const CrosswordPuzzle = () => {
     if (e.key === 'Tab') {
       e.preventDefault(); // Prevent losing focus
       const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(row, col, direction, e.shiftKey);
-      
-      // Skip blank cells
-      if (userGrid[nextRow][nextCol] === 'blank') {
-        const { row: skipRow, col: skipCol, newDirection: skipDirection } = 
-          findNextDefinition(nextRow, nextCol, newDirection, e.shiftKey);
-        setSelected({ row: skipRow, col: skipCol });
-        setDirection(skipDirection);
-        cellRefs.current[skipRow][skipCol]?.focus();
-      } else {
-        setSelected({ row: nextRow, col: nextCol });
-        setDirection(newDirection);
-        cellRefs.current[nextRow][nextCol]?.focus();
-      }
+      setSelected({ row: nextRow, col: nextCol });
+      setDirection(newDirection);
+      cellRefs.current[nextRow][nextCol]?.focus();
       return;
     }
 
