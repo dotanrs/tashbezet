@@ -31,7 +31,7 @@ const CrosswordPuzzle = () => {
   // State for the user's input grid
   const [userGrid, setUserGrid] = useState<Grid>(Array(5).fill(null).map(() => Array(5).fill('')));
   // Track selected cell
-  const [selected, setSelected] = useState<Selected>({ row: null, col: null });
+  const [selected, setSelected] = useState<Selected>({ row: 0, col: 0 });
   // Status message
   const [message, setMessage] = useState('');
   // Track cell validation status
@@ -286,20 +286,6 @@ const CrosswordPuzzle = () => {
     <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto">
       <h1 className="text-2xl font-bold mb-6">5×5 Crossword Puzzle</h1>
       
-      {/* Clues display */}
-      <div className="mb-4 p-4 bg-gray-100 rounded w-full">
-        {selected.row !== null && direction === 'across' && (
-          <div className="mb-2">
-            <span className="font-bold">Across:</span> {sampleConfig.rowClues[selected.row]}
-          </div>
-        )}
-        {selected.col !== null && direction === 'down' && (
-          <div>
-            <span className="font-bold">Down:</span> {sampleConfig.columnClues[selected.col]}
-          </div>
-        )}
-      </div>
-      
       {/* Crossword grid */}
       <div className="grid grid-cols-5 gap-0 border-2 border-black mb-4">
         {userGrid.map((row, rowIndex) => (
@@ -328,6 +314,20 @@ const CrosswordPuzzle = () => {
         ))}
       </div>
       
+      {/* Clues display */}
+      <div className="mb-4 p-4 bg-gray-100 rounded w-full">
+        {selected.row !== null && direction === 'across' && (
+          <div className="mb-2">
+            <span className="font-bold">Across:</span> {sampleConfig.rowClues[selected.row]}
+          </div>
+        )}
+        {selected.col !== null && direction === 'down' && (
+          <div>
+            <span className="font-bold">Down:</span> {sampleConfig.columnClues[selected.col]}
+          </div>
+        )}
+      </div>
+
       {/* Check button */}
       <button 
         onClick={checkPuzzle}
