@@ -18,7 +18,7 @@ const CrosswordPuzzle = () => {
   // State for the user's input grid
   const [userGrid, setUserGrid] = useState<Grid>(createEmptyGrid());
   // Track selected cell
-  const [selected, setSelected] = useState<Selected>({ row: 0, col: 0 });
+  const [selected, setSelected] = useState<Selected>(null);
   // Status message
   const [message, setMessage] = useState('');
   // Track cell validation status
@@ -83,7 +83,14 @@ const CrosswordPuzzle = () => {
     const newGrid = getUpdatedGrid();
     resetCellStatus();
 
-    setSelected({ row: 0, col: 0 });
+    const firstCell = placeCursor(newGrid);
+    if (firstCell) {
+      setSelected(firstCell);
+      cellRefs.current[firstCell.row][firstCell.col]?.focus();
+    } else {
+      // We should never get here
+    }
+
     setDirection('across');
     checkComplete(newGrid, currentPuzzleId);
   }, [currentPuzzleId]);
@@ -128,6 +135,18 @@ const CrosswordPuzzle = () => {
       cellRef.focus();
     }
   };
+
+  const placeCursor = (grid: Grid) => {
+    // TODO: Not clear why the other methods are so complicated
+    for (let row = 0; row < 5; row++) {
+      for (let col = 0; col < 5; col++) {
+        if (grid[row][col] !== 'blank') {
+          return { row, col };
+        }
+      }
+    }
+    return null;
+  }
 
   const findNextEditableCell = (
     row: number,
