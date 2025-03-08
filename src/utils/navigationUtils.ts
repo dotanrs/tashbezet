@@ -80,8 +80,6 @@ export const findNextDefinition = (
     searchOptions.reverse();
   }
 
-  console.log('searchOptions', searchOptions);
-
   const currentOption = {
     col: currentDirection === 'across' ? 0 : currentCol,
     row: currentDirection === 'across' ? currentRow : 0,
@@ -90,10 +88,8 @@ export const findNextDefinition = (
   const currentOptionIndex = searchOptions.findIndex(option => option.row === currentOption.row && option.col === currentOption.col && option.direction === currentOption.direction);
 
   if (currentOptionIndex === -1) {
-    console.log('No current option found', currentOption);
   } else {
     for (let i = currentOptionIndex + 1; i < searchOptions.length; i++) {
-      console.log('currentOptionIndex', currentOptionIndex, i, searchOptions.length);
       const currentOption = searchOptions[i];
       const found = currentOption.direction === 'across'
         ? findCellInRow(grid, cellStatus, currentOption.row, currentOption.col, requireEmpty)
