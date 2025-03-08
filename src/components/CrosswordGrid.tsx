@@ -27,20 +27,27 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
       return 'bg-gray-800';
     }
 
-    if (cellStatus[row][col] !== null) {
-      if (cellStatus[row][col]) {
-        return 'bg-green-200';
+    // First check if it's completed
+    const isCompleted = cellStatus[row][col] === true;
+    
+    // Then check if it's selected or in the current word
+    const isInCurrentWord = selected && (
+      (direction === 'across' && selected.row === row) ||
+      (direction === 'down' && selected.col === col)
+    );
+
+    if (isCompleted) {
+      if (isSelected) {
+        return 'bg-[#c8e6c9]'; // Lighter green with a hint of yellow
+      } else if (isInCurrentWord) {
+        return 'bg-[#e8f5e9]'; // Very light green
       }
+      return 'bg-green-200';
     }
 
     if (isSelected) {
       return 'bg-blue-200';
-    } else if (
-      selected && (
-        (direction === 'across' && selected.row === row) ||
-        (direction === 'down' && selected.col === col)
-      )
-    ) {
+    } else if (isInCurrentWord) {
       return 'bg-blue-100';
     }
 
@@ -72,12 +79,11 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
                   onChange={onChange}
                   onKeyDown={onKeyDown}
                   className={`w-full h-full text-center text-xl outline-none bg-transparent font-rubik
-                    ${cellStatus[rowIndex][colIndex] === true ? 'cursor-not-allowed' : ''}
+                    ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default' : ''}
                     ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : ''}`}
                   maxLength={1}
                   dir="rtl"
                   lang="he"
-                  disabled={cellStatus[rowIndex][colIndex] === true}
                 />
               )}
             </div>
