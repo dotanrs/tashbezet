@@ -314,7 +314,7 @@ const CrosswordPuzzle = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto">
+    <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto" style={{ direction: 'rtl' }}>
       <h1 className="text-3xl mb-6">תשבצת</h1>
 
       {!gameStarted ? (
