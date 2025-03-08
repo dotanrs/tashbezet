@@ -136,8 +136,8 @@ const CrosswordPuzzle = () => {
   ): { row: number; col: number } | null => {
     let nextCell = findNextCell(userGrid, row, col, direction, forward);
 
-    // Keep looking for the next cell until we find an editable one or run out of cells
-    while (nextCell && (cellStatus[nextCell.row][nextCell.col] === true || userGrid[nextCell.row][nextCell.col] === 'blank')) {
+    // Only skip blank cells, allow navigation through completed cells
+    while (nextCell && userGrid[nextCell.row][nextCell.col] === 'blank') {
       nextCell = findNextCell(userGrid, nextCell.row, nextCell.col, direction, forward);
     }
 
@@ -219,41 +219,44 @@ const CrosswordPuzzle = () => {
       return;
     }
 
-    // Handle letter keys
-    if (e.key.length === 1 && /^[א-ת]$/.test(e.key)) {
-      e.preventDefault();
-      handleLetterInput(e.key);
-      return;
-    }
-
-    // Handle backspace
-    if (e.key === 'Backspace') {
-      e.preventDefault();
-
-      const newGrid = [...userGrid];
-      const newCellStatus = [...cellStatus];
-
-      if (userGrid[row][col] === '') {
-        // If current cell is empty, move to and clear previous cell
-        const prevCell = findNextCell(userGrid, row, col, direction, false);
-        if (prevCell) {
-          newGrid[prevCell.row][prevCell.col] = '';
-          newCellStatus[prevCell.row][prevCell.col] = null;
-          setSelected(prevCell);
-          cellRefs.current[prevCell.row][prevCell.col]?.focus();
-        }
-      } else {
-        // If current cell has content, just clear it
-        newGrid[row][col] = '';
-        newCellStatus[row][col] = null;
+    // Only handle letter input and backspace if the cell is not completed
+    if (!cellStatus[row][col]) {
+      // Handle letter keys
+      if (e.key.length === 1 && /^[א-ת]$/.test(e.key)) {
+        e.preventDefault();
+        handleLetterInput(e.key);
+        return;
       }
 
-      setUserGrid(newGrid);
-      setCellStatus(newCellStatus);
-      return;
+      // Handle backspace
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+
+        const newGrid = [...userGrid];
+        const newCellStatus = [...cellStatus];
+
+        if (userGrid[row][col] === '') {
+          // If current cell is empty, move to and clear previous cell
+          const prevCell = findNextCell(userGrid, row, col, direction, false);
+          if (prevCell && !cellStatus[prevCell.row][prevCell.col]) {
+            newGrid[prevCell.row][prevCell.col] = '';
+            newCellStatus[prevCell.row][prevCell.col] = null;
+            setSelected(prevCell);
+            cellRefs.current[prevCell.row][prevCell.col]?.focus();
+          }
+        } else {
+          // If current cell has content, just clear it
+          newGrid[row][col] = '';
+          newCellStatus[row][col] = null;
+        }
+
+        setUserGrid(newGrid);
+        setCellStatus(newCellStatus);
+        return;
+      }
     }
 
-    // Handle arrow keys
+    // Handle arrow keys - always allow navigation
     if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
       e.preventDefault();
       const { newDirection, newPosition } = handleArrowNavigation(e.key, direction, row, col, userGrid);
@@ -433,7 +436,7 @@ const CrosswordPuzzle = () => {
       {!gameStarted ? (
         <button
           onClick={handleStartGame}
-          className="px-6 py-3 bg-blue-500 text-white rounded-lg text-xl hover:bg-blue-600 transition-colors"
+          className="px-6 py-3 bg-[#4ECDC4] text-white rounded-lg text-xl hover:bg-blue-600 transition-colors"
           style={{ direction: 'rtl' }}
         >
           מתחילים?
@@ -485,7 +488,7 @@ const CrosswordPuzzle = () => {
                   disabled={!hasUntestedCells()}
                   className={`px-4 py-2 text-white rounded ${
                     hasUntestedCells() 
-                      ? 'bg-blue-500 hover:bg-blue-600' 
+                      ? 'bg-[#4ECDC4] hover:bg-blue-600' 
                       : 'bg-gray-400 cursor-not-allowed'
                   }`}
                 >
