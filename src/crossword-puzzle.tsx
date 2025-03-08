@@ -400,14 +400,38 @@ const CrosswordPuzzle = () => {
 
   return (
     <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto">
-      <h1 className="text-4xl mb-8 font-bold tracking-wider mt-8" style={{
-        background: 'linear-gradient(135deg, #4ECDC4 0%,rgb(56, 56, 56) 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
-        fontFamily: "'Rubik', sans-serif"
-      }}>
-        🖋️ תשבצת
+      <h1 className="mb-8 mt-8 flex items-center gap-3 select-none" style={{ direction: 'rtl' }}>
+        <div className="flex">
+          {Array.from("תשבצת").map((letter, index) => (
+            <div
+              key={index}
+              className="w-12 h-12 flex items-center justify-center text-2xl font-bold border-1 border-gray-300 border-left-0"
+              style={{
+                background: 'linear-gradient(135deg, #4ECDC4 0%, rgb(56, 56, 56) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontFamily: "'Rubik', sans-serif",
+                transform: 'perspective(300px) rotateX(10deg)',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              {letter}
+            </div>
+          ))}
+          <div
+              className="w-12 h-12 flex items-center justify-center text-2xl font-bold border-1 border-gray-300"
+              style={{
+                background: 'linear-gradient(135deg, #4ECDC4 0%, rgb(56, 56, 56) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontFamily: "'Rubik', sans-serif",
+                transform: 'perspective(300px) rotateX(10deg)',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              🖋️
+            </div>
+        </div>
       </h1>
 
       {!gameStarted ? (
