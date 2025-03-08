@@ -351,7 +351,7 @@ const CrosswordPuzzle = () => {
               />
 
               {/* Clues display */}
-              <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right">
+              <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right" style={{ direction: 'rtl' }}>
                 {selected && direction === 'across' && (
                   <div className="mb-2">
                     <span className="font-bold">מאוזן:</span> {currentConfig.rowClues[selected.row]}
