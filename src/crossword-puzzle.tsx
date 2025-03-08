@@ -400,7 +400,15 @@ const CrosswordPuzzle = () => {
 
   return (
     <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto">
-      <h1 className="text-3xl mb-6">תשבצת</h1>
+      <h1 className="text-4xl mb-8 font-bold tracking-wider mt-8" style={{
+        background: 'linear-gradient(135deg, #4ECDC4 0%,rgb(56, 56, 56) 100%)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
+        fontFamily: "'Rubik', sans-serif"
+      }}>
+        🖋️ תשבצת
+      </h1>
 
       {!gameStarted ? (
         <button
@@ -484,7 +492,7 @@ const CrosswordPuzzle = () => {
 
               {/* Status message */}
               {message && (
-                <div className="mt-4 p-2 rounded bg-green-100 text-green-800">
+                <div className="mt-4 p-2 rounded bg-green-100 text-green-800" style={{ direction: 'rtl' }}>
                   {message}
                 </div>
               )}
