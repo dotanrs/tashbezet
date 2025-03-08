@@ -152,7 +152,37 @@ const CrosswordPuzzle = () => {
     }
   };
 
-  // Handle keyboard navigation
+  // Shared function for handling letter input
+  const handleLetterInput = (letter: string) => {
+    if (!selected) return;
+    
+    const row = selected.row;
+    const col = selected.col;
+
+    // Don't handle input for blank or correct cells
+    if (userGrid[row][col] === 'blank' || cellStatus[row][col] === true) {
+      return;
+    }
+
+    // Validate Hebrew letter
+    if (/^[א-ת]$/.test(letter)) {
+      const newGrid = [...userGrid];
+      newGrid[row][col] = letter;
+      setUserGrid(newGrid);
+
+      // Clear validation state for this cell
+      const newCellStatus = [...cellStatus];
+      newCellStatus[row][col] = null;
+      setCellStatus(newCellStatus);
+
+      // Move to next cell and check completion
+      moveToNextCell(row, col);
+      if (currentPuzzleId) {
+        checkComplete(newGrid, currentPuzzleId, true);
+      }
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!selected) return;
 
@@ -169,29 +199,10 @@ const CrosswordPuzzle = () => {
       return;
     }
 
-    // Don't allow changes to correct cells
-    if (cellStatus[row][col] === true) {
-      e.preventDefault();
-      return;
-    }
-
-    // Handle letter keys - now checking for Hebrew letters
+    // Handle letter keys
     if (e.key.length === 1 && /^[א-ת]$/.test(e.key)) {
       e.preventDefault();
-      const value = e.key;  // No need for toUpperCase() as Hebrew doesn't have case
-      const newGrid = [...userGrid];
-      newGrid[row][col] = value;
-      setUserGrid(newGrid);
-
-      // Clear validation state for this cell
-      const newCellStatus = [...cellStatus];
-      newCellStatus[row][col] = null;
-      setCellStatus(newCellStatus);
-
-      moveToNextCell(row, col);
-      if (currentPuzzleId) {
-        checkComplete(newGrid, currentPuzzleId, true);
-      }
+      handleLetterInput(e.key);
       return;
     }
 
@@ -239,39 +250,12 @@ const CrosswordPuzzle = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!selected) return;
-
-    const row = selected.row;
-    const col = selected.col;
-    const value = e.target.value;
-
-    if (userGrid[row][col] === 'blank') return;
-
-    // Don't allow changes to correct cells
-    if (cellStatus[row][col] === true) {
-      return;
-    }
-
-    // Handle both new input and overwriting existing values
-    // On mobile, when overwriting, the value might include the previous character
-    const lastChar = value.slice(-1);
     
-    // Check if the last character is a Hebrew letter
-    if (/^[א-ת]$/.test(lastChar)) {
-      const newGrid = [...userGrid];
-      newGrid[row][col] = lastChar;
-      setUserGrid(newGrid);
-
-      // Clear validation state for this cell
-      const newCellStatus = [...cellStatus];
-      newCellStatus[row][col] = null;
-      setCellStatus(newCellStatus);
-
-      // Move to next cell after input (for both keyboard and mobile)
-      moveToNextCell(row, col);
-      if (currentPuzzleId) {
-        checkComplete(newGrid, currentPuzzleId, true);
-      }
-    }
+    const value = e.target.value;
+    // Always use the last character of the input value
+    // This handles both new input and overwriting on mobile
+    const lastChar = value.slice(-1);
+    handleLetterInput(lastChar);
   };
 
   // Track confetti state
