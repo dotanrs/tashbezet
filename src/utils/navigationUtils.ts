@@ -1,4 +1,4 @@
-import { Grid, Direction } from '../types/crossword';
+import { Grid, Direction, CellStatus, CellStatusGrid } from '../types/crossword';
 
 // Helper function to check if there are any empty cells in the grid
 const hasEmptyCells = (grid: Grid): boolean => {
@@ -13,10 +13,10 @@ const hasEmptyCells = (grid: Grid): boolean => {
 };
 
 // Helper function to find the next cell in a specific row
-const findCellInRow = (grid: Grid, row: number, startCol: number = 0, requireEmpty: boolean): { row: number, col: number } | null => {
+const findCellInRow = (grid: Grid, cellStatus: CellStatusGrid, row: number, startCol: number = 0, requireEmpty: boolean): { row: number, col: number } | null => {
   for (let col = startCol; col < 5; col++) {
     if (grid[row][col] !== 'blank') {
-      if (!requireEmpty || grid[row][col] === '') {
+      if (!requireEmpty || grid[row][col] === '' || cellStatus[row][col] === false) {
         return { col, row };
       }
     }
@@ -25,10 +25,10 @@ const findCellInRow = (grid: Grid, row: number, startCol: number = 0, requireEmp
 };
 
 // Helper function to find the next cell in a specific column
-const findCellInColumn = (grid: Grid, col: number, startRow: number = 0, requireEmpty: boolean): { row: number, col: number } | null => {
+const findCellInColumn = (grid: Grid, cellStatus: CellStatusGrid, col: number, startRow: number = 0, requireEmpty: boolean): { row: number, col: number } | null => {
   for (let row = startRow; row < 5; row++) {
     if (grid[row][col] !== 'blank') {
-      if (!requireEmpty || grid[row][col] === '') {
+      if (!requireEmpty || grid[row][col] === '' || cellStatus[row][col] === false) {
         return { col, row };
       }
     }
@@ -60,6 +60,7 @@ export const findNextCell = (
 
 export const findNextDefinition = (
   grid: Grid,
+  cellStatus: CellStatusGrid,
   currentRow: number,
   currentCol: number,
   currentDirection: Direction,
@@ -95,8 +96,8 @@ export const findNextDefinition = (
       console.log('currentOptionIndex', currentOptionIndex, i, searchOptions.length);
       const currentOption = searchOptions[i];
       const found = currentOption.direction === 'across'
-        ? findCellInRow(grid, currentOption.row, currentOption.col, requireEmpty)
-        : findCellInColumn(grid, currentOption.col, currentOption.row, requireEmpty);
+        ? findCellInRow(grid, cellStatus, currentOption.row, currentOption.col, requireEmpty)
+        : findCellInColumn(grid, cellStatus, currentOption.col, currentOption.row, requireEmpty);
       if (found !== null) {
         return { row: found.row, col: found.col, newDirection: currentOption.direction as Direction };
       }
@@ -105,8 +106,8 @@ export const findNextDefinition = (
     for (let i = 0; i < currentOptionIndex; i++) {
       const currentOption = searchOptions[i];
       const found = currentOption.direction === 'across'
-        ? findCellInRow(grid, currentOption.row, currentOption.col, requireEmpty)
-        : findCellInColumn(grid, currentOption.col, currentOption.row, requireEmpty);
+        ? findCellInRow(grid, cellStatus, currentOption.row, currentOption.col, requireEmpty)
+        : findCellInColumn(grid, cellStatus, currentOption.col, currentOption.row, requireEmpty);
       if (found !== null) {
         return { row: found.row, col: found.col, newDirection: currentOption.direction as Direction };
       }
