@@ -400,37 +400,33 @@ const CrosswordPuzzle = () => {
 
   return (
     <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto">
-      <h1 className="mb-8 mt-8 flex items-center gap-3 select-none" style={{ direction: 'rtl' }}>
-        <div className="flex">
-          {Array.from("תשבצת").map((letter, index) => (
-            <div
-              key={index}
-              className="w-12 h-12 flex items-center justify-center text-2xl font-bold border-1 border-gray-300 border-left-0"
-              style={{
-                background: 'linear-gradient(135deg, #4ECDC4 0%, rgb(56, 56, 56) 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                fontFamily: "'Rubik', sans-serif",
-                transform: 'perspective(300px) rotateX(10deg)',
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              }}
-            >
-              {letter}
-            </div>
-          ))}
-          <div
-              className="w-12 h-12 flex items-center justify-center text-2xl font-bold border-1 border-gray-300"
-              style={{
-                background: 'linear-gradient(135deg, #4ECDC4 0%, rgb(56, 56, 56) 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                fontFamily: "'Rubik', sans-serif",
-                transform: 'perspective(300px) rotateX(10deg)',
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              }}
-            >
-              🖋️
-            </div>
+      <h1 className="mb-8 mt-8 select-none" style={{ direction: 'rtl' }}>
+        <div className="relative">
+          <div className="absolute left-[-20px] top-[-20px]  w-12 h-12 flex items-center justify-center text-4xl opacity-20">
+            🖋️
+          </div>
+          <div className="grid grid-flow-col gap-[1px] bg-gray-300 p-[1px] rounded">
+            {Array.from("תשבצת").map((letter, index) => (
+              <div
+                key={index}
+                className="w-12 h-12 flex items-center justify-center text-2xl font-bold bg-white"
+                style={{
+                  background: 'white',
+                  fontFamily: "'Rubik', sans-serif",
+                }}
+              >
+                <span style={{
+                  background: 'linear-gradient(135deg, #4ECDC4 0%, rgb(56, 56, 56) 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  position: 'relative',
+                  zIndex: 1
+                }}>
+                  {letter}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </h1>
 
