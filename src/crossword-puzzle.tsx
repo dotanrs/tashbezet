@@ -190,7 +190,7 @@ const CrosswordPuzzle = () => {
 
       moveToNextCell(row, col);
       if (currentPuzzleId) {
-        checkComplete(newGrid, currentPuzzleId);
+        checkComplete(newGrid, currentPuzzleId, true);
       }
       return;
     }
@@ -263,7 +263,7 @@ const CrosswordPuzzle = () => {
         // Move to next cell after input (for both keyboard and mobile)
         moveToNextCell(row, col);
         if (currentPuzzleId) {
-          checkComplete(newGrid, currentPuzzleId);
+          checkComplete(newGrid, currentPuzzleId, true);
         }
       }
     }
@@ -293,12 +293,14 @@ const CrosswordPuzzle = () => {
     setCellStatus(createEmptyCellStatus());
   };
 
-  const checkComplete = (grid: Grid, puzzleId: PuzzleId) => {  
+  const checkComplete = (grid: Grid, puzzleId: PuzzleId, allowConfetti: boolean = false) => {  
     const result = checkPuzzle(grid, currentConfig);
     if (result.isCorrect) {
       setCellStatus(result.newCellStatus);
       setMessage('כל הכבוד, פתרת את התשבץ!');
-      setShowConfetti(true);
+      if (allowConfetti) {
+        setShowConfetti(true);
+      }
     }
     savePuzzleState(puzzleId, {
       userGrid: grid,
@@ -323,7 +325,7 @@ const CrosswordPuzzle = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto" style={{ direction: 'rtl' }}>
+    <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto">
       <h1 className="text-3xl mb-6">תשבצת</h1>
 
       {!gameStarted ? (
