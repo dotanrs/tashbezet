@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Grid, Selected, CellStatusGrid, Direction, CrosswordConfig, SavedPuzzleState } from './types/crossword';
 import { findNextCell, findNextDefinition, handleArrowNavigation } from './utils/navigationUtils';
 import { clearPuzzleState, loadPuzzleState, savePuzzleState } from './utils/storageUtils';
-import { createEmptyGrid, createEmptyCellStatus, checkPuzzle, revealPuzzle } from './utils/puzzleUtils';
+import { createEmptyGrid, createEmptyCellStatus, checkPuzzle } from './utils/puzzleUtils';
 import ReactConfetti from 'react-confetti';
 import { puzzles, PuzzleId } from './crosswords';
 import PreviousPuzzles from './components/PreviousPuzzles';
@@ -68,6 +68,7 @@ const CrosswordPuzzle = () => {
         setCurrentConfig(puzzles[savedState.puzzleId]);
         const newGrid = mergeStateWithPuzzle(currentPuzzleId, savedState);
         setUserGrid(newGrid);
+        setCellStatus(savedState.cellStatus);
         return newGrid;
       } else {
         const initialGrid = puzzles[currentPuzzleId].grid.map(row => 
@@ -78,12 +79,12 @@ const CrosswordPuzzle = () => {
         return initialGrid;
       }
     }
+    resetCellStatus();
+    setMessage('');
     const newGrid = getUpdatedGrid();
 
     setSelected({ row: 0, col: 0 });
     setDirection('across');
-    setMessage('');
-    resetCellStatus();
     checkComplete(newGrid, currentPuzzleId);
   }, [currentPuzzleId]);
 
@@ -321,7 +322,7 @@ const CrosswordPuzzle = () => {
     }
     savePuzzleState(puzzleId, {
       userGrid: grid,
-      cellStatus: result.newCellStatus,
+      cellStatus: cellStatus,
       isComplete: result.isCorrect,
       puzzleId,
     });
