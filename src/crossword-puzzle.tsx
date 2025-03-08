@@ -137,11 +137,24 @@ const CrosswordPuzzle = () => {
     let nextCell = findNextCell(userGrid, row, col, direction, forward);
 
     // Keep looking for the next cell until we find an editable one or run out of cells
-    while (nextCell && cellStatus[nextCell.row][nextCell.col] === true) {
+    while (nextCell && (cellStatus[nextCell.row][nextCell.col] === true || userGrid[nextCell.row][nextCell.col] === 'blank')) {
       nextCell = findNextCell(userGrid, nextCell.row, nextCell.col, direction, forward);
     }
 
     return nextCell;
+  };
+
+  const hasEditableCells = (): boolean => {
+    if (!currentConfig) return false;
+    
+    for (let row = 0; row < 5; row++) {
+      for (let col = 0; col < 5; col++) {
+        if (currentConfig.grid[row][col] !== 'blank' && cellStatus[row][col] !== true) {
+          return true;
+        }
+      }
+    }
+    return false;
   };
 
   const moveToNextCell = (row: number, col: number) => {
@@ -149,7 +162,14 @@ const CrosswordPuzzle = () => {
     if (nextCell) {
       setSelected(nextCell);
       cellRefs.current[nextCell.row][nextCell.col]?.focus();
+    } else if (hasEditableCells()) {
+      // Only try to find next definition if there are still editable cells somewhere
+      const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(userGrid, row, col, direction, false);
+      setSelected({ row: nextRow, col: nextCol });
+      setDirection(newDirection);
+      cellRefs.current[nextRow][nextCol]?.focus();
     }
+    // If no editable cells left, do nothing
   };
 
   // Shared function for handling letter input
