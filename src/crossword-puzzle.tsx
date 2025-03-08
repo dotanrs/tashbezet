@@ -192,6 +192,16 @@ const CrosswordPuzzle = () => {
     // If no editable cells left, do nothing
   };
 
+  const normalizeLetter = (letter: string) => {
+    if (letter == 'ם') return 'מ';
+    if (letter == 'ץ') return 'צ';
+    if (letter == 'ן') return 'נ';
+    if (letter == 'ף') return 'פ';
+    if (letter == 'ך') return 'כ';
+    
+    return letter;
+  }
+
   // Shared function for handling letter input
   const handleLetterInput = (letter: string) => {
     if (!selected) return;
@@ -207,7 +217,7 @@ const CrosswordPuzzle = () => {
     // Validate Hebrew letter
     if (/^[א-ת]$/.test(letter)) {
       const newGrid = [...userGrid];
-      newGrid[row][col] = letter;
+      newGrid[row][col] = normalizeLetter(letter);
       setUserGrid(newGrid);
 
       // Clear validation state for this cell
@@ -334,7 +344,7 @@ const CrosswordPuzzle = () => {
     const result = checkPuzzle(grid, currentConfig);
     if (result.isCorrect) {
       setCellStatus(result.newCellStatus);
-      setMessage('כל הכבוד, פתרת את התשבץ!');
+      setMessage('כל הכבוד!');
       if (allowConfetti) {
         setShowConfetti(true);
       }
@@ -430,7 +440,7 @@ const CrosswordPuzzle = () => {
     <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto">
       <h1 className="mb-8 mt-8 select-none" style={{ direction: 'rtl' }}>
         <div className="relative">
-          <div className="absolute left-[-20px] top-[-20px]  w-12 h-12 flex items-center justify-center text-4xl opacity-20">
+          <div className="absolute left-[-20px] top-[-20px] w-12 h-12 flex items-center justify-center text-4xl opacity-20">
             🖋️
           </div>
           <div className="grid grid-flow-col gap-[1px] bg-gray-300 p-[1px] rounded">
@@ -464,7 +474,7 @@ const CrosswordPuzzle = () => {
           className="px-6 py-3 bg-[#4ECDC4] text-white rounded-lg text-xl hover:bg-blue-600 transition-colors"
           style={{ direction: 'rtl' }}
         >
-          מתחילים?
+          מוכנים לתשבץ?
         </button>
       ) : (
         <>
@@ -491,6 +501,13 @@ const CrosswordPuzzle = () => {
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
               />
+
+              {/* Status message */}
+              {message && (
+                <div className="mt-4 mb-6 p-2 rounded bg-green-100 text-green-800" style={{ direction: 'rtl' }}>
+                  {message}
+                </div>
+              )}
 
               {/* Clues display */}
               <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right flex" style={{ direction: 'rtl' }}>
@@ -547,13 +564,6 @@ const CrosswordPuzzle = () => {
                   איפוס
                 </button>
               </div>
-
-              {/* Status message */}
-              {message && (
-                <div className="mt-4 p-2 rounded bg-green-100 text-green-800" style={{ direction: 'rtl' }}>
-                  {message}
-                </div>
-              )}
 
               <PreviousPuzzles
                 currentPuzzleId={currentPuzzleId}
