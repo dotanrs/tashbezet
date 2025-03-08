@@ -330,8 +330,9 @@ const CrosswordPuzzle = () => {
         <button
           onClick={handleStartGame}
           className="px-6 py-3 bg-blue-500 text-white rounded-lg text-xl hover:bg-blue-600 transition-colors"
+          style={{ direction: 'rtl' }}
         >
-          מוכנים להתחיל?
+          מתחילים?
         </button>
       ) : (
         <>
