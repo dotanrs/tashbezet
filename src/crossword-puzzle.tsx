@@ -137,7 +137,7 @@ const CrosswordPuzzle = () => {
     let nextCell = findNextCell(userGrid, row, col, direction, forward);
 
     // Only skip blank cells, allow navigation through completed cells
-    while (nextCell && userGrid[nextCell.row][nextCell.col] === 'blank') {
+    while (nextCell && (userGrid[nextCell.row][nextCell.col] === 'blank' || cellStatus[nextCell.row][nextCell.col] === true)) {
       nextCell = findNextCell(userGrid, nextCell.row, nextCell.col, direction, forward);
     }
 
