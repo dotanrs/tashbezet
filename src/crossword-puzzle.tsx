@@ -304,13 +304,75 @@ const CrosswordPuzzle = () => {
     setCellStatus(result.newCellStatus);
   };
 
-  // Add reveal functionality
-  const handleReveal = () => {
+  const hasAvailableHints = (): boolean => {
+    if (!currentConfig) return false;
+    
+    // Check if there are any unsolved cells
+    for (let row = 0; row < 5; row++) {
+      for (let col = 0; col < 5; col++) {
+        if (currentConfig.grid[row][col] !== 'blank' && 
+            cellStatus[row][col] !== true && 
+            userGrid[row][col] !== currentConfig.grid[row][col]) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  const hasUntestedCells = (): boolean => {
+    if (!currentConfig) return false;
+    
+    for (let row = 0; row < 5; row++) {
+      for (let col = 0; col < 5; col++) {
+        // If the cell is not blank and has content but hasn't been validated yet
+        if (currentConfig.grid[row][col] !== 'blank' && 
+            userGrid[row][col] !== '' && 
+            cellStatus[row][col] === null) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  // Replace reveal functionality with hint
+  const handleHint = () => {
     if (!currentConfig) return;
     
-    const { newGrid, newCellStatus } = revealPuzzle(userGrid, cellStatus, currentConfig);
+    // Get all unsolved cells (not blank, not correct)
+    const unsolvedCells: Array<{ row: number; col: number }> = [];
+    for (let row = 0; row < 5; row++) {
+      for (let col = 0; col < 5; col++) {
+        if (currentConfig.grid[row][col] !== 'blank' && 
+            cellStatus[row][col] !== true && 
+            userGrid[row][col] !== currentConfig.grid[row][col]) {
+          unsolvedCells.push({ row, col });
+        }
+      }
+    }
+
+    // If no unsolved cells, return
+    if (unsolvedCells.length === 0) return;
+
+    // Pick a random unsolved cell
+    const randomIndex = Math.floor(Math.random() * unsolvedCells.length);
+    const { row, col } = unsolvedCells[randomIndex];
+
+    // Update the grid and cell status
+    const newGrid = [...userGrid];
+    const newCellStatus = [...cellStatus];
+    
+    newGrid[row][col] = currentConfig.grid[row][col];
+    newCellStatus[row][col] = true;
+
     setUserGrid(newGrid);
     setCellStatus(newCellStatus);
+
+    // Check if puzzle is complete after hint
+    if (currentPuzzleId) {
+      checkComplete(newGrid, currentPuzzleId, true);
+    }
   };
 
   return (
@@ -369,15 +431,25 @@ const CrosswordPuzzle = () => {
               <div className="flex gap-2">
                 <button
                   onClick={markPuzzle}
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  disabled={!hasUntestedCells()}
+                  className={`px-4 py-2 text-white rounded ${
+                    hasUntestedCells() 
+                      ? 'bg-blue-500 hover:bg-blue-600' 
+                      : 'bg-gray-400 cursor-not-allowed'
+                  }`}
                 >
                   בדיקה
                 </button>
                 <button
-                  onClick={handleReveal}
-                  className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                  onClick={handleHint}
+                  disabled={!hasAvailableHints()}
+                  className={`px-4 py-2 text-white rounded ${
+                    hasAvailableHints() 
+                      ? 'bg-yellow-500 hover:bg-yellow-600' 
+                      : 'bg-gray-400 cursor-not-allowed'
+                  }`}
                 >
-                  גילוי
+                  רמז
                 </button>
                 <button
                   onClick={handlePuzzleReset}
