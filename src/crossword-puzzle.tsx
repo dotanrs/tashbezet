@@ -137,7 +137,7 @@ const CrosswordPuzzle = () => {
     let nextCell = findNextCell(userGrid, row, col, direction, forward);
 
     // Only skip blank cells, allow navigation through completed cells
-    while (nextCell && userGrid[nextCell.row][nextCell.col] === 'blank') {
+    while (nextCell && (userGrid[nextCell.row][nextCell.col] === 'blank' || cellStatus[nextCell.row][nextCell.col] === true)) {
       nextCell = findNextCell(userGrid, nextCell.row, nextCell.col, direction, forward);
     }
 
@@ -164,7 +164,7 @@ const CrosswordPuzzle = () => {
       cellRefs.current[nextCell.row][nextCell.col]?.focus();
     } else if (hasEditableCells()) {
       // Only try to find next definition if there are still editable cells somewhere
-      const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(userGrid, row, col, direction, false);
+      const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(userGrid, cellStatus, row, col, direction, false);
       setSelected({ row: nextRow, col: nextCol });
       setDirection(newDirection);
       cellRefs.current[nextRow][nextCol]?.focus();
@@ -205,7 +205,7 @@ const CrosswordPuzzle = () => {
 
   const moveToNextDefinition = (forward: boolean) => {
     if (!selected) return;
-    const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(userGrid, selected.row, selected.col, direction, forward);
+    const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(userGrid, cellStatus, selected.row, selected.col, direction, forward);
     setSelected({ row: nextRow, col: nextCol });
     setDirection(newDirection);
     cellRefs.current[nextRow][nextCol]?.focus();

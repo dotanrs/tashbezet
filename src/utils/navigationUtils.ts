@@ -1,4 +1,4 @@
-import { Grid, Direction } from '../types/crossword';
+import { Grid, Direction, CellStatus, CellStatusGrid } from '../types/crossword';
 
 // Helper function to check if there are any empty cells in the grid
 const hasEmptyCells = (grid: Grid): boolean => {
@@ -13,11 +13,11 @@ const hasEmptyCells = (grid: Grid): boolean => {
 };
 
 // Helper function to find the next cell in a specific row
-const findCellInRow = (grid: Grid, row: number, startCol: number = 0, requireEmpty: boolean): number | null => {
+const findCellInRow = (grid: Grid, cellStatus: CellStatusGrid, row: number, startCol: number = 0, requireEmpty: boolean): { row: number, col: number } | null => {
   for (let col = startCol; col < 5; col++) {
     if (grid[row][col] !== 'blank') {
-      if (!requireEmpty || grid[row][col] === '') {
-        return col;
+      if (!requireEmpty || grid[row][col] === '' || cellStatus[row][col] === false) {
+        return { col, row };
       }
     }
   }
@@ -25,38 +25,17 @@ const findCellInRow = (grid: Grid, row: number, startCol: number = 0, requireEmp
 };
 
 // Helper function to find the next cell in a specific column
-const findCellInColumn = (grid: Grid, col: number, startRow: number = 0, requireEmpty: boolean): number | null => {
+const findCellInColumn = (grid: Grid, cellStatus: CellStatusGrid, col: number, startRow: number = 0, requireEmpty: boolean): { row: number, col: number } | null => {
   for (let row = startRow; row < 5; row++) {
     if (grid[row][col] !== 'blank') {
-      if (!requireEmpty || grid[row][col] === '') {
-        return row;
+      if (!requireEmpty || grid[row][col] === '' || cellStatus[row][col] === false) {
+        return { col, row };
       }
     }
   }
   return null;
 };
 
-// Find the first cell in any row after the given row
-const findFirstInRows = (grid: Grid, afterRow: number = -1, requireEmpty: boolean): { row: number, col: number } | null => {
-  for (let row = afterRow + 1; row < 5; row++) {
-    const col = findCellInRow(grid, row, 0, requireEmpty);
-    if (col !== null) {
-      return { row, col };
-    }
-  }
-  return null;
-};
-
-// Find the first cell in any column after the given column
-const findFirstInColumns = (grid: Grid, afterCol: number = -1, requireEmpty: boolean): { row: number, col: number } | null => {
-  for (let col = afterCol + 1; col < 5; col++) {
-    const row = findCellInColumn(grid, col, 0, requireEmpty);
-    if (row !== null) {
-      return { row, col };
-    }
-  }
-  return null;
-};
 
 export const findNextCell = (
   grid: Grid,
@@ -81,6 +60,7 @@ export const findNextCell = (
 
 export const findNextDefinition = (
   grid: Grid,
+  cellStatus: CellStatusGrid,
   currentRow: number,
   currentCol: number,
   currentDirection: Direction,
@@ -89,81 +69,54 @@ export const findNextDefinition = (
   // Check if we should look for empty cells or any non-blank cells
   const requireEmpty = hasEmptyCells(grid);
 
-  // First try to find next cell in current direction
-  if (currentDirection === 'across') {
-    // Try next row
-    const targetRow = currentRow + (forward ? -1 : 1);
-    if (targetRow >= 0 && targetRow < 5) {
-      const foundCol = findCellInRow(grid, targetRow, 0, requireEmpty);
-      if (foundCol !== null) {
-        return { row: targetRow, col: foundCol, newDirection: 'across' };
-      }
-    }
-    
-    // If no cells in next row, switch to columns
-    const startCol = forward ? 4 : 0;
-    const foundRow = findCellInColumn(grid, startCol, 0, requireEmpty);
-    if (foundRow !== null) {
-      return { row: foundRow, col: startCol, newDirection: 'down' };
-    }
+  const searchOptions = []
+  for (let i = 0; i < 5; i++) {
+    searchOptions.push({ row: i, col: 0, direction: 'across' });
+  }
+  for (let i = 0; i < 5; i++) {
+    searchOptions.push({ row: 0, col: i, direction:'down' });
+  }
+  if (forward) {
+    searchOptions.reverse();
+  }
+
+  console.log('searchOptions', searchOptions);
+
+  const currentOption = {
+    col: currentDirection === 'across' ? 0 : currentCol,
+    row: currentDirection === 'across' ? currentRow : 0,
+    direction: currentDirection,
+  }
+  const currentOptionIndex = searchOptions.findIndex(option => option.row === currentOption.row && option.col === currentOption.col && option.direction === currentOption.direction);
+
+  if (currentOptionIndex === -1) {
+    console.log('No current option found', currentOption);
   } else {
-    // Try next column
-    const targetCol = currentCol + (forward ? -1 : 1);
-    if (targetCol >= 0 && targetCol < 5) {
-      const foundRow = findCellInColumn(grid, targetCol, 0, requireEmpty);
-      if (foundRow !== null) {
-        return { row: foundRow, col: targetCol, newDirection: 'down' };
+    for (let i = currentOptionIndex + 1; i < searchOptions.length; i++) {
+      console.log('currentOptionIndex', currentOptionIndex, i, searchOptions.length);
+      const currentOption = searchOptions[i];
+      const found = currentOption.direction === 'across'
+        ? findCellInRow(grid, cellStatus, currentOption.row, currentOption.col, requireEmpty)
+        : findCellInColumn(grid, cellStatus, currentOption.col, currentOption.row, requireEmpty);
+      if (found !== null) {
+        return { row: found.row, col: found.col, newDirection: currentOption.direction as Direction };
       }
     }
-    
-    // If no cells in next column, switch to rows
-    const startRow = forward ? 4 : 0;
-    const foundCol = findCellInRow(grid, startRow, 0, requireEmpty);
-    if (foundCol !== null) {
-      return { row: startRow, col: foundCol, newDirection: 'across' };
+
+    for (let i = 0; i < currentOptionIndex; i++) {
+      const currentOption = searchOptions[i];
+      const found = currentOption.direction === 'across'
+        ? findCellInRow(grid, cellStatus, currentOption.row, currentOption.col, requireEmpty)
+        : findCellInColumn(grid, cellStatus, currentOption.col, currentOption.row, requireEmpty);
+      if (found !== null) {
+        return { row: found.row, col: found.col, newDirection: currentOption.direction as Direction };
+      }
     }
   }
 
-  // If no cells found in preferred direction, search all remaining cells
-  let result = null;
-  if (currentDirection === 'across') {
-    // Search remaining rows first
-    result = findFirstInRows(grid, currentRow, requireEmpty);
-    if (!result) {
-      // Then try all columns
-      result = findFirstInColumns(grid, -1, requireEmpty);
-      if (result) {
-        return { ...result, newDirection: 'down' };
-      }
-    } else {
-      return { ...result, newDirection: 'across' };
-    }
-  } else {
-    // Search remaining columns first
-    result = findFirstInColumns(grid, currentCol, requireEmpty);
-    if (!result) {
-      // Then try all rows
-      result = findFirstInRows(grid, -1, requireEmpty);
-      if (result) {
-        return { ...result, newDirection: 'across' };
-      }
-    } else {
-      return { ...result, newDirection: 'down' };
-    }
-  }
-
-  // If no cells found with current requirement, and we were looking for empty cells,
-  // try again without requiring empty cells
-  if (requireEmpty) {
-    return findNextDefinition(grid, currentRow, currentCol, currentDirection, forward);
-  }
-
-  // If no cells found anywhere, return to start
-  const firstCol = findCellInRow(grid, 0, 0, false);
-  if (firstCol !== null) {
-    return { row: 0, col: firstCol, newDirection: 'across' };
-  }
-  return { row: 0, col: 0, newDirection: 'across' };  // Fallback if grid is all blank
+  // No definitions found, move to the next definition
+  const nextDefinition = searchOptions[(currentOptionIndex + 1) % searchOptions.length];
+  return { row: nextDefinition.row, col: nextDefinition.col, newDirection: nextDefinition.direction as Direction };
 };
 
 export const handleArrowNavigation = (
