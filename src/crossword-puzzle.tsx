@@ -302,6 +302,9 @@ const CrosswordPuzzle = () => {
   const markPuzzle = () => {
     const result = checkPuzzle(userGrid, currentConfig);
     setCellStatus(result.newCellStatus);
+    if (currentPuzzleId) {
+      checkComplete(userGrid, currentPuzzleId, true);
+    }
   };
 
   const hasAvailableHints = (): boolean => {
