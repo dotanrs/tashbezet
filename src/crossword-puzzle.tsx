@@ -203,6 +203,14 @@ const CrosswordPuzzle = () => {
     }
   };
 
+  const moveToNextDefinition = (forward: boolean) => {
+    if (!selected) return;
+    const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(userGrid, selected.row, selected.col, direction, forward);
+    setSelected({ row: nextRow, col: nextCol });
+    setDirection(newDirection);
+    cellRefs.current[nextRow][nextCol]?.focus();
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!selected) return;
 
@@ -212,10 +220,7 @@ const CrosswordPuzzle = () => {
     // Handle tab key
     if (e.key === 'Tab') {
       e.preventDefault(); // Prevent losing focus
-      const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(userGrid, row, col, direction, e.shiftKey);
-      setSelected({ row: nextRow, col: nextCol });
-      setDirection(newDirection);
-      cellRefs.current[nextRow][nextCol]?.focus();
+      moveToNextDefinition(e.shiftKey);
       return;
     }
 
@@ -468,7 +473,12 @@ const CrosswordPuzzle = () => {
               />
 
               {/* Clues display */}
-              <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right">
+              <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right flex" style={{ direction: 'rtl' }}>
+              <div className="flex-none gap-20  cursor-pointer"
+              onClick={() => moveToNextDefinition(true)}>
+              {"▶️"}
+              </div>
+                <div className="flex-1 gap-2 px-3">
                 {selected && direction === 'across' && (
                   <div className="mb-2">
                     <span className="font-bold">מאוזן:</span> {currentConfig.rowClues[selected.row]}
@@ -479,6 +489,11 @@ const CrosswordPuzzle = () => {
                     <span className="font-bold">מאונך:</span> {currentConfig.columnClues[selected.col]}
                   </div>
                 )}
+                </div>
+                <div className="flex-none gap-20 cursor-pointer"
+                onClick={() => moveToNextDefinition(false)}>
+                 {"◀️"}
+              </div>
               </div>
 
               {/* Buttons section */}
