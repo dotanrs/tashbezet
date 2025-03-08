@@ -79,9 +79,9 @@ const CrosswordPuzzle = () => {
         return initialGrid;
       }
     }
-    resetCellStatus();
     setMessage('');
     const newGrid = getUpdatedGrid();
+    resetCellStatus();
 
     setSelected({ row: 0, col: 0 });
     setDirection('across');
