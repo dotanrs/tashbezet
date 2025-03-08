@@ -246,25 +246,30 @@ const CrosswordPuzzle = () => {
 
     if (userGrid[row][col] === 'blank') return;
 
-    // Only handle actual input changes, not backspace
-    // (backspace is handled in handleKeyDown)
-    if (value !== '') {
-      // Check if the input is a Hebrew letter
-      if (/^[א-ת]$/.test(value)) {
-        const newGrid = [...userGrid];
-        newGrid[row][col] = value;
-        setUserGrid(newGrid);
+    // Don't allow changes to correct cells
+    if (cellStatus[row][col] === true) {
+      return;
+    }
 
-        // Clear validation state for this cell
-        const newCellStatus = [...cellStatus];
-        newCellStatus[row][col] = null;
-        setCellStatus(newCellStatus);
+    // Handle both new input and overwriting existing values
+    // On mobile, when overwriting, the value might include the previous character
+    const lastChar = value.slice(-1);
+    
+    // Check if the last character is a Hebrew letter
+    if (/^[א-ת]$/.test(lastChar)) {
+      const newGrid = [...userGrid];
+      newGrid[row][col] = lastChar;
+      setUserGrid(newGrid);
 
-        // Move to next cell after input (for both keyboard and mobile)
-        moveToNextCell(row, col);
-        if (currentPuzzleId) {
-          checkComplete(newGrid, currentPuzzleId, true);
-        }
+      // Clear validation state for this cell
+      const newCellStatus = [...cellStatus];
+      newCellStatus[row][col] = null;
+      setCellStatus(newCellStatus);
+
+      // Move to next cell after input (for both keyboard and mobile)
+      moveToNextCell(row, col);
+      if (currentPuzzleId) {
+        checkComplete(newGrid, currentPuzzleId, true);
       }
     }
   };
