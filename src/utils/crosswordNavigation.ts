@@ -1,6 +1,6 @@
 import { Grid, Direction } from '../types/crossword';
 
-export const findNextCell = (
+export const findNextDirectCell = (
   grid: Grid,
   row: number,
   col: number,
@@ -42,7 +42,7 @@ export const handleArrowNavigation = (
 
   // Move in the current direction
   const forward = ['ArrowLeft', 'ArrowDown'].includes(key);
-  const nextCell = findNextCell(grid, row, col, currentDirection, forward);
+  const nextCell = findNextDirectCell(grid, row, col, currentDirection, forward);
   
   return nextCell ? { newPosition: nextCell } : {};
 }; 

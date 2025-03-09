@@ -7,6 +7,7 @@ import ReactConfetti from 'react-confetti';
 import { puzzles, PuzzleId } from './crosswords';
 import PreviousPuzzles from './components/PreviousPuzzles';
 import CrosswordGrid from './components/CrosswordGrid';
+import { findNextDirectCell } from './utils/crosswordNavigation';
 
 const CrosswordPuzzle = () => {
   // Add new state for game started
@@ -44,7 +45,6 @@ const CrosswordPuzzle = () => {
         row.map((cell, colIndex) => {
           if (cell === 'blank') return 'blank';
           if (savedState.userGrid[rowIndex][colIndex] === 'blank') {
-            console.log(`Invalid puzzle state: {savedState}`);
             throw new Error('Invalid puzzle state');
           };
           return savedState.userGrid[rowIndex][colIndex] || '';
@@ -154,11 +154,19 @@ const CrosswordPuzzle = () => {
     direction: Direction,
     forward: boolean = false
   ): { row: number; col: number } | null => {
-    let nextCell = findNextCell(userGrid, row, col, direction, forward);
+    if (!hasEditableCells()) {
+      return null;
+    }
+
+    let nextCell = findNextDirectCell(userGrid, row, col, direction, forward);
 
     // Only skip blank cells, allow navigation through completed cells
-    while (nextCell && (userGrid[nextCell.row][nextCell.col] === 'blank' || cellStatus[nextCell.row][nextCell.col] === true)) {
-      nextCell = findNextCell(userGrid, nextCell.row, nextCell.col, direction, forward);
+    while (nextCell && (
+      userGrid[nextCell.row][nextCell.col] === 'blank' ||
+      cellStatus[nextCell.row][nextCell.col] === true ||
+      (userGrid[nextCell.row][nextCell.col] !== '' && cellStatus[nextCell.row][nextCell.col] !== false)
+    )) {
+      nextCell = findNextDirectCell(userGrid, nextCell.row, nextCell.col, direction, forward);
     }
 
     return nextCell;
@@ -474,7 +482,7 @@ const CrosswordPuzzle = () => {
           className="px-6 py-3 bg-[#4ECDC4] text-white rounded-lg text-xl hover:bg-blue-600 transition-colors"
           style={{ direction: 'rtl' }}
         >
-          מוכנים לתשבץ?
+          מוכנים לתשבצ?
         </button>
       ) : (
         <>
