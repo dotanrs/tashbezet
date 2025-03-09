@@ -318,10 +318,15 @@ const CrosswordPuzzle = () => {
     if (!selected) return;
     
     const value = e.target.value;
-    // Always use the last character of the input value
-    // This handles both new input and overwriting on mobile
-    const lastChar = value.slice(-1);
-    handleLetterInput(lastChar);
+    // On mobile, the value might contain multiple characters
+    // We want to process each new character
+    for (const char of value) {
+      if (/^[א-ת]$/.test(char)) {
+        handleLetterInput(char);
+        // Only process the first valid character
+        break;
+      }
+    }
   };
 
   // Track confetti state
