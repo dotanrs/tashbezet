@@ -42,7 +42,7 @@ export const findNextCell = (
   row: number,
   col: number,
   direction: Direction,
-  forward: boolean
+  forward: boolean,
 ): { row: number; col: number } | null => {
   if (direction === 'across') {
     const nextCol = forward ? col + 1 : col - 1;
