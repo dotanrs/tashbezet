@@ -522,10 +522,10 @@ const CrosswordPuzzle = () => {
 
               {/* Clues display */}
               <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right flex" style={{ direction: 'rtl' }}>
-              <div className="flex-none gap-20  cursor-pointer"
-              onClick={() => moveToNextDefinition(true)}>
-              {"▶️"}
-              </div>
+                <div className="flex-none gap-20 cursor-pointer select-none text-2xl"
+                onClick={() => moveToNextDefinition(true)}>
+                {"▶️"}
+                </div>
                 <div className="flex-1 gap-2 px-3">
                 {selected && direction === 'across' && (
                   <div className="mb-2">
@@ -538,10 +538,10 @@ const CrosswordPuzzle = () => {
                   </div>
                 )}
                 </div>
-                <div className="flex-none gap-20 cursor-pointer"
+                <div className="flex-none gap-20 cursor-pointer select-none text-2xl"
                 onClick={() => moveToNextDefinition(false)}>
-                 {"◀️"}
-              </div>
+                {"◀️"}
+                </div>
               </div>
 
               {/* Buttons section */}
