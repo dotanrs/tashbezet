@@ -318,14 +318,12 @@ const CrosswordPuzzle = () => {
     if (!selected) return;
     
     const value = e.target.value;
-    // On mobile, the value might contain multiple characters
-    // We want to process each new character
-    for (const char of value) {
-      if (/^[א-ת]$/.test(char)) {
-        handleLetterInput(char);
-        // Only process the first valid character
-        break;
-      }
+    if (/^[א-ת]$/.test(value)) {
+      // Clear cell before typing the new letter
+      const newGrid = [...userGrid];
+      newGrid[selected.row][selected.col] = '';
+      setUserGrid(newGrid);
+      handleLetterInput(value);
     }
   };
 
