@@ -1,4 +1,4 @@
-import { Grid, Direction, CellStatus, CellStatusGrid } from '../types/crossword';
+import { Grid, Direction, CellStatusGrid } from '../types/crossword';
 
 // Helper function to check if there are any empty cells in the grid
 const hasEmptyCells = (grid: Grid): boolean => {

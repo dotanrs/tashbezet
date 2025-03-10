@@ -185,8 +185,8 @@ const CrosswordPuzzle = () => {
     return false;
   };
 
-  const moveToNextCell = (row: number, col: number) => {
-    const nextCell = findNextEditableCell(row, col, direction, true);
+  const moveToNextCell = (row: number, col: number, directNext: boolean = false) => {
+    const nextCell = directNext ? findNextDirectCell(userGrid, row, col, direction, true) : findNextEditableCell(row, col, direction, true);
     if (nextCell) {
       setSelected(nextCell);
       cellRefs.current[nextCell.row][nextCell.col]?.focus();
@@ -234,7 +234,7 @@ const CrosswordPuzzle = () => {
       setCellStatus(newCellStatus);
 
       // Move to next cell and check completion
-      moveToNextCell(row, col);
+      moveToNextCell(row, col, true);
       if (currentPuzzleId) {
         checkComplete(newGrid, currentPuzzleId, true);
       }
@@ -268,6 +268,13 @@ const CrosswordPuzzle = () => {
       if (e.key.length === 1 && /^[א-ת]$/.test(e.key)) {
         e.preventDefault();
         handleLetterInput(e.key);
+        return;
+      }
+
+      if (e.key.length > 1 && /^[א-ת]$/.test(e.key[e.key.length - 1])) {
+        alert(`"Typing letter" ${e.key}`);
+        e.preventDefault();
+        handleLetterInput(e.key[e.key.length - 1]);
         return;
       }
 
@@ -314,6 +321,7 @@ const CrosswordPuzzle = () => {
     }
   };
 
+  // NOT SURE THIS ACTUALLY DOES ANYTHING
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!selected) return;
     
@@ -321,8 +329,15 @@ const CrosswordPuzzle = () => {
     if (/^[א-ת]$/.test(value)) {
       // Clear cell before typing the new letter
       const newGrid = [...userGrid];
-      newGrid[selected.row][selected.col] = '';
-      setUserGrid(newGrid);
+      if (newGrid[selected.row][selected.col] !== '') {
+        newGrid[selected.row][selected.col] = '';
+        const newCellStatus = [...cellStatus];
+        newCellStatus[selected.row][selected.col] = null;
+        setUserGrid(newGrid);
+        setCellStatus(newCellStatus);
+        alert(`"Overwriting cell" ${newGrid[selected.row][selected.col]}`);
+      }
+      // Type letter
       handleLetterInput(value);
     }
   };
