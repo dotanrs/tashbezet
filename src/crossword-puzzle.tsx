@@ -103,7 +103,7 @@ const CrosswordPuzzle = () => {
   };
 
   const handlePuzzleReset = () => {
-    if (currentPuzzleId == null) {
+    if (currentPuzzleId === null) {
       return;
     }
     clearPuzzleState(currentPuzzleId);
@@ -201,11 +201,11 @@ const CrosswordPuzzle = () => {
   };
 
   const normalizeLetter = (letter: string) => {
-    if (letter == 'ם') return 'מ';
-    if (letter == 'ץ') return 'צ';
-    if (letter == 'ן') return 'נ';
-    if (letter == 'ף') return 'פ';
-    if (letter == 'ך') return 'כ';
+    if (letter === 'ם') return 'מ';
+    if (letter === 'ץ') return 'צ';
+    if (letter === 'ן') return 'נ';
+    if (letter === 'ף') return 'פ';
+    if (letter === 'ך') return 'כ';
     
     return letter;
   }
