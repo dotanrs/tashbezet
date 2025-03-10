@@ -271,10 +271,19 @@ const CrosswordPuzzle = () => {
         return;
       }
 
-      if (e.key.length > 1 && /^[א-ת]$/.test(e.key[e.key.length - 1])) {
-        alert(`"Typing letter" ${e.key}`);
+      // On mobile, this is what happens when typing to a full cell, for some reason.
+      // Since we don't know what the user typed, we'll treat it as a backspace.
+      // Somehow this works and the letter is typed right after.
+      const weirdKeyValueForFirefox = "Process";
+      const weirdKeyValueForChrome = "Unidentified";
+      if (e.key === weirdKeyValueForFirefox || e.key === weirdKeyValueForChrome) {
         e.preventDefault();
-        handleLetterInput(e.key[e.key.length - 1]);
+        const newGrid = [...userGrid];
+        const newCellStatus = [...cellStatus];
+        newGrid[selected.row][selected.col] = '';
+        newCellStatus[selected.row][selected.col] = null;
+        setUserGrid(newGrid);
+        setCellStatus(newCellStatus);
         return;
       }
 
@@ -321,22 +330,13 @@ const CrosswordPuzzle = () => {
     }
   };
 
-  // NOT SURE THIS ACTUALLY DOES ANYTHING
+
+  // This is called on mobile when typing in an empty cell
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!selected) return;
     
     const value = e.target.value;
     if (/^[א-ת]$/.test(value)) {
-      // Clear cell before typing the new letter
-      const newGrid = [...userGrid];
-      if (newGrid[selected.row][selected.col] !== '') {
-        newGrid[selected.row][selected.col] = '';
-        const newCellStatus = [...cellStatus];
-        newCellStatus[selected.row][selected.col] = null;
-        setUserGrid(newGrid);
-        setCellStatus(newCellStatus);
-        alert(`"Overwriting cell" ${newGrid[selected.row][selected.col]}`);
-      }
       // Type letter
       handleLetterInput(value);
     }
