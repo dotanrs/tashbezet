@@ -20,7 +20,7 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPu
   return (
     <div className="mt-8 w-full">
       <h2 className="text-xl mb-4 text-center">תשבצים קודמים</h2>
-      <div className="flex justify-center gap-2 flex-wrap">
+      <div className="flex justify-center gap-2 flex-wrap" style={{direction: 'rtl'}}>
         {puzzleIds.map((puzzleId) => {
           const status = getPuzzleStatus(puzzleId);
           return (
