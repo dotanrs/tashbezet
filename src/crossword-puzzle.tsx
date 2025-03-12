@@ -599,6 +599,15 @@ const CrosswordPuzzle = () => {
           )}
         </>
       )}
+      {gameStarted && (<div className="mt-8 flex gap-3">
+        <div className="flex items-center gap-10">
+          <a href="https://www.linkedin.com/in/dotanreis/" className="underline">
+            <img src="https://dotanrs.github.io/tashbezet/linkedin.jpg" className="w-6 h-6 rounded-full" />
+          </a>
+        </div>
+        <div className="items-center gap-10">פותח על ידי דותן רייס 🖋️</div>
+      </div>
+    )}
     </div>
   );
 };
