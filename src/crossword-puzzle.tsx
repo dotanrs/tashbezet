@@ -152,7 +152,7 @@ const CrosswordPuzzle = () => {
     row: number,
     col: number,
     direction: Direction,
-    forward: boolean = false
+    forward: boolean = false,
   ): { row: number; col: number } | null => {
     if (!hasEditableCells()) {
       return null;
@@ -185,8 +185,21 @@ const CrosswordPuzzle = () => {
     return false;
   };
 
-  const moveToNextCell = (row: number, col: number, directNext: boolean = false) => {
-    const nextCell = directNext ? findNextDirectCell(userGrid, row, col, direction, true) : findNextEditableCell(row, col, direction, true);
+  const hasEmptyCells = (): boolean => {
+    if (!currentConfig) return false;
+    
+    for (let row = 0; row < 5; row++) {
+      for (let col = 0; col < 5; col++) {
+        if (userGrid[row][col] == '') {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  const moveToNextCell = (row: number, col: number, forward: boolean = true, directNext: boolean = false) => {
+    const nextCell = directNext ? findNextDirectCell(userGrid, row, col, direction, forward) : findNextEditableCell(row, col, direction, forward);
     if (nextCell) {
       setSelected(nextCell);
       cellRefs.current[nextCell.row][nextCell.col]?.focus();
@@ -225,6 +238,7 @@ const CrosswordPuzzle = () => {
     // Validate Hebrew letter
     if (/^[א-ת]$/.test(letter)) {
       const newGrid = [...userGrid];
+      const isOverwriting = newGrid[row][col] !== '';
       newGrid[row][col] = normalizeLetter(letter);
       setUserGrid(newGrid);
 
@@ -234,7 +248,8 @@ const CrosswordPuzzle = () => {
       setCellStatus(newCellStatus);
 
       // Move to next cell and check completion
-      moveToNextCell(row, col, true);
+      const should_skip_to_open_cell = hasEmptyCells() && !isOverwriting;
+      moveToNextCell(row, col, true, !should_skip_to_open_cell);
       if (currentPuzzleId) {
         checkComplete(newGrid, currentPuzzleId, true);
       }
