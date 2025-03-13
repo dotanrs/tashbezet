@@ -10,14 +10,9 @@ export const findNextDirectCellV2 = (
   let nextCol = col;
   let nextRow = row;
   let newDirection = direction;
-  const resetAcross = () => {
-    newDirection = 'across';
-    nextCol = forward ? 0 : 4;
-    nextRow = forward ? 0 : 4;
-  }
 
-  const resetDown = () => {
-    newDirection = 'down';
+  const resetDirection = () => {
+    newDirection = direction === 'across' ? 'down' : 'across';
     nextCol = forward ? 0 : 4;
     nextRow = forward ? 0 : 4;
   }
@@ -29,7 +24,7 @@ export const findNextDirectCellV2 = (
         nextRow += (forward ? 1 : -1);
         nextCol = forward ? 0 : 4;
         if (nextRow < 0 || nextRow >= 5) {
-          resetDown();
+          resetDirection();
         }
       }
     } else {
@@ -38,7 +33,7 @@ export const findNextDirectCellV2 = (
         nextCol += (forward ? 1 : -1);
         nextRow = forward ? 0 : 4;
         if (nextCol < 0 || nextCol >= 5) {
-          resetAcross();
+          resetDirection();
         }
       }
     }
