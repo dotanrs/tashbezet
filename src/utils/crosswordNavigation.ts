@@ -1,5 +1,57 @@
 import { Grid, Direction } from '../types/crossword';
 
+export const findNextDirectCellV2 = (
+  grid: Grid,
+  row: number,
+  col: number,
+  direction: Direction,
+  forward: boolean = true,
+): { row: number; col: number, newDirection?: Direction } | null => {
+  let nextCol = col;
+  let nextRow = row;
+  let newDirection = direction;
+  const resetAcross = () => {
+    newDirection = 'across';
+    nextCol = forward ? 0 : 4;
+    nextRow = forward ? 0 : 4;
+  }
+
+  const resetDown = () => {
+    newDirection = 'down';
+    nextCol = forward ? 0 : 4;
+    nextRow = forward ? 0 : 4;
+  }
+  
+  const step = () => {
+    if (direction === 'across') {
+      nextCol += (forward ? 1 : -1);
+      if (nextCol < 0 || nextCol >= 5) {
+        nextRow += (forward ? 1 : -1);
+        nextCol = forward ? 0 : 4;
+        if (nextRow < 0 || nextRow >= 5) {
+          resetDown();
+        }
+      }
+    } else {
+      nextRow += (forward ? 1 : -1);
+      if (nextRow < 0 || nextRow >= 5) {
+        nextCol += (forward ? 1 : -1);
+        nextRow = forward ? 0 : 4;
+        if (nextCol < 0 || nextCol >= 5) {
+          resetAcross();
+        }
+      }
+    }
+  }
+
+  step();
+  while (grid[nextRow][nextCol] === 'blank') {
+    step();
+  }
+
+  return { row: nextRow, col: nextCol, newDirection };
+}
+
 export const findNextDirectCell = (
   grid: Grid,
   row: number,

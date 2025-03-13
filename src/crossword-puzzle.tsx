@@ -7,7 +7,7 @@ import ReactConfetti from 'react-confetti';
 import { puzzles, PuzzleId } from './crosswords';
 import PreviousPuzzles from './components/PreviousPuzzles';
 import CrosswordGrid from './components/CrosswordGrid';
-import { findNextDirectCell } from './utils/crosswordNavigation';
+import { findNextDirectCell, findNextDirectCellV2 } from './utils/crosswordNavigation';
 
 const CrosswordPuzzle = () => {
   // Add new state for game started
@@ -205,13 +205,37 @@ const CrosswordPuzzle = () => {
       cellRefs.current[nextCell.row][nextCell.col]?.focus();
     } else if (hasEditableCells()) {
       // Only try to find next definition if there are still editable cells somewhere
-      const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(userGrid, cellStatus, row, col, direction, false);
+      const requireEmpty = true;
+      const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(userGrid, cellStatus, row, col, direction, false, requireEmpty);
       setSelected({ row: nextRow, col: nextCol });
       setDirection(newDirection);
       cellRefs.current[nextRow][nextCol]?.focus();
     }
     // If no editable cells left, do nothing
   };
+
+  const backspaceToPreviousCell = (row: number, col: number, direction: Direction): { newRow: number, newCol: number, newDirection?: Direction } | null => {
+    if (!hasEditableCells()) {
+      return null;
+    }
+
+    let prevCell = findNextDirectCellV2(userGrid, row, col, direction, false);
+    while (
+      prevCell && (
+        userGrid[prevCell.row][prevCell.col] === 'blank' ||
+        cellStatus[prevCell.row][prevCell.col] === true
+      )
+    ) {
+      prevCell = findNextDirectCellV2(userGrid, prevCell.row, prevCell.col, direction, false);
+    }
+
+    if (!prevCell) {
+      // Should never happen
+      return null;
+    }
+
+    return {newRow: prevCell.row, newCol: prevCell.col, newDirection: prevCell.newDirection};
+  }
 
   const normalizeLetter = (letter: string) => {
     if (letter === 'ם') return 'מ';
@@ -258,7 +282,8 @@ const CrosswordPuzzle = () => {
 
   const moveToNextDefinition = (forward: boolean) => {
     if (!selected) return;
-    const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(userGrid, cellStatus, selected.row, selected.col, direction, forward);
+    const requireEmpty = hasEmptyCells();
+    const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(userGrid, cellStatus, selected.row, selected.col, direction, forward, requireEmpty);
     setSelected({ row: nextRow, col: nextCol });
     setDirection(newDirection);
     cellRefs.current[nextRow][nextCol]?.focus();
@@ -311,12 +336,16 @@ const CrosswordPuzzle = () => {
 
         if (userGrid[row][col] === '') {
           // If current cell is empty, move to and clear previous cell
-          const prevCell = findNextCell(userGrid, row, col, direction, false);
-          if (prevCell && !cellStatus[prevCell.row][prevCell.col]) {
-            newGrid[prevCell.row][prevCell.col] = '';
-            newCellStatus[prevCell.row][prevCell.col] = null;
-            setSelected(prevCell);
-            cellRefs.current[prevCell.row][prevCell.col]?.focus();
+          const prevCell = backspaceToPreviousCell(row, col, direction);
+          if (!prevCell) {
+            return;
+          }
+          newGrid[prevCell.newRow][prevCell.newCol] = '';
+          newCellStatus[prevCell.newRow][prevCell.newCol] = null;
+          setSelected({row: prevCell.newRow, col: prevCell.newCol});
+          cellRefs.current[prevCell.newRow][prevCell.newCol]?.focus();
+          if (prevCell.newDirection) {
+            setDirection(prevCell.newDirection);
           }
         } else {
           // If current cell has content, just clear it

@@ -64,10 +64,10 @@ export const findNextDefinition = (
   currentRow: number,
   currentCol: number,
   currentDirection: Direction,
-  forward: boolean = false
+  forward: boolean = false,
+  requireEmpty: boolean = false
 ): { row: number; col: number; newDirection: Direction } => {
   // Check if we should look for empty cells or any non-blank cells
-  const requireEmpty = hasEmptyCells(grid);
 
   const searchOptions = []
   for (let i = 0; i < 5; i++) {
