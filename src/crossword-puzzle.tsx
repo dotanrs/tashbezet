@@ -506,37 +506,46 @@ const CrosswordPuzzle = () => {
     }
   };
 
+  const titleDesign = (gameStarted: boolean) => {
+    if (gameStarted) {
+      return 'absolute right-10 z-[-1]';
+    }
+    return 'mt-8';
+  }
+
   return (
-    <div className="flex flex-col items-center p-4 w-full max-w-lg mx-auto">
-      <h1 className="mb-8 mt-8 select-none" style={{ direction: 'rtl' }}>
-        <div className="relative">
-          <div className="absolute left-[-20px] top-[-20px] w-12 h-12 flex items-center justify-center text-4xl opacity-20">
-            🖋️
+    <div className="absolute right-0 left-0 m-x-0 flex flex-col items-center p-4 w-[600px] max-w-lg mx-auto">
+      <div className={`${titleDesign(gameStarted)}`}>
+        <h1 className="mb-8 select-none" style={{ direction: 'rtl' }}>
+          <div className="relative">
+            <div className="absolute left-[-20px] top-[-20px] w-12 h-12 flex items-center justify-center text-4xl opacity-20">
+              🖋️
+            </div>
+            <div className="grid grid-flow-col gap-[1px] bg-gray-300 p-[1px] rounded">
+              {Array.from("תשבצת").map((letter, index) => (
+                <div
+                  key={index}
+                  className="w-12 h-12 flex items-center justify-center text-2xl font-bold bg-white"
+                  style={{
+                    background: 'white',
+                    fontFamily: "'Rubik', sans-serif",
+                  }}
+                >
+                  <span style={{
+                    background: 'linear-gradient(135deg, #4ECDC4 0%, rgb(56, 56, 56) 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    position: 'relative',
+                    zIndex: 1
+                  }}>
+                    {letter}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="grid grid-flow-col gap-[1px] bg-gray-300 p-[1px] rounded">
-            {Array.from("תשבצת").map((letter, index) => (
-              <div
-                key={index}
-                className="w-12 h-12 flex items-center justify-center text-2xl font-bold bg-white"
-                style={{
-                  background: 'white',
-                  fontFamily: "'Rubik', sans-serif",
-                }}
-              >
-                <span style={{
-                  background: 'linear-gradient(135deg, #4ECDC4 0%, rgb(56, 56, 56) 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  position: 'relative',
-                  zIndex: 1
-                }}>
-                  {letter}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </h1>
+        </h1>
+      </div>
 
       {!gameStarted ? (
         <button
