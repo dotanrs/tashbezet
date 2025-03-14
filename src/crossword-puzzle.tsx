@@ -517,16 +517,16 @@ const CrosswordPuzzle = () => {
   return (
     <div id="crossword-container" className="absolute w-full md:w-[500px] max-w-[500px] right-0 left-0 m-x-0 flex flex-col items-center p-4 mx-auto">
       <div className={`${titleDesign(gameStarted)}`}>
-        <h1 className="mb-8 select-none" style={{ direction: 'rtl' }}>
+        <h1 className="select-none" style={{ direction: 'rtl' }}>
           <div className="relative">
-            <div className="absolute left-[-20px] top-[-20px] w-12 h-12 flex items-center justify-center text-4xl opacity-20">
+            <div className="absolute left-[-20px] top-[-20px] w-12 aspect-square flex items-center justify-center text-4xl opacity-20">
               🖋️
             </div>
             <div className="grid grid-flow-col gap-[1px] bg-gray-300 p-[1px] rounded">
               {Array.from("תשבצת").map((letter, index) => (
                 <div
                   key={index}
-                  className="w-12 h-12 flex items-center justify-center text-2xl font-bold bg-white"
+                  className="w-12 aspect-square flex items-center justify-center text-2xl font-bold bg-white"
                   style={{
                     background: 'white',
                     fontFamily: "'Rubik', sans-serif",
@@ -572,7 +572,7 @@ const CrosswordPuzzle = () => {
           {currentConfig && (
             <>
             <div id="whole-crossword" className="w-full">
-              <div id="crossword-and-buttons" className="flex space-x-5 flex-row justify-between items-start mt-[40px] mb-3">
+              <div id="crossword-and-buttons" className="flex space-x-5 flex-row justify-between items-start mt-[42px] mb-3">
                 {/* Sidebar */}
                 <div id="sidebar">
                   <div>
