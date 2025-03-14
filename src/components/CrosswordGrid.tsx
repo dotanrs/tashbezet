@@ -66,7 +66,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
             <div
               key={`${rowIndex}-${colIndex}`}
               className={`
-                w-[55px] h-[55px] border-[0.5px] border-gray-800 flex items-center justify-center
+                w-[40px] md:w-[55px] h-[40px] md:h-[55px] border-[0.5px] border-gray-800 flex items-center justify-center
                 ${getCellStyle(rowIndex, colIndex, selected && selected.row === rowIndex && selected.col === colIndex)}
               `}
               onClick={() => onCellClick(rowIndex, colIndex)}

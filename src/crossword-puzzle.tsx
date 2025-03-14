@@ -515,7 +515,7 @@ const CrosswordPuzzle = () => {
   }
 
   return (
-    <div className="absolute right-0 left-0 m-x-0 flex flex-col items-center p-4 w-[600px] max-w-lg mx-auto">
+    <div id="crossword-container" className="absolute right-0 left-0 m-x-0 flex flex-col items-center p-4 w-full md:w-[600px] mx-auto">
       <div className={`${titleDesign(gameStarted)}`}>
         <h1 className="mb-8 select-none" style={{ direction: 'rtl' }}>
           <div className="relative">
@@ -571,10 +571,10 @@ const CrosswordPuzzle = () => {
 
           {currentConfig && (
             <>
-            <div id="whole-crossword" className="w-[400px]">
+            <div id="whole-crossword" className="w-full md:w-[400px]">
               <div id="crossword-and-buttons" className="flex flex-row justify-between items-start mt-[40px] mb-3">
                 {/* Sidebar */}
-                <div id="sidebar" className="mr-10">
+                <div id="sidebar">
                   <div>
                       {/* Status message */}
                       {message && (
