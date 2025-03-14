@@ -110,6 +110,7 @@ const CrosswordPuzzle = () => {
     const newGrid = getNewGrid(currentPuzzleId);
     setUserGrid(newGrid);
     setCellStatus(createEmptyCellStatus());
+    setMessage('');
   };
 
   // Add handleStartGame
@@ -570,78 +571,87 @@ const CrosswordPuzzle = () => {
 
           {currentConfig && (
             <>
-              <CrosswordGrid
-                userGrid={userGrid}
-                cellStatus={cellStatus}
-                selected={selected}
-                direction={direction}
-                cellRefs={cellRefs}
-                onCellClick={handleCellClick}
-                onChange={handleChange}
-                onKeyDown={handleKeyDown}
-              />
-
-              {/* Status message */}
-              {message && (
-                <div className="mt-4 mb-6 p-2 rounded bg-green-100 text-green-800" style={{ direction: 'rtl' }}>
-                  {message}
-                </div>
-              )}
-
-              {/* Clues display */}
-              <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right flex" style={{ direction: 'rtl' }}>
-                <div className="flex-none gap-20 cursor-pointer select-none text-2xl"
-                onClick={() => moveToNextDefinition(true)}>
-                {"▶️"}
-                </div>
-                <div className="flex-1 gap-2 px-3">
-                {selected && direction === 'across' && (
-                  <div className="mb-2">
-                    <span className="font-bold">מאוזן:</span> {currentConfig.rowClues[selected.row]}
-                  </div>
-                )}
-                {selected && direction === 'down' && (
+            <div id="whole-crossword" className="w-[400px]">
+              <div id="crossword-and-buttons" className="flex flex-row justify-between items-start mt-[40px] mb-5">
+                {/* Sidebar */}
+                <div id="sidebar" className="mr-10">
                   <div>
-                    <span className="font-bold">מאונך:</span> {currentConfig.columnClues[selected.col]}
+                      {/* Status message */}
+                      {message && (
+                        <div className="mb-6 p-2 rounded bg-green-100 text-green-800" style={{ direction: 'rtl' }}>
+                          {message}
+                        </div>
+                      )}
+
+                    {/* Buttons section */}
+                    <div className="flex flex-col gap-2">
+                      <button
+                        onClick={markPuzzle}
+                        disabled={!hasUntestedCells()}
+                        className={`px-4 py-2 text-white rounded ${
+                          hasUntestedCells() 
+                            ? 'bg-[#4ECDC4] hover:bg-blue-600' 
+                            : 'bg-gray-400 cursor-not-allowed'
+                        }`}
+                      >
+                        בדיקה
+                      </button>
+                      <button
+                        onClick={handleHint}
+                        disabled={!hasAvailableHints()}
+                        className={`px-4 py-2 text-white rounded ${
+                          hasAvailableHints() 
+                            ? 'bg-yellow-500 hover:bg-yellow-600' 
+                            : 'bg-gray-400 cursor-not-allowed'
+                        }`}
+                      >
+                        רמז
+                      </button>
+                      <button
+                        onClick={handlePuzzleReset}
+                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                      >
+                        איפוס
+                      </button>
+                    </div>
                   </div>
-                )}
                 </div>
-                <div className="flex-none gap-20 cursor-pointer select-none text-2xl"
-                onClick={() => moveToNextDefinition(false)}>
-                {"◀️"}
-                </div>
+                <CrosswordGrid
+                  userGrid={userGrid}
+                  cellStatus={cellStatus}
+                  selected={selected}
+                  direction={direction}
+                  cellRefs={cellRefs}
+                  onCellClick={handleCellClick}
+                  onChange={handleChange}
+                    onKeyDown={handleKeyDown}
+                  />
               </div>
 
-              {/* Buttons section */}
-              <div className="flex gap-2">
-                <button
-                  onClick={markPuzzle}
-                  disabled={!hasUntestedCells()}
-                  className={`px-4 py-2 text-white rounded ${
-                    hasUntestedCells() 
-                      ? 'bg-[#4ECDC4] hover:bg-blue-600' 
-                      : 'bg-gray-400 cursor-not-allowed'
-                  }`}
-                >
-                  בדיקה
-                </button>
-                <button
-                  onClick={handleHint}
-                  disabled={!hasAvailableHints()}
-                  className={`px-4 py-2 text-white rounded ${
-                    hasAvailableHints() 
-                      ? 'bg-yellow-500 hover:bg-yellow-600' 
-                      : 'bg-gray-400 cursor-not-allowed'
-                  }`}
-                >
-                  רמז
-                </button>
-                <button
-                  onClick={handlePuzzleReset}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                >
-                  איפוס
-                </button>
+
+                {/* Clues display */}
+                <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right flex" style={{ direction: 'rtl' }}>
+                  <div className="flex-none gap-20 cursor-pointer select-none text-2xl"
+                  onClick={() => moveToNextDefinition(true)}>
+                  {"▶️"}
+                  </div>
+                  <div className="flex-1 gap-2 px-3">
+                  {selected && direction === 'across' && (
+                    <div className="mb-2">
+                      <span className="font-bold">מאוזן:</span> {currentConfig.rowClues[selected.row]}
+                    </div>
+                  )}
+                  {selected && direction === 'down' && (
+                    <div>
+                      <span className="font-bold">מאונך:</span> {currentConfig.columnClues[selected.col]}
+                    </div>
+                  )}
+                  </div>
+                  <div className="flex-none gap-20 cursor-pointer select-none text-2xl"
+                  onClick={() => moveToNextDefinition(false)}>
+                  {"◀️"}
+                  </div>
+                </div>
               </div>
 
               <PreviousPuzzles
