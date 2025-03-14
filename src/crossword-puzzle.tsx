@@ -200,7 +200,7 @@ const CrosswordPuzzle = () => {
   };
 
   const moveToNextCell = (row: number, col: number, forward: boolean = true, directNext: boolean = false) => {
-    const nextCell = directNext ? findNextDirectCell(userGrid, row, col, direction, forward) : findNextEditableCell(row, col, direction, forward);
+    const nextCell = directNext ? findNextDirectCellV2(userGrid, row, col, direction, forward) : findNextEditableCell(row, col, direction, forward);
     if (nextCell) {
       setSelected(nextCell);
       cellRefs.current[nextCell.row][nextCell.col]?.focus();
