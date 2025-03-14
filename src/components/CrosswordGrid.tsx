@@ -57,7 +57,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
   const displayToLogicalCol = (displayCol: number) => 4 - displayCol;
 
   return (
-    <div className="grid grid-cols-5 gap-0 border border-gray-800">
+    <div className="grid grid-cols-5 gap-0 border border-gray-800 w-full">
       {userGrid.map((row, rowIndex) => (
         row.map((_, displayColIndex) => {
           const colIndex = displayToLogicalCol(displayColIndex);
@@ -66,7 +66,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
             <div
               key={`${rowIndex}-${colIndex}`}
               className={`
-                w-[40px] md:w-[55px] h-[40px] md:h-[55px] border-[0.5px] border-gray-800 flex items-center justify-center
+                w-full aspect-square border-[0.5px] border-gray-800 flex items-center justify-center
                 ${getCellStyle(rowIndex, colIndex, selected && selected.row === rowIndex && selected.col === colIndex)}
               `}
               onClick={() => onCellClick(rowIndex, colIndex)}
@@ -78,7 +78,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
                   value={cell}
                   onChange={onChange}
                   onKeyDown={onKeyDown}
-                  className={`w-full h-full text-center text-2xl outline-none bg-transparent font-rubik
+                  className={`w-full h-full text-center text-xl outline-none bg-transparent font-rubik
                     ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default' : ''}
                     ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : 'text-gray-700'}`}
                   maxLength={1}

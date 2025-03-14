@@ -509,13 +509,13 @@ const CrosswordPuzzle = () => {
 
   const titleDesign = (gameStarted: boolean) => {
     if (gameStarted) {
-      return 'absolute right-10 z-[-1]';
+      return 'absolute right-[-5px] z-[-1]';
     }
     return 'mt-8';
   }
 
   return (
-    <div id="crossword-container" className="absolute right-0 left-0 m-x-0 flex flex-col items-center p-4 w-full md:w-[600px] mx-auto">
+    <div id="crossword-container" className="absolute w-full md:w-[500px] max-w-[500px] right-0 left-0 m-x-0 flex flex-col items-center p-4 mx-auto">
       <div className={`${titleDesign(gameStarted)}`}>
         <h1 className="mb-8 select-none" style={{ direction: 'rtl' }}>
           <div className="relative">
@@ -571,8 +571,8 @@ const CrosswordPuzzle = () => {
 
           {currentConfig && (
             <>
-            <div id="whole-crossword" className="w-full md:w-[400px]">
-              <div id="crossword-and-buttons" className="flex flex-row justify-between items-start mt-[40px] mb-3">
+            <div id="whole-crossword" className="w-full">
+              <div id="crossword-and-buttons" className="flex space-x-5 flex-row justify-between items-start mt-[40px] mb-3">
                 {/* Sidebar */}
                 <div id="sidebar">
                   <div>
@@ -588,9 +588,9 @@ const CrosswordPuzzle = () => {
                       <button
                         onClick={markPuzzle}
                         disabled={!hasUntestedCells()}
-                        className={`px-4 py-2 rounded bg-gray-100 border-2 ${
+                        className={`px-4 py-2 rounded bg-white border-2 ${
                           hasUntestedCells() 
-                            ? 'border-[#4ECDC4] hover:bg-white text-black' 
+                            ? 'border-[#4ECDC4] hover:bg-gray-100 text-black' 
                             : 'border-gray-300 bg-gray-300 text-gray-800 cursor-not-allowed'
                         }`}
                       >
@@ -599,9 +599,9 @@ const CrosswordPuzzle = () => {
                       <button
                         onClick={handleHint}
                         disabled={!hasAvailableHints()}
-                        className={`px-4 py-2 rounded bg-gray-100 border-2 ${
+                        className={`px-4 py-2 rounded bg-white border-2 ${
                           hasAvailableHints() 
-                            ? 'border-yellow-500 hover:bg-white text-black' 
+                            ? 'border-yellow-500 hover:bg-gray-100 text-black' 
                             : 'border-gray-300 bg-gray-300 text-gray-800 cursor-not-allowed'
                         }`}
                       >
@@ -609,7 +609,7 @@ const CrosswordPuzzle = () => {
                       </button>
                       <button
                         onClick={handlePuzzleReset}
-                        className="px-4 py-2 text-black border-2 border-red-500 text-white rounded bg-gray-100 hover:bg-white"
+                        className="px-4 py-2 text-black border-2 border-red-500 text-black rounded bg-white hover:bg-gray-100"
                       >
                         איפוס
                       </button>
