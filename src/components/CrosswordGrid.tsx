@@ -66,7 +66,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
             <div
               key={`${rowIndex}-${colIndex}`}
               className={`
-                w-[50px] h-[50px] border-[0.5px] border-gray-800 flex items-center justify-center
+                w-[55px] h-[55px] border-[0.5px] border-gray-800 flex items-center justify-center
                 ${getCellStyle(rowIndex, colIndex, selected && selected.row === rowIndex && selected.col === colIndex)}
               `}
               onClick={() => onCellClick(rowIndex, colIndex)}
@@ -78,9 +78,9 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
                   value={cell}
                   onChange={onChange}
                   onKeyDown={onKeyDown}
-                  className={`w-full h-full text-center text-xl outline-none bg-transparent font-rubik
+                  className={`w-full h-full text-center text-2xl outline-none bg-transparent font-rubik
                     ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default' : ''}
-                    ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : ''}`}
+                    ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : 'text-gray-700'}`}
                   maxLength={1}
                   dir="rtl"
                   lang="he"

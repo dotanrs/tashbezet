@@ -19,15 +19,19 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPu
 
   return (
     <div className="mt-8 w-full">
-      <h2 className="text-xl mb-4 text-center">תשבצים קודמים</h2>
-      <div className="flex justify-center gap-2 flex-wrap" style={{direction: 'rtl'}}>
+      <div className="flex flex-row justify-between space-x-5 items-center mb-4">
+        <div className="h-[1px] bg-gray-300 flex-auto"></div>
+        <div className="text-xl w-18 text-center">תשבצים קודמים</div>
+        <div className="h-[1px] bg-gray-300 flex-auto"></div>
+      </div>
+      <div className="grid grid-cols-2 justify-center gap-2 flex-wrap">
         {puzzleIds.map((puzzleId) => {
           const status = getPuzzleStatus(puzzleId);
           return (
             <button
               key={puzzleId}
               onClick={() => onPuzzleChange(puzzleId)}
-              className={`px-4 py-2 rounded flex items-center gap-2 ${
+              className={`px-4 py-2 rounded flex items-center gap-2 justify-end ${
                 currentPuzzleId === puzzleId
                   ? 'bg-blue-200'
                   : 'bg-gray-200 hover:bg-gray-300'

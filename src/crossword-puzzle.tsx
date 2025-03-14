@@ -572,7 +572,7 @@ const CrosswordPuzzle = () => {
           {currentConfig && (
             <>
             <div id="whole-crossword" className="w-[400px]">
-              <div id="crossword-and-buttons" className="flex flex-row justify-between items-start mt-[40px] mb-5">
+              <div id="crossword-and-buttons" className="flex flex-row justify-between items-start mt-[40px] mb-3">
                 {/* Sidebar */}
                 <div id="sidebar" className="mr-10">
                   <div>
@@ -588,10 +588,10 @@ const CrosswordPuzzle = () => {
                       <button
                         onClick={markPuzzle}
                         disabled={!hasUntestedCells()}
-                        className={`px-4 py-2 text-white rounded ${
+                        className={`px-4 py-2 rounded bg-gray-100 border-2 ${
                           hasUntestedCells() 
-                            ? 'bg-[#4ECDC4] hover:bg-blue-600' 
-                            : 'bg-gray-400 cursor-not-allowed'
+                            ? 'border-[#4ECDC4] hover:bg-white text-black' 
+                            : 'border-gray-300 bg-gray-300 text-gray-800 cursor-not-allowed'
                         }`}
                       >
                         בדיקה
@@ -599,17 +599,17 @@ const CrosswordPuzzle = () => {
                       <button
                         onClick={handleHint}
                         disabled={!hasAvailableHints()}
-                        className={`px-4 py-2 text-white rounded ${
+                        className={`px-4 py-2 rounded bg-gray-100 border-2 ${
                           hasAvailableHints() 
-                            ? 'bg-yellow-500 hover:bg-yellow-600' 
-                            : 'bg-gray-400 cursor-not-allowed'
+                            ? 'border-yellow-500 hover:bg-white text-black' 
+                            : 'border-gray-300 bg-gray-300 text-gray-800 cursor-not-allowed'
                         }`}
                       >
                         רמז
                       </button>
                       <button
                         onClick={handlePuzzleReset}
-                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                        className="px-4 py-2 text-black border-2 border-red-500 text-white rounded bg-gray-100 hover:bg-white"
                       >
                         איפוס
                       </button>
@@ -630,34 +630,36 @@ const CrosswordPuzzle = () => {
 
 
                 {/* Clues display */}
-                <div className="mb-4 p-4 bg-gray-100 rounded w-full direction-rtl text-right flex" style={{ direction: 'rtl' }}>
+                <div className="h-[80px]">
+                <div className="mb-4 p-4 bg-gray-200 rounded w-full direction-rtl text-right flex rounded-lg border-1 justify-between" style={{ direction: 'rtl' }}>
                   <div className="flex-none gap-20 cursor-pointer select-none text-2xl"
                   onClick={() => moveToNextDefinition(true)}>
                   {"▶️"}
                   </div>
                   <div className="flex-1 gap-2 px-3">
                   {selected && direction === 'across' && (
-                    <div className="mb-2">
-                      <span className="font-bold">מאוזן:</span> {currentConfig.rowClues[selected.row]}
+                    <div>
+                      <span className="font-bold">{selected.row + 1} מאוזן:</span> {currentConfig.rowClues[selected.row]}
                     </div>
                   )}
                   {selected && direction === 'down' && (
                     <div>
-                      <span className="font-bold">מאונך:</span> {currentConfig.columnClues[selected.col]}
+                      <span className="font-bold">{selected.col + 1} מאונך:</span> {currentConfig.columnClues[selected.col]}
                     </div>
                   )}
                   </div>
-                  <div className="flex-none gap-20 cursor-pointer select-none text-2xl"
+                  <div className="flex-none cursor-pointer select-none text-2xl"
                   onClick={() => moveToNextDefinition(false)}>
                   {"◀️"}
                   </div>
                 </div>
-              </div>
+                </div>
 
-              <PreviousPuzzles
-                currentPuzzleId={currentPuzzleId}
-                onPuzzleChange={handlePuzzleChange}
-              />
+                <PreviousPuzzles
+                  currentPuzzleId={currentPuzzleId}
+                  onPuzzleChange={handlePuzzleChange}
+                />
+              </div>
             </>
           )}
         </>
