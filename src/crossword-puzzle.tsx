@@ -554,7 +554,7 @@ const CrosswordPuzzle = () => {
           className="px-6 py-3 bg-[#4ECDC4] text-white rounded-lg text-xl hover:bg-blue-600 transition-colors"
           style={{ direction: 'rtl' }}
         >
-          מוכנים לתשבצ?
+          מוכנים לֶתַשְבֶצ?
         </button>
       ) : (
         <>
