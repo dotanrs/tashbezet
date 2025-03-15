@@ -36,6 +36,8 @@ const CrosswordPuzzle = () => {
   // Track direction
   const [direction, setDirection] = useState<Direction>('across');
 
+  const [previousPuzzlesShown, setPreviousPuzzlesShown] = useState(false);
+
   // Create refs for all cells
   const cellRefs = useRef<(HTMLInputElement | null)[][]>(Array(5).fill(null).map(() => Array(5).fill(null)));
 
@@ -420,7 +422,8 @@ const CrosswordPuzzle = () => {
     const result = checkPuzzle(grid, currentConfig);
     if (result.isCorrect) {
       setCellStatus(result.newCellStatus);
-      setMessage('פתרת את זה!');
+      setMessage('פתרת את זה! אפשר לגלול למטה בשביל עוד 💪');
+      setPreviousPuzzlesShown(true);
       if (allowConfetti) {
         setShowConfetti(true);
       }
@@ -635,23 +638,21 @@ const CrosswordPuzzle = () => {
                   onKeyDown={handleKeyDown}
                 />
               </div>
-              <div className="flex flex-row justify-between">
-                {/* Buttons section */}
-                <div id="sidebar-container" className={`text-center flex flex-row gap-2 text-[13px] w-[100px] p-x-4 pb-4`}>
-                  <Sidebar
-                    onMarkPuzzle={markPuzzle}
-                    onHint={handleHint}
-                    onReset={handlePuzzleReset}
-                    hasUntestedCells={hasUntestedCells()}
-                    hasAvailableHints={hasAvailableHints()}
-                  />
+              {/* Status message */}
+              {message && (
+                <div className="mb-4 p-2 w-auto px-4 rounded text-[13px] bg-[#2ea199] text-white" style={{ direction: 'rtl' }}>
+                  {message}
                 </div>
-                {/* Status message */}
-                {message && (
-                  <div className="mb-4 p-2 px-4 rounded text-[13px] bg-[#2ea199] text-white" style={{ direction: 'rtl' }}>
-                    {message}
-                  </div>
-                )}
+              )}
+              {/* Buttons section */}
+              <div id="sidebar-container" className={`text-center flex flex-row gap-2 text-[13px] w-[100px] p-x-4 pb-4`}>
+                <Sidebar
+                  onMarkPuzzle={markPuzzle}
+                  onHint={handleHint}
+                  onReset={handlePuzzleReset}
+                  hasUntestedCells={hasUntestedCells()}
+                  hasAvailableHints={hasAvailableHints()}
+                />
               </div>
 
 
@@ -687,16 +688,18 @@ const CrosswordPuzzle = () => {
                 <PreviousPuzzles
                   currentPuzzleId={currentPuzzleId}
                   onPuzzleChange={handlePuzzleChange}
+                  shown={previousPuzzlesShown}
+                  setShown={setPreviousPuzzlesShown}
                 />
               </div>
             </>
           )}
         </>
       )}
-      {gameStarted && (<div className="mt-8 flex gap-3">
+      {gameStarted && (<div className="mt-8 flex gap-3 text-[13px]">
         <div className="flex items-center gap-10">
           <a href="https://www.linkedin.com/in/dotanreis/" className="underline">
-            <img src="https://dotanrs.github.io/tashbezet/linkedin.jpg" className="w-6 h-6 rounded-full" />
+            <img src="https://dotanrs.github.io/tashbezet/linkedin.jpg" className="w-4 h-4 rounded-full" />
           </a>
         </div>
         <div className="items-center gap-10">פותח על ידי דותן רייס 🖋️</div>
