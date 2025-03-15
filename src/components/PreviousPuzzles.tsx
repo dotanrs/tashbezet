@@ -6,11 +6,11 @@ import { puzzles } from '../crosswords';
 interface PreviousPuzzlesProps {
   currentPuzzleId: PuzzleId | null;
   onPuzzleChange: (puzzleId: PuzzleId) => void;
+  shown: boolean;
+  setShown: (shown: boolean) => void;
 }
 
-const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPuzzleChange }) => {
-  const [shown, setShown] = useState(false);
-
+const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPuzzleChange, shown, setShown }) => {
   const puzzleIds = Object.keys(puzzles) as PuzzleId[];
 
   const getPuzzleStatus = (puzzleId: PuzzleId) => {
