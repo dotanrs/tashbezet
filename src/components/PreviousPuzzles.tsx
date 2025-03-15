@@ -23,6 +23,9 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPu
     <div className="mt-8 w-full">
       <div className="flex flex-row justify-between space-x-5 items-center mb-4">
         <div className="h-[1px] bg-gray-300 flex-auto"></div>
+        <div onClick={() => setShown(!shown)} className={`text-center text-gray-600 cursor-pointer`}>
+          {shown ? '🔼 להסתיר' : '🔽 להציג'}
+        </div>
         <div className="text-xl w-18 text-center">תשבצים קודמים</div>
         <div className="h-[1px] bg-gray-300 flex-auto"></div>
       </div>
@@ -51,9 +54,6 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPu
         })}
         </div>
       )}
-      <div onClick={() => setShown(!shown)} className={`text-center text-gray-600 cursor-pointer ${shown ? 'mt-4' : ''}`}>
-          {shown ? '🔼 להסתיר' : '🔽 להציג'}
-      </div>
     </div>
   );
 };
