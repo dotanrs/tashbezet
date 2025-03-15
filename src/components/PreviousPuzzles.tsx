@@ -30,7 +30,7 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPu
         <div className="h-[1px] bg-gray-300 flex-auto"></div>
       </div>
       {shown && (
-        <div className="grid grid-cols-2 justify-center gap-2 flex-wrap">
+        <div className="grid grid-cols-2 justify-center gap-2 flex-wrap mb-4">
         {puzzleIds.map((puzzleId) => {
           const status = getPuzzleStatus(puzzleId);
           return (
