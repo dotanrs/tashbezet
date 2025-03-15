@@ -335,31 +335,7 @@ const CrosswordPuzzle = () => {
       if (e.key === 'Backspace') {
         e.preventDefault();
 
-        const newGrid = [...userGrid];
-        const newCellStatus = [...cellStatus];
-
-        if (userGrid[row][col] === '') {
-          // If current cell is empty, move to and clear previous cell
-          const prevCell = backspaceToPreviousCell(row, col, direction);
-          if (!prevCell) {
-            return;
-          }
-          newGrid[prevCell.newRow][prevCell.newCol] = '';
-          newCellStatus[prevCell.newRow][prevCell.newCol] = null;
-          setSelected({row: prevCell.newRow, col: prevCell.newCol});
-          cellRefs.current[prevCell.newRow][prevCell.newCol]?.focus();
-          if (prevCell.newDirection) {
-            setDirection(prevCell.newDirection);
-          }
-        } else {
-          // If current cell has content, just clear it
-          newGrid[row][col] = '';
-          newCellStatus[row][col] = null;
-        }
-
-        setUserGrid(newGrid);
-        setCellStatus(newCellStatus);
-        return;
+        handleBackspace(row, col);
       }
     }
 
@@ -510,17 +486,7 @@ const CrosswordPuzzle = () => {
     }
   };
 
-  const handleBackspace = () => {
-    if (!selected) return;
-
-    const row = selected.row;
-    const col = selected.col;
-
-    // Don't handle input for blank or correct cells
-    if (userGrid[row][col] === 'blank' || cellStatus[row][col] === true) {
-      return;
-    }
-
+  const handleBackspace = (row: number, col: number) => {
     const newGrid = [...userGrid];
     const newCellStatus = [...cellStatus];
 
@@ -533,6 +499,7 @@ const CrosswordPuzzle = () => {
       newGrid[prevCell.newRow][prevCell.newCol] = '';
       newCellStatus[prevCell.newRow][prevCell.newCol] = null;
       setSelected({row: prevCell.newRow, col: prevCell.newCol});
+      cellRefs.current[prevCell.newRow][prevCell.newCol]?.focus();
       if (prevCell.newDirection) {
         setDirection(prevCell.newDirection);
       }
@@ -544,6 +511,16 @@ const CrosswordPuzzle = () => {
 
     setUserGrid(newGrid);
     setCellStatus(newCellStatus);
+    return;
+  }
+
+  const handleBackspaceOnScreenKeyboard = () => {
+    if (!selected) return;
+
+    const row = selected.row;
+    const col = selected.col;
+
+    handleBackspace(row, col);
   };
 
   const titleDesign = (gameStarted: boolean) => {
@@ -707,7 +684,7 @@ const CrosswordPuzzle = () => {
                     </div>
                   </div>
                 </div>
-                {isMobile && <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspace} />}
+                {isMobile && <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} />}
 
                 <PreviousPuzzles
                   currentPuzzleId={currentPuzzleId}
