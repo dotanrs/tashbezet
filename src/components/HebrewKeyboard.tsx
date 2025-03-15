@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface HebrewKeyboardProps {
   onLetterClick: (letter: string) => void;
@@ -6,6 +6,8 @@ interface HebrewKeyboardProps {
 }
 
 const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBackspace }) => {
+  const [pressedKey, setPressedKey] = useState<string | null>(null);
+
   // Hebrew keyboard layout in three rows
   const keyboardRows = [
     ['ק', 'ר', 'א', 'ט', 'ו', 'ן', 'פ'],
@@ -13,7 +15,19 @@ const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBacksp
     ['ז', 'ס', 'ב', 'ה', 'נ', 'מ', 'צ', 'ת']
   ];
 
-  const keyClasses = 'aspect-square text-gray-700 w-full flex items-center justify-center rounded border-[0.5px] border-gray-800 hover:bg-[#d2f4f2] active:bg-gray-300 text-lg';
+  const handleKeyPress = (letter: string) => {
+    setPressedKey(letter);
+    onLetterClick(letter);
+    setTimeout(() => setPressedKey(null), 500);
+  };
+
+  const handleBackspace = () => {
+    setPressedKey('backspace');
+    onBackspace();
+    setTimeout(() => setPressedKey(null), 500);
+  };
+
+  const keyClasses = 'aspect-square text-gray-700 w-full flex items-center justify-center rounded border-[0.5px] border-gray-800 text-lg';
 
   return (
     <div className="w-full bg-gray-100 p-2 rounded-b-lg border-[0.5px] border-t-0 border-gray-800">
@@ -26,15 +40,15 @@ const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBacksp
               {row.map((letter) => (
                 <button
                   key={letter}
-                  onClick={() => onLetterClick(letter)}
-                  className={`${keyClasses} bg-white`}
+                  onClick={() => handleKeyPress(letter)}
+                  className={`${keyClasses} bg-white ${pressedKey === letter ? 'animate-keypress' : ''}`}
                 >
                   {letter}
                 </button>
               ))}
               <button
-                onClick={onBackspace}
-                className={`${keyClasses} bg-gray-200`}
+                onClick={handleBackspace}
+                className={`${keyClasses} bg-gray-200 ${pressedKey === 'backspace' ? 'animate-keypress' : ''}`}
               >
                 ⌫
               </button>
@@ -43,8 +57,8 @@ const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBacksp
           {rowIndex !== 0 && row.map((letter) => (
             <button
               key={letter}
-              onClick={() => onLetterClick(letter)}
-              className={`${keyClasses} bg-white `}
+              onClick={() => handleKeyPress(letter)}
+              className={`${keyClasses} bg-white ${pressedKey === letter ? 'animate-keypress' : ''}`}
             >
               {letter}
             </button>
