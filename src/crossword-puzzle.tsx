@@ -626,36 +626,36 @@ const CrosswordPuzzle = () => {
           {currentConfig && (
             <>
             <div id="whole-crossword" className="w-full">
-              <div id="crossword-and-buttons" className="flex space-x-5 flex-row justify-between items-start mt-[42px] mb-3">
-                <CrosswordGrid
-                  userGrid={userGrid}
-                  cellStatus={cellStatus}
-                  selected={selected}
-                  direction={direction}
-                  cellRefs={cellRefs}
-                  onCellClick={handleCellClick}
-                  onChange={handleChange}
-                  onKeyDown={handleKeyDown}
-                />
-              </div>
-              {/* Status message */}
-              {message && (
-                <div className="mb-4 p-2 w-auto px-4 rounded text-[13px] bg-[#2ea199] text-white relative overflow-hidden" style={{ direction: 'rtl' }}>
-                  <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                  <span className="relative">{message}</span>
+              <div id="main-content" style={isMobile ? { height: `calc(100vh - ${bottomPadding}px)` } : undefined}>
+                <div id="crossword-and-buttons" className="flex space-x-5 flex-row justify-between items-start mt-[42px] mb-3">
+                  <CrosswordGrid
+                    userGrid={userGrid}
+                    cellStatus={cellStatus}
+                    selected={selected}
+                    direction={direction}
+                    cellRefs={cellRefs}
+                    onCellClick={handleCellClick}
+                    onChange={handleChange}
+                    onKeyDown={handleKeyDown}
+                  />
                 </div>
-              )}
-              {/* Buttons section */}
-              <div id="sidebar-container" className={`text-center flex flex-row gap-2 text-[13px] w-[100px] p-x-4 pb-4`}>
-                <Sidebar
-                  onMarkPuzzle={markPuzzle}
-                  onHint={handleHint}
-                  onReset={handlePuzzleReset}
-                  hasUntestedCells={hasUntestedCells()}
-                  hasAvailableHints={hasAvailableHints()}
-                />
-              </div>
-
+                {/* Status message */}
+                {message && (
+                  <div className="mb-4 p-2 w-auto px-4 rounded text-[13px] bg-[#2ea199] text-white relative overflow-hidden" style={{ direction: 'rtl' }}>
+                    <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                    <span className="relative">{message}</span>
+                  </div>
+                )}
+                {/* Buttons section */}
+                <div id="sidebar-container" className={`text-center flex flex-row gap-2 text-[13px] w-[100px] p-x-4 pb-4`}>
+                  <Sidebar
+                    onMarkPuzzle={markPuzzle}
+                    onHint={handleHint}
+                    onReset={handlePuzzleReset}
+                    hasUntestedCells={hasUntestedCells()}
+                    hasAvailableHints={hasAvailableHints()}
+                  />
+                </div>
 
                 {/* Clues display */}
                 <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={cluesKeyboardLocation(isMobile)}>
@@ -686,17 +686,19 @@ const CrosswordPuzzle = () => {
                 {isMobile && <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} />}
                 </div>
 
-                <PreviousPuzzles
-                  currentPuzzleId={currentPuzzleId}
-                  onPuzzleChange={handlePuzzleChange}
-                  shown={previousPuzzlesShown}
-                  setShown={setPreviousPuzzlesShown}
-                />
               </div>
+            </div>
             </>
           )}
+          <PreviousPuzzles
+            currentPuzzleId={currentPuzzleId}
+            onPuzzleChange={handlePuzzleChange}
+            shown={previousPuzzlesShown}
+            setShown={setPreviousPuzzlesShown}
+          />
         </>
       )}
+      
       {gameStarted && (<div className="mt-8 flex gap-3 text-[13px]">
         <div className="flex items-center gap-10">
           <a href="https://www.linkedin.com/in/dotanreis/" className="underline">
