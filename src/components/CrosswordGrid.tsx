@@ -49,9 +49,9 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
     }
 
     if (isSelected) {
-      return 'bg-blue-200';
+      return 'bg-[#98e0db]';
     } else if (isInCurrentWord) {
-      return 'bg-blue-100';
+      return 'bg-[#dbfcfa]';
     }
 
     return 'bg-white';
