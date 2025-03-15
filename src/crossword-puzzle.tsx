@@ -626,7 +626,7 @@ const CrosswordPuzzle = () => {
           {currentConfig && (
             <>
             <div id="whole-crossword" className="w-full">
-              <div id="main-content" style={isMobile ? { height: `calc(100vh - ${bottomPadding}px)` } : undefined}>
+              <div id="main-content" style={isMobile ? { minHeight: `calc(100vh - ${bottomPadding}px - 15px)` } : undefined}>
                 <div id="crossword-and-buttons" className="flex space-x-5 flex-row justify-between items-start mt-[42px] mb-3">
                   <CrosswordGrid
                     userGrid={userGrid}
@@ -659,7 +659,7 @@ const CrosswordPuzzle = () => {
 
                 {/* Clues display */}
                 <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={cluesKeyboardLocation(isMobile)}>
-                  <div className={`min-h-[82px] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? 'rounded-t-lg' : 'rounded-lg'}`}>
+                  <div className={`min-h-[82px] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg'}`}>
                   <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
                     <div className="flex-none cursor-pointer select-none text-xl"
                     onClick={() => moveToNextDefinition(true)}>
