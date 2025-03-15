@@ -510,6 +510,42 @@ const CrosswordPuzzle = () => {
     }
   };
 
+  const handleBackspace = () => {
+    if (!selected) return;
+
+    const row = selected.row;
+    const col = selected.col;
+
+    // Don't handle input for blank or correct cells
+    if (userGrid[row][col] === 'blank' || cellStatus[row][col] === true) {
+      return;
+    }
+
+    const newGrid = [...userGrid];
+    const newCellStatus = [...cellStatus];
+
+    if (userGrid[row][col] === '') {
+      // If current cell is empty, move to and clear previous cell
+      const prevCell = backspaceToPreviousCell(row, col, direction);
+      if (!prevCell) {
+        return;
+      }
+      newGrid[prevCell.newRow][prevCell.newCol] = '';
+      newCellStatus[prevCell.newRow][prevCell.newCol] = null;
+      setSelected({row: prevCell.newRow, col: prevCell.newCol});
+      if (prevCell.newDirection) {
+        setDirection(prevCell.newDirection);
+      }
+    } else {
+      // If current cell has content, just clear it
+      newGrid[row][col] = '';
+      newCellStatus[row][col] = null;
+    }
+
+    setUserGrid(newGrid);
+    setCellStatus(newCellStatus);
+  };
+
   const titleDesign = (gameStarted: boolean) => {
     if (gameStarted) {
       return 'absolute right-[30px] z-[-1]';
@@ -648,8 +684,8 @@ const CrosswordPuzzle = () => {
 
 
                 {/* Clues display */}
-                <div className="min-h-[82px] bg-white border-[0.5px] border-black rounded-t-lg">
-                  <div className="p-4 w-full direction-rtl text-right flex gap-[15px] rounded-lg justify-between" style={{ direction: 'rtl' }}>
+                <div className={`min-h-[82px] bg-white border-[0.5px] border-black ${isMobile ? 'rounded-t-lg' : 'rounded-lg'}`}>
+                  <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
                     <div className="flex-none cursor-pointer select-none text-xl"
                     onClick={() => moveToNextDefinition(true)}>
                     {"▶️"}
@@ -672,7 +708,7 @@ const CrosswordPuzzle = () => {
                     </div>
                   </div>
                 </div>
-                {isMobile && <HebrewKeyboard onLetterClick={handleLetterInput} />}
+                {isMobile && <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspace} />}
 
                 <PreviousPuzzles
                   currentPuzzleId={currentPuzzleId}
