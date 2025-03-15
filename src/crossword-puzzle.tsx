@@ -640,11 +640,9 @@ const CrosswordPuzzle = () => {
               </div>
               {/* Status message */}
               {message && (
-                <div className="mb-4 p-2 w-auto px-4 rounded text-[13px] bg-[#2ea199] text-white group relative" style={{ direction: 'rtl' }}>
-                  <div className="absolute inset-0 opacity-0 opacity-100">
-                    <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                  </div>
-                  {message}
+                <div className="mb-4 p-2 w-auto px-4 rounded text-[13px] bg-[#2ea199] text-white relative overflow-hidden" style={{ direction: 'rtl' }}>
+                  <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                  <span className="relative">{message}</span>
                 </div>
               )}
               {/* Buttons section */}
