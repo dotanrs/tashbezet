@@ -566,10 +566,13 @@ const CrosswordPuzzle = () => {
       {!gameStarted ? (
         <button
           onClick={handleStartGame}
-          className="px-6 py-3 bg-[#2ea199] text-white rounded-lg text-xl hover:bg-[#98e0db] transition-colors"
+          className="px-6 py-3 bg-[#2ea199] text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
           style={{ direction: 'rtl' }}
         >
-          מוכנים לֶתַשְבֶצ?
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
+            <div className="absolute inset-0 translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+          </div>
+          <span className="relative">מוכנים לֶתַשְבֶצ?</span>
         </button>
       ) : (
         <>
