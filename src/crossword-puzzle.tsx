@@ -631,7 +631,7 @@ const CrosswordPuzzle = () => {
 
                 {/* Clues display */}
                 <div className="h-[80px]">
-                <div className="mb-4 p-4 bg-gray-200 rounded w-full direction-rtl text-right flex rounded-lg border-1 justify-between" style={{ direction: 'rtl' }}>
+                <div className="mb-4 p-4 bg-white border-[1px] border-gray-800 rounded w-full direction-rtl text-right flex rounded-lg justify-between" style={{ direction: 'rtl' }}>
                   <div className="flex-none gap-20 cursor-pointer select-none text-2xl"
                   onClick={() => moveToNextDefinition(true)}>
                   {"▶️"}

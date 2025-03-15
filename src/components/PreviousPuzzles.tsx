@@ -31,10 +31,10 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPu
             <button
               key={puzzleId}
               onClick={() => onPuzzleChange(puzzleId)}
-              className={`px-4 py-2 rounded flex items-center gap-2 justify-end ${
+              className={`px-4 py-2 rounded flex items-center gap-2 justify-end border-[1px] border-gray-600 ${
                 currentPuzzleId === puzzleId
-                  ? 'bg-blue-200'
-                  : 'bg-gray-200 hover:bg-gray-300'
+                  ? 'bg-blue-200 cursor-default'
+                  : 'bg-white hover:bg-gray-200'
               } ${status === '✓' && 'text-green-600'}`}
             >
               {puzzles[puzzleId].name}
