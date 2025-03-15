@@ -10,7 +10,7 @@ const words = [
 
 const fixedWords = words.map(word => word.reverse());
 
-export const puzzle11: CrosswordConfig = {
+export const puzzle13: CrosswordConfig = {
   name: "2025-05-15",
   "grid": fixedWords,
   "rowClues": [

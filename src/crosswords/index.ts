@@ -9,6 +9,9 @@ import { puzzle8 } from './puzzle8';
 import { puzzle9 } from './puzzle9';
 import { puzzle10 } from './puzzle10';
 import { puzzle11 } from './puzzle11';
+import { puzzle12 } from './puzzle12';
+import { puzzle13 } from './puzzle13';
+import { puzzle14 } from './puzzle14';
 
 function formatDate(date: Date) {
   const year = date.getFullYear();
@@ -23,6 +26,9 @@ const today = new Date();
 const formattedDate = formatDate(today);
 
 const allPuzzles = {
+  puzzle14,
+  puzzle13,
+  puzzle12,
   puzzle11,
   puzzle10,
   puzzle9,
@@ -37,7 +43,10 @@ const allPuzzles = {
 }
 
 const relevantPuzzles = Object.fromEntries(
-  Object.entries(allPuzzles).filter(([_, puzzle]) => puzzle.name <= formattedDate)
+  Object.entries(allPuzzles)
+    .filter(([_, puzzle]) => puzzle.name <= formattedDate)
+    .sort((a, b) => a[1].name.localeCompare(b[1].name))
+    .reverse()
 );
 
 export const puzzles = relevantPuzzles;
