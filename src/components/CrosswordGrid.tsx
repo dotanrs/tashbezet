@@ -1,5 +1,6 @@
 import React from 'react';
 import { Grid, Selected, CellStatusGrid, Direction } from '../types/crossword';
+import useIsMobile from '../hooks/useIsMobile';
 
 interface CrosswordGridProps {
   userGrid: Grid;
@@ -22,6 +23,8 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
   onChange,
   onKeyDown,
 }) => {
+  const isMobile = useIsMobile();
+
   const getCellStyle = (row: number, col: number, isSelected: boolean | null) => {
     if (userGrid[row][col] === 'blank') {
       return 'bg-gray-800';
@@ -72,19 +75,27 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
               onClick={() => onCellClick(rowIndex, colIndex)}
             >
               {cell !== 'blank' && (
-                <input
-                  ref={el => cellRefs.current[rowIndex][colIndex] = el}
-                  type="text"
-                  value={cell}
-                  onChange={onChange}
-                  onKeyDown={onKeyDown}
-                  className={`w-full h-full text-center text-xl outline-none bg-transparent font-rubik
+                isMobile ? (
+                  <div className={`w-full h-full flex items-center justify-center text-xl font-rubik
                     ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default' : ''}
-                    ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : 'text-gray-700'}`}
-                  maxLength={1}
-                  dir="rtl"
-                  lang="he"
-                />
+                    ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : 'text-gray-700'}`}>
+                    {cell}
+                  </div>
+                ) : (
+                  <input
+                    ref={el => cellRefs.current[rowIndex][colIndex] = el}
+                    type="text"
+                    value={cell}
+                    onChange={onChange}
+                    onKeyDown={onKeyDown}
+                    className={`w-full h-full text-center text-xl outline-none bg-transparent font-rubik
+                      ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default' : ''}
+                      ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : 'text-gray-700'}`}
+                    maxLength={1}
+                    dir="rtl"
+                    lang="he"
+                  />
+                )
               )}
             </div>
           );

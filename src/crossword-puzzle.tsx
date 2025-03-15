@@ -9,8 +9,10 @@ import PreviousPuzzles from './components/PreviousPuzzles';
 import CrosswordGrid from './components/CrosswordGrid';
 import HebrewKeyboard from './components/HebrewKeyboard';
 import { findNextDirectCell, findNextDirectCellV2 } from './utils/crosswordNavigation';
+import useIsMobile from './hooks/useIsMobile';
 
 const CrosswordPuzzle = () => {
+  const isMobile = useIsMobile();
   // Add new state for game started
   const [gameStarted, setGameStarted] = useState(false);
   // Modify current puzzle state to be null initially
@@ -670,7 +672,7 @@ const CrosswordPuzzle = () => {
                     </div>
                   </div>
                 </div>
-                <HebrewKeyboard onLetterClick={handleLetterInput} />
+                {isMobile && <HebrewKeyboard onLetterClick={handleLetterInput} />}
 
                 <PreviousPuzzles
                   currentPuzzleId={currentPuzzleId}
