@@ -7,6 +7,7 @@ import ReactConfetti from 'react-confetti';
 import { puzzles, PuzzleId } from './crosswords';
 import PreviousPuzzles from './components/PreviousPuzzles';
 import CrosswordGrid from './components/CrosswordGrid';
+import HebrewKeyboard from './components/HebrewKeyboard';
 import { findNextDirectCell, findNextDirectCellV2 } from './utils/crosswordNavigation';
 
 const CrosswordPuzzle = () => {
@@ -639,36 +640,37 @@ const CrosswordPuzzle = () => {
                   cellRefs={cellRefs}
                   onCellClick={handleCellClick}
                   onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                  />
+                  onKeyDown={handleKeyDown}
+                />
               </div>
 
 
                 {/* Clues display */}
-                <div className="h-[80px]">
-                <div className="mb-4 p-4 bg-white border-[1px] border-gray-800 rounded w-full direction-rtl text-right flex rounded-lg justify-between" style={{ direction: 'rtl' }}>
-                  <div className="flex-none gap-20 cursor-pointer select-none text-2xl"
-                  onClick={() => moveToNextDefinition(true)}>
-                  {"▶️"}
-                  </div>
-                  <div className="flex-1 gap-2 px-3">
-                  {selected && direction === 'across' && (
-                    <div>
-                      <span className="text-[12px] ml-2">{selected.row + 1} מאוזן</span> {currentConfig.rowClues[selected.row]}
+                <div className="min-h-[82px] bg-white border-[0.5px] border-black rounded-t-lg">
+                  <div className="p-4 w-full direction-rtl text-right flex gap-[15px] rounded-lg justify-between" style={{ direction: 'rtl' }}>
+                    <div className="flex-none cursor-pointer select-none text-xl"
+                    onClick={() => moveToNextDefinition(true)}>
+                    {"▶️"}
                     </div>
-                  )}
-                  {selected && direction === 'down' && (
-                    <div>
-                      <span className="text-[12px] ml-2">{selected.col + 1} מאונך</span> {currentConfig.columnClues[selected.col]}
+                    <div className="flex-1 gap-2 px-3">
+                    {selected && direction === 'across' && (
+                      <div>
+                        <span className="text-[12px] ml-2">{selected.row + 1} מאוזן</span> {currentConfig.rowClues[selected.row]}
+                      </div>
+                    )}
+                    {selected && direction === 'down' && (
+                      <div>
+                        <span className="text-[12px] ml-2">{selected.col + 1} מאונך</span> {currentConfig.columnClues[selected.col]}
+                      </div>
+                    )}
                     </div>
-                  )}
-                  </div>
-                  <div className="flex-none cursor-pointer select-none text-2xl"
-                  onClick={() => moveToNextDefinition(false)}>
-                  {"◀️"}
+                    <div className="flex-none cursor-pointer select-none text-2xl"
+                    onClick={() => moveToNextDefinition(false)}>
+                    {"◀️"}
+                    </div>
                   </div>
                 </div>
-                </div>
+                <HebrewKeyboard onLetterClick={handleLetterInput} />
 
                 <PreviousPuzzles
                   currentPuzzleId={currentPuzzleId}
