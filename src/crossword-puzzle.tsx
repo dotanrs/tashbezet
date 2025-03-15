@@ -13,6 +13,9 @@ import useIsMobile from './hooks/useIsMobile';
 
 const CrosswordPuzzle = () => {
   const isMobile = useIsMobile();
+  const cluesKeyboardRef = useRef<HTMLDivElement>(null);
+  const [bottomPadding, setBottomPadding] = useState(0);
+
   // Add new state for game started
   const [gameStarted, setGameStarted] = useState(false);
   // Modify current puzzle state to be null initially
@@ -97,6 +100,26 @@ const CrosswordPuzzle = () => {
     setDirection('across');
     checkComplete(newGrid, currentPuzzleId);
   }, [currentPuzzleId]);
+
+  useEffect(() => {
+    if (isMobile && cluesKeyboardRef.current) {
+      const updatePadding = () => {
+        const height = cluesKeyboardRef.current?.offsetHeight || 0;
+        setBottomPadding(height + 15);
+      };
+
+      updatePadding();
+      // Update on resize
+      window.addEventListener('resize', updatePadding);
+      // Also update after a short delay to account for dynamic content
+      const timeoutId = setTimeout(updatePadding, 100);
+
+      return () => {
+        window.removeEventListener('resize', updatePadding);
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [isMobile, gameStarted]);
 
   // Modify handlePuzzleChange
   const handlePuzzleChange = (puzzleId: PuzzleId) => {
@@ -538,7 +561,7 @@ const CrosswordPuzzle = () => {
   }
 
   return (
-    <div id="crossword-container" className="absolute w-full md:w-[500px] max-w-[500px] right-0 left-0 m-x-0 flex flex-col items-center p-4 mx-auto">
+    <div id="crossword-container" className={`absolute w-full md:w-[500px] max-w-[500px] right-0 left-0 m-x-0 flex flex-col items-center p-4 mx-auto`} style={isMobile ? { paddingBottom: bottomPadding } : undefined}>
       <div className={`${titleDesign(gameStarted)}`}>
         <h1 className="mb-8 select-none" style={{ direction: 'rtl' }}>
           <div className="relative">
@@ -670,7 +693,7 @@ const CrosswordPuzzle = () => {
 
 
                 {/* Clues display */}
-                <div className={cluesKeyboardLocation(isMobile)}>
+                <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={cluesKeyboardLocation(isMobile)}>
                   <div className={`min-h-[82px] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? 'rounded-t-lg' : 'rounded-lg'}`}>
                   <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
                     <div className="flex-none cursor-pointer select-none text-xl"
