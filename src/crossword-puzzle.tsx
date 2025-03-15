@@ -530,6 +530,13 @@ const CrosswordPuzzle = () => {
     return 'mt-8';
   }
 
+  const cluesKeyboardLocation = (isMobile: boolean) => {
+    if (isMobile) {
+      return 'fixed bottom-0 right-0 left-0 md:left-auto md:w-[770px]';
+    }
+    return '';
+  }
+
   return (
     <div id="crossword-container" className="absolute w-full md:w-[500px] max-w-[500px] right-0 left-0 m-x-0 flex flex-col items-center p-4 mx-auto">
       <div className={`${titleDesign(gameStarted)}`}>
@@ -663,7 +670,8 @@ const CrosswordPuzzle = () => {
 
 
                 {/* Clues display */}
-                <div className={`min-h-[82px] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? 'rounded-t-lg' : 'rounded-lg'}`}>
+                <div className={cluesKeyboardLocation(isMobile)}>
+                  <div className={`min-h-[82px] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? 'rounded-t-lg' : 'rounded-lg'}`}>
                   <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
                     <div className="flex-none cursor-pointer select-none text-xl"
                     onClick={() => moveToNextDefinition(true)}>
@@ -688,6 +696,7 @@ const CrosswordPuzzle = () => {
                   </div>
                 </div>
                 {isMobile && <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} />}
+                </div>
 
                 <PreviousPuzzles
                   currentPuzzleId={currentPuzzleId}
