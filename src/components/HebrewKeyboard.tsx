@@ -13,7 +13,7 @@ const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBacksp
     ['ז', 'ס', 'ב', 'ה', 'נ', 'מ', 'צ', 'ת']
   ];
 
-  const keyClasses = 'aspect-square text-gray-700 w-full flex items-center justify-center rounded border-[0.5px] border-gray-800 hover:bg-gray-200 active:bg-gray-300 text-lg';
+  const keyClasses = 'aspect-square text-gray-700 w-full flex items-center justify-center rounded border-[0.5px] border-gray-800 hover:bg-[#d2f4f2] active:bg-gray-300 text-lg';
 
   return (
     <div className="w-full bg-gray-100 p-2 rounded-b-lg border-[0.5px] border-t-0 border-gray-800">

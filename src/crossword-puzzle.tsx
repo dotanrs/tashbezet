@@ -567,7 +567,6 @@ const CrosswordPuzzle = () => {
                   key={index}
                   className="w-12 aspect-square flex items-center justify-center text-2xl font-bold bg-white"
                   style={{
-                    background: 'white',
                     fontFamily: "'Rubik', sans-serif",
                   }}
                 >
@@ -629,7 +628,7 @@ const CrosswordPuzzle = () => {
                         disabled={!hasUntestedCells()}
                         className={`px-3 py-2 rounded border-[1px] border-gray-800 ${
                           hasUntestedCells() 
-                            ? 'hover:bg-[#98e0db] bg-white text-black' 
+                            ? 'hover:bg-[#98e0db] bg-[#dbfcfa] text-black' 
                             : 'bg-gray-300 text-gray-800 cursor-not-allowed'
                         }`}
                       >
@@ -645,7 +644,7 @@ const CrosswordPuzzle = () => {
                         disabled={!hasAvailableHints()}
                         className={`px-3 py-2 rounded border-[1px] border-gray-800 ${
                           hasAvailableHints() 
-                            ? 'hover:bg-yellow-100 bg-white text-black' 
+                            ? 'hover:bg-yellow-100 bg-[#dbfcfa] text-black' 
                             : 'bg-gray-300 text-gray-800 cursor-not-allowed'
                         }`}
                       >
@@ -658,7 +657,7 @@ const CrosswordPuzzle = () => {
                       </button>
                       <button
                         onClick={handlePuzzleReset}
-                        className="px-3 py-2 text-black border-[1px] border-gray-800 text-black rounded bg-white hover:bg-red-200"
+                        className="px-3 py-2 text-black border-[1px] border-gray-800 text-black rounded bg-[#dbfcfa] hover:bg-red-200"
                       >
                         <div className="flex flex-row justify-between">
                           🧹
@@ -684,7 +683,7 @@ const CrosswordPuzzle = () => {
 
 
                 {/* Clues display */}
-                <div className={`min-h-[82px] bg-[white] border-[0.5px] border-black ${isMobile ? 'rounded-t-lg' : 'rounded-lg'}`}>
+                <div className={`min-h-[82px] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? 'rounded-t-lg' : 'rounded-lg'}`}>
                   <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
                     <div className="flex-none cursor-pointer select-none text-xl"
                     onClick={() => moveToNextDefinition(true)}>
