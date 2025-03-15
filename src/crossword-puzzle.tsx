@@ -11,6 +11,7 @@ import HebrewKeyboard from './components/HebrewKeyboard';
 import Sidebar from './components/Sidebar';
 import { findNextDirectCell, findNextDirectCellV2 } from './utils/crosswordNavigation';
 import useIsMobile from './hooks/useIsMobile';
+import Button from './components/Button';
 
 const CrosswordPuzzle = () => {
   const isMobile = useIsMobile();
@@ -19,6 +20,7 @@ const CrosswordPuzzle = () => {
 
   // Add new state for game started
   const [gameStarted, setGameStarted] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
   // Modify current puzzle state to be null initially
   const [currentPuzzleId, setCurrentPuzzleId] = useState<PuzzleId | null>(null);
   const [currentConfig, setCurrentConfig] = useState<CrosswordConfig | null>(null);
@@ -622,14 +624,6 @@ const CrosswordPuzzle = () => {
             <>
             <div id="whole-crossword" className="w-full">
               <div id="crossword-and-buttons" className="flex space-x-5 flex-row justify-between items-start mt-[42px] mb-3">
-                <Sidebar
-                  onMarkPuzzle={markPuzzle}
-                  onHint={handleHint}
-                  onReset={handlePuzzleReset}
-                  hasUntestedCells={hasUntestedCells()}
-                  hasAvailableHints={hasAvailableHints()}
-                  message={message}
-                />
                 <CrosswordGrid
                   userGrid={userGrid}
                   cellStatus={cellStatus}
@@ -639,6 +633,16 @@ const CrosswordPuzzle = () => {
                   onCellClick={handleCellClick}
                   onChange={handleChange}
                   onKeyDown={handleKeyDown}
+                />
+              </div>
+              <div id="sidebar-container" className={`text-center flex flex-row gap-2 text-[13px] w-[100px] p-x-4 pb-4`}>
+                <Sidebar
+                  onMarkPuzzle={markPuzzle}
+                  onHint={handleHint}
+                  onReset={handlePuzzleReset}
+                  hasUntestedCells={hasUntestedCells()}
+                  hasAvailableHints={hasAvailableHints()}
+                  message={message}
                 />
               </div>
 
