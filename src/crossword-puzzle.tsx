@@ -590,7 +590,7 @@ const CrosswordPuzzle = () => {
       {!gameStarted ? (
         <button
           onClick={handleStartGame}
-          className="px-6 py-3 bg-[#2ea199] text-white rounded-lg text-xl hover:bg-blue-600 transition-colors"
+          className="px-6 py-3 bg-[#2ea199] text-white rounded-lg text-xl hover:bg-[#98e0db] transition-colors"
           style={{ direction: 'rtl' }}
         >
           מוכנים לֶתַשְבֶצ?
@@ -684,7 +684,7 @@ const CrosswordPuzzle = () => {
 
 
                 {/* Clues display */}
-                <div className={`min-h-[82px] bg-white border-[0.5px] border-black ${isMobile ? 'rounded-t-lg' : 'rounded-lg'}`}>
+                <div className={`min-h-[82px] bg-[white] border-[0.5px] border-black ${isMobile ? 'rounded-t-lg' : 'rounded-lg'}`}>
                   <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
                     <div className="flex-none cursor-pointer select-none text-xl"
                     onClick={() => moveToNextDefinition(true)}>
