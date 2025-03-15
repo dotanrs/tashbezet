@@ -519,7 +519,7 @@ const CrosswordPuzzle = () => {
       <div className={`${titleDesign(gameStarted)}`}>
         <h1 className="mb-8 select-none" style={{ direction: 'rtl' }}>
           <div className="relative">
-            <div className="absolute left-[-20px] top-[-20px] w-12 aspect-square flex items-center justify-center text-4xl opacity-20">
+            <div className="absolute left-[-20px] top-[-20px] w-12 aspect-square flex items-center justify-center text-4xl opacity-80">
               🖋️
             </div>
             <div className="grid grid-flow-col gap-[1px] bg-gray-300 p-[1px] rounded">

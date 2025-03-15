@@ -57,7 +57,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
   const displayToLogicalCol = (displayCol: number) => 4 - displayCol;
 
   return (
-    <div className="grid grid-cols-5 gap-0 border border-gray-800 w-full">
+    <div className="grid grid-cols-5 gap-0 border-[0.5px] border-gray-800 w-full">
       {userGrid.map((row, rowIndex) => (
         row.map((_, displayColIndex) => {
           const colIndex = displayToLogicalCol(displayColIndex);
