@@ -5,7 +5,19 @@ const useIsMobile = () => {
 
   useEffect(() => {
     const checkIsMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      // Check for touch capability
+      const hasTouch = 'ontouchstart' in window || 
+        navigator.maxTouchPoints > 0 ||
+        // @ts-ignore
+        navigator.msMaxTouchPoints > 0;
+
+      // Check for mobile-specific features
+      const hasMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+      // Check for screen size as a fallback
+      const isMobileWidth = window.innerWidth <= 768;
+
+      setIsMobile(hasTouch && (hasMobileUA || isMobileWidth));
     };
 
     checkIsMobile();
