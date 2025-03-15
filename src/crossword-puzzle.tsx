@@ -8,6 +8,7 @@ import { puzzles, PuzzleId } from './crosswords';
 import PreviousPuzzles from './components/PreviousPuzzles';
 import CrosswordGrid from './components/CrosswordGrid';
 import HebrewKeyboard from './components/HebrewKeyboard';
+import Sidebar from './components/Sidebar';
 import { findNextDirectCell, findNextDirectCellV2 } from './utils/crosswordNavigation';
 import useIsMobile from './hooks/useIsMobile';
 
@@ -621,64 +622,14 @@ const CrosswordPuzzle = () => {
             <>
             <div id="whole-crossword" className="w-full">
               <div id="crossword-and-buttons" className="flex space-x-5 flex-row justify-between items-start mt-[42px] mb-3">
-                {/* Sidebar */}
-                <div id="sidebar">
-                  <div>
-                      {/* Status message */}
-                      {message && (
-                        <div className="mb-6 p-2 rounded bg-green-100 text-green-800" style={{ direction: 'rtl' }}>
-                          {message}
-                        </div>
-                      )}
-
-                    {/* Buttons section */}
-                    <div className="flex flex-col gap-2 text-[13px] w-[90px]">
-                      <button
-                        onClick={markPuzzle}
-                        disabled={!hasUntestedCells()}
-                        className={`px-3 py-2 rounded border-[1px] border-gray-800 ${
-                          hasUntestedCells() 
-                            ? 'hover:bg-[#98e0db] bg-[#dbfcfa] text-black' 
-                            : 'bg-gray-300 text-gray-800 cursor-not-allowed'
-                        }`}
-                      >
-                        <div className="flex flex-row justify-between">
-                          🖋️
-                          <div>
-                          בדיקה
-                          </div>
-                        </div>
-                      </button>
-                      <button
-                        onClick={handleHint}
-                        disabled={!hasAvailableHints()}
-                        className={`px-3 py-2 rounded border-[1px] border-gray-800 ${
-                          hasAvailableHints() 
-                            ? 'hover:bg-yellow-100 bg-[#dbfcfa] text-black' 
-                            : 'bg-gray-300 text-gray-800 cursor-not-allowed'
-                        }`}
-                      >
-                        <div className="flex flex-row justify-between">
-                          🤔
-                          <div>
-                          רמז
-                          </div>
-                        </div>
-                      </button>
-                      <button
-                        onClick={handlePuzzleReset}
-                        className="px-3 py-2 text-black border-[1px] border-gray-800 text-black rounded bg-[#dbfcfa] hover:bg-red-200"
-                      >
-                        <div className="flex flex-row justify-between">
-                          🧹
-                          <div>
-                          איפוס
-                          </div>
-                        </div>
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                <Sidebar
+                  onMarkPuzzle={markPuzzle}
+                  onHint={handleHint}
+                  onReset={handlePuzzleReset}
+                  hasUntestedCells={hasUntestedCells()}
+                  hasAvailableHints={hasAvailableHints()}
+                  message={message}
+                />
                 <CrosswordGrid
                   userGrid={userGrid}
                   cellStatus={cellStatus}
