@@ -420,7 +420,7 @@ const CrosswordPuzzle = () => {
     const result = checkPuzzle(grid, currentConfig);
     if (result.isCorrect) {
       setCellStatus(result.newCellStatus);
-      setMessage('כל הכבוד!');
+      setMessage('פתרת את זה!');
       if (allowConfetti) {
         setShowConfetti(true);
       }
@@ -635,15 +635,23 @@ const CrosswordPuzzle = () => {
                   onKeyDown={handleKeyDown}
                 />
               </div>
-              <div id="sidebar-container" className={`text-center flex flex-row gap-2 text-[13px] w-[100px] p-x-4 pb-4`}>
-                <Sidebar
-                  onMarkPuzzle={markPuzzle}
-                  onHint={handleHint}
-                  onReset={handlePuzzleReset}
-                  hasUntestedCells={hasUntestedCells()}
-                  hasAvailableHints={hasAvailableHints()}
-                  message={message}
-                />
+              <div className="flex flex-row justify-between">
+                {/* Buttons section */}
+                <div id="sidebar-container" className={`text-center flex flex-row gap-2 text-[13px] w-[100px] p-x-4 pb-4`}>
+                  <Sidebar
+                    onMarkPuzzle={markPuzzle}
+                    onHint={handleHint}
+                    onReset={handlePuzzleReset}
+                    hasUntestedCells={hasUntestedCells()}
+                    hasAvailableHints={hasAvailableHints()}
+                  />
+                </div>
+                {/* Status message */}
+                {message && (
+                  <div className="mb-4 p-2 px-4 rounded text-[13px] bg-[#2ea199] text-white" style={{ direction: 'rtl' }}>
+                    {message}
+                  </div>
+                )}
               </div>
 
 

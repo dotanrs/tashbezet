@@ -7,7 +7,6 @@ interface SidebarProps {
   onReset: () => void;
   hasUntestedCells: boolean;
   hasAvailableHints: boolean;
-  message?: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -16,18 +15,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   onReset,
   hasUntestedCells,
   hasAvailableHints,
-  message,
 }) => {
   return (
       <>
-        {/* Status message */}
-        {/* {message && (
-          <div className="mb-6 p-2 rounded bg-green-100 text-green-800" style={{ direction: 'rtl' }}>
-            {message}
-          </div>
-        )} */}
-
-        {/* Buttons section */}
       <Button
         onClick={onMarkPuzzle}
         disabled={!hasUntestedCells}
