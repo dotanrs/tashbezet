@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PuzzleId } from '../crosswords';
 import { loadPuzzleState } from '../utils/storageUtils';
 import { puzzles } from '../crosswords';
@@ -9,6 +9,8 @@ interface PreviousPuzzlesProps {
 }
 
 const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPuzzleChange }) => {
+  const [shown, setShown] = useState(false);
+
   const puzzleIds = Object.keys(puzzles) as PuzzleId[];
 
   const getPuzzleStatus = (puzzleId: PuzzleId) => {
@@ -24,7 +26,8 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPu
         <div className="text-xl w-18 text-center">תשבצים קודמים</div>
         <div className="h-[1px] bg-gray-300 flex-auto"></div>
       </div>
-      <div className="grid grid-cols-2 justify-center gap-2 flex-wrap">
+      {shown && (
+        <div className="grid grid-cols-2 justify-center gap-2 flex-wrap">
         {puzzleIds.map((puzzleId) => {
           const status = getPuzzleStatus(puzzleId);
           return (
@@ -46,6 +49,10 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPu
             </button>
           );
         })}
+        </div>
+      )}
+      <div onClick={() => setShown(!shown)} className={`text-center text-gray-600 cursor-pointer ${shown ? 'mt-4' : ''}`}>
+          {shown ? '🔼 להסתיר' : '🔽 להציג'}
       </div>
     </div>
   );
