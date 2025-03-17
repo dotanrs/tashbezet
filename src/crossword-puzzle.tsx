@@ -418,22 +418,33 @@ const CrosswordPuzzle = () => {
     setCellStatus(createEmptyCellStatus());
   };
 
+  const allPuzzlesSolved = () => {
+    return Object.keys(puzzles).every(puzzleId => {
+      const savedState = loadPuzzleState(puzzleId);
+      return savedState?.isComplete;
+    });
+  }
+
   const checkComplete = (grid: Grid, puzzleId: PuzzleId, allowConfetti: boolean = false) => {  
     const result = checkPuzzle(grid, currentConfig);
-    if (result.isCorrect) {
-      setCellStatus(result.newCellStatus);
-      setMessage('פתרת את זה! אפשר לגלול למטה בשביל עוד 💪');
-      setPreviousPuzzlesShown(true);
-      if (allowConfetti) {
-        setShowConfetti(true);
-      }
-    }
     savePuzzleState(puzzleId, {
       userGrid: grid,
       cellStatus: cellStatus,
       isComplete: result.isCorrect,
       puzzleId,
     });
+    if (result.isCorrect) {
+      setCellStatus(result.newCellStatus);
+      if (allPuzzlesSolved()) {
+        setMessage('וואו, פתרת הכל! זה בשבילך: ⭐️ נתראה בתשבצ הבא ביום חמישי 💪');
+      } else {
+        setMessage('פתרת את זה! אפשר לגלול למטה בשביל עוד 💪');
+      }
+      setPreviousPuzzlesShown(true);
+      if (allowConfetti) {
+        setShowConfetti(true);
+      }
+    }
   };
 
   const markPuzzle = () => {

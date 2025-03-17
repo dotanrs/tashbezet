@@ -29,7 +29,7 @@ const Button: React.FC<ButtonProps> = ({
     >
       <div className="flex flex-row justify-between">
         {icon}
-        <div>
+        <div className="pl-2">
           {text}
         </div>
       </div>
