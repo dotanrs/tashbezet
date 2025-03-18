@@ -1,17 +1,4 @@
-import { puzzle1 } from './puzzle1';
-import { puzzle2 } from './puzzle2';
-import { puzzle3 } from './puzzle3';
-import { puzzle4 } from './puzzle4';
-import { puzzle5 } from './puzzle5';
-import { puzzle6 } from './puzzle6';
-import { puzzle7 } from './puzzle7';
-import { puzzle8 } from './puzzle8';
-import { puzzle9 } from './puzzle9';
-import { puzzle10 } from './puzzle10';
-import { puzzle11 } from './puzzle11';
-import { puzzle12 } from './puzzle12';
-import { puzzle13 } from './puzzle13';
-import { puzzle14 } from './puzzle14';
+import { CrosswordConfig } from "../types/crossword";
 
 function formatDate(date: Date) {
   const year = date.getFullYear();
@@ -25,22 +12,21 @@ function formatDate(date: Date) {
 const today = new Date();
 const formattedDate = formatDate(today);
 
-const allPuzzles = {
-  puzzle14,
-  puzzle13,
-  puzzle12,
-  puzzle11,
-  puzzle10,
-  puzzle9,
-  puzzle8,
-  puzzle7,
-  puzzle6,
-  puzzle5,
-  puzzle4,
-  puzzle3,
-  puzzle2,
-  puzzle1,
-}
+// Dynamically import all puzzle files
+const allPuzzles: CrosswordConfig[] = [
+  require('./puzzle1').default,
+  require('./puzzle2').default,
+  require('./puzzle3').default,
+  require('./puzzle4').default,
+  require('./puzzle5').default,
+  require('./puzzle6').default,
+  require('./puzzle7').default,
+  require('./puzzle8').default,
+  require('./puzzle9').default,
+  require('./puzzle10').default,
+  require('./puzzle11').default,
+  require('./puzzle12').default,
+]
 
 const relevantPuzzles = Object.fromEntries(
   Object.entries(allPuzzles)

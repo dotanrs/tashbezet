@@ -10,7 +10,7 @@ const words = [
 
 const fixedWords = words.map(word => word.reverse());
 
-export const puzzle4: CrosswordConfig = {
+const puzzle: CrosswordConfig = {
   name: "2025-03-13",
   "grid": fixedWords,
   "rowClues": [
@@ -27,4 +27,6 @@ export const puzzle4: CrosswordConfig = {
     "לא הולך סחור סחור",
     "״לא״, מעבר לגבול בין מדינות באי הבריטי"
   ]
-}; 
+};
+
+export default puzzle; 
