@@ -1,43 +1,13 @@
 import { CrosswordConfig } from '../types/crossword';
 
-export const puzzle3: CrosswordConfig = {
+const puzzle: CrosswordConfig = {
   name: "2025-03-07",
   "grid": [
-    [
-      "blank",
-      "blank",
-      "ח",
-      "ס",
-      "ר"
-    ],
-    [
-      "blank",
-      "ר",
-      "ט",
-      "י",
-      "ו"
-    ],
-    [
-      "א",
-      "י",
-      "מ",
-      "א",
-      "מ"
-    ],
-    [
-      "ח",
-      "צ",
-      "י",
-      "ו",
-      "נ"
-    ],
-    [
-      "מ",
-      "ה",
-      "ת",
-      "ל",
-      "ה"
-    ]
+    ["blank", "blank", "ח", "ס", "ר"],
+    ["blank", "ר", "ט", "י", "ו"],
+    ["א", "י", "מ", "א", "מ"],
+    ["ח", "צ", "י", "ו", "נ"],
+    ["מ", "ה", "ת", "ל", "ה"]
   ],
   "rowClues": [
     "סוג הכתיב במילה ספר, אולי",
@@ -53,4 +23,6 @@ export const puzzle3: CrosswordConfig = {
     "בירה מזרחית",
     "א-לה ___ (תיאור של מאכל איטלקי)"
   ]
-}; 
+};
+
+export default puzzle; 
