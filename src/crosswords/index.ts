@@ -13,20 +13,20 @@ const today = new Date();
 const formattedDate = formatDate(today);
 
 // Dynamically import all puzzle files
-const allPuzzles: CrosswordConfig[] = [
-  require('./puzzle1').default,
-  require('./puzzle2').default,
-  require('./puzzle3').default,
-  require('./puzzle4').default,
-  require('./puzzle5').default,
-  require('./puzzle6').default,
-  require('./puzzle7').default,
-  require('./puzzle8').default,
-  require('./puzzle9').default,
-  require('./puzzle10').default,
-  require('./puzzle11').default,
-  require('./puzzle12').default,
-]
+const allPuzzles: { [key: string]: CrosswordConfig } = {
+  puzzle1: require('./puzzle1').default,
+  puzzle2: require('./puzzle2').default,
+  puzzle3: require('./puzzle3').default,
+  puzzle4: require('./puzzle4').default,
+  puzzle5: require('./puzzle5').default,
+  puzzle6: require('./puzzle6').default,
+  puzzle7: require('./puzzle7').default,
+  puzzle8: require('./puzzle8').default,
+  puzzle9: require('./puzzle9').default,
+  puzzle10: require('./puzzle10').default,
+  puzzle11: require('./puzzle11').default,
+  puzzle12: require('./puzzle12').default,
+}
 
 const relevantPuzzles = Object.fromEntries(
   Object.entries(allPuzzles)
