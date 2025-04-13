@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Grid, Selected, CellStatusGrid, Direction, CrosswordConfig, SavedPuzzleState } from './types/crossword';
-import { findNextCell, findNextDefinition, handleArrowNavigation } from './utils/navigationUtils';
+import { findNextDefinition, handleArrowNavigation } from './utils/navigationUtils';
 import { clearPuzzleState, loadPuzzleState, savePuzzleState } from './utils/storageUtils';
 import { createEmptyGrid, createEmptyCellStatus, checkPuzzle } from './utils/puzzleUtils';
 import ReactConfetti from 'react-confetti';
@@ -11,7 +11,6 @@ import HebrewKeyboard from './components/HebrewKeyboard';
 import Sidebar from './components/Sidebar';
 import { findNextDirectCell, findNextDirectCellV2 } from './utils/crosswordNavigation';
 import useIsMobile from './hooks/useIsMobile';
-import Button from './components/Button';
 
 const CrosswordPuzzle = () => {
   const isMobile = useIsMobile();
