@@ -29,4 +29,4 @@ const puzzle: CrosswordConfig = {
   ]
 }; 
 
-export default puzzle; 
+export default puzzle;

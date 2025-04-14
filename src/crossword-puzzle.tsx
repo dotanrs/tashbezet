@@ -434,7 +434,7 @@ const CrosswordPuzzle = () => {
     if (result.isCorrect) {
       setCellStatus(result.newCellStatus);
       if (allPuzzlesSolved()) {
-        setMessage('וואו, פתרת הכל! זה בשבילך: ⭐️ נתראה בתשבצ הבא ביום חמישי 💪');
+        setMessage('וואו, פתרת הכל! זה בשבילך: ⭐️ נתראה בתשבץ הבא ביום חמישי 💪');
       } else {
         setMessage('פתרת את זה! אפשר לגלול למטה בשביל עוד 💪');
       }
