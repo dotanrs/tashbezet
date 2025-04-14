@@ -1,7 +1,8 @@
-import { Grid, Direction } from '../types/crossword';
+import { Grid, Direction, CellStatusGrid } from '../types/crossword';
 
 export const findNextDirectCellV2 = (
   grid: Grid,
+  cellStatus: CellStatusGrid,
   row: number,
   col: number,
   direction: Direction,
@@ -40,7 +41,7 @@ export const findNextDirectCellV2 = (
   }
 
   step();
-  while (grid[nextRow][nextCol] === 'blank') {
+  while (grid[nextRow][nextCol] === 'blank' || cellStatus[nextRow][nextCol] == true) {
     step();
   }
 

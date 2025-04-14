@@ -41,7 +41,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
 
     if (isCompleted) {
       if (isSelected) {
-        return 'bg-[#98e0d1] '; // Lighter green with a hint of yellow
+        return 'bg-[#98e0d1]'; // Lighter green with a hint of yellow
       } else if (isInCurrentWord) {
         return 'bg-[#d1f7eb]'; // Very light green
       }

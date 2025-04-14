@@ -19,7 +19,6 @@ const CrosswordPuzzle = () => {
 
   // Add new state for game started
   const [gameStarted, setGameStarted] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
   // Modify current puzzle state to be null initially
   const [currentPuzzleId, setCurrentPuzzleId] = useState<PuzzleId | null>(null);
   const [currentConfig, setCurrentConfig] = useState<CrosswordConfig | null>(null);
@@ -230,7 +229,7 @@ const CrosswordPuzzle = () => {
   };
 
   const moveToNextCell = (row: number, col: number, forward: boolean = true, directNext: boolean = false) => {
-    const nextCell = directNext ? findNextDirectCellV2(userGrid, row, col, direction, forward) : findNextEditableCell(row, col, direction, forward);
+    const nextCell = directNext ? findNextDirectCellV2(userGrid, cellStatus, row, col, direction, forward) : findNextEditableCell(row, col, direction, forward);
     if (nextCell) {
       setSelected(nextCell);
       cellRefs.current[nextCell.row][nextCell.col]?.focus();
@@ -250,14 +249,14 @@ const CrosswordPuzzle = () => {
       return null;
     }
 
-    let prevCell = findNextDirectCellV2(userGrid, row, col, direction, false);
+    let prevCell = findNextDirectCellV2(userGrid, cellStatus, row, col, direction, false);
     while (
       prevCell && (
         userGrid[prevCell.row][prevCell.col] === 'blank' ||
         cellStatus[prevCell.row][prevCell.col] === true
       )
     ) {
-      prevCell = findNextDirectCellV2(userGrid, prevCell.row, prevCell.col, direction, false);
+      prevCell = findNextDirectCellV2(userGrid, cellStatus, prevCell.row, prevCell.col, direction, false);
     }
 
     if (!prevCell) {
