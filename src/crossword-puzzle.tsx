@@ -436,7 +436,7 @@ const CrosswordPuzzle = () => {
       if (allPuzzlesSolved()) {
         setMessage('וואו, פתרת הכל! זה בשבילך: ⭐️ נתראה בתשבץ הבא ביום חמישי 💪');
       } else {
-        setMessage('פתרת את זה! אפשר לגלול למטה בשביל עוד 💪');
+        setMessage('כל הכבוד, פתרת את זה! 💪 ביום חמישי יהיה תשבץ חדש ☺️');
       }
       setPreviousPuzzlesShown(true);
       if (allowConfetti) {
