@@ -13,7 +13,7 @@ const words = defs.map(def => def.split("").reverse().map(char => char === "_" ?
 const fixedWords = words.map(word => word.reverse());
 
 const puzzle: CrosswordConfig = {
-  name: "2025-07-02",
+  name: "2025-07-03",
   "grid": fixedWords,
   "rowClues": [
     "הוא נהמת הדרקון, במיתולוגיה הטיבטית",
