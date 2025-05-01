@@ -3,7 +3,7 @@ import { CrosswordConfig } from "../types/crossword";
 const defs = [
   "מלחמה",
   "אגרול",
-  "   _ ",
+  "     ",
   "     ",
   "ר_כדש",
 ]

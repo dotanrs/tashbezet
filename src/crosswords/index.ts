@@ -40,6 +40,7 @@ const allPuzzles: { [key: string]: CrosswordConfig } = {
   puzzle20: require('./puzzle20').default,
   puzzle21: require('./puzzle21').default,
   puzzle22: require('./puzzle22').default,
+  puzzle23: require('./puzzle23').default,
 }
 
 const relevantPuzzles = Object.fromEntries(
@@ -51,4 +52,4 @@ const relevantPuzzles = Object.fromEntries(
 
 export const puzzles = relevantPuzzles;
 
-export type PuzzleId = keyof typeof puzzles; 
+export type PuzzleId = keyof typeof puzzles;
