@@ -41,6 +41,8 @@ const allPuzzles: { [key: string]: CrosswordConfig } = {
   puzzle21: require('./puzzle21').default,
   puzzle22: require('./puzzle22').default,
   puzzle23: require('./puzzle23').default,
+  puzzle24: require('./puzzle24').default,
+  puzzle25: require('./puzzle25').default,
 }
 
 const relevantPuzzles = Object.fromEntries(

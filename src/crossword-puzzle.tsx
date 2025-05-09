@@ -667,7 +667,7 @@ const CrosswordPuzzle = () => {
                 </div>
 
                 {/* Clues display */}
-                <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={cluesKeyboardLocation(isMobile)}>
+                <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={cluesKeyboardLocation(isMobile)} style={{whiteSpace: 'pre-wrap'}}>
                   <div className={`min-h-[82px] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg'}`}>
                   <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
                     <div className="flex-none cursor-pointer select-none text-xl"
