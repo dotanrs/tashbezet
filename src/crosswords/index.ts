@@ -1,10 +1,6 @@
 import { CrosswordConfig } from "../types/crossword";
 
 function formatDate(date: Date) {
-  if (process.env.REACT_APP_SHOW_ALL_PUZZLES) {
-    // Return a future date s.t. all puzzles will be shown
-    return '9999-99-99';
-  }
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
   const day = String(date.getDate()).padStart(2, '0');
@@ -12,9 +8,19 @@ function formatDate(date: Date) {
   return `${year}-${month}-${day}`;
 }
 
-// Example usage:
 const today = new Date();
-const formattedDate = formatDate(today);
+// Return a future date s.t. all puzzles will be shown
+const formattedDate = process.env.REACT_APP_SHOW_ALL_PUZZLES ? '9999-99-99' : formatDate(today);
+
+function missing_next_puzzle(relevantPuzzles: CrosswordConfig[]) {
+  // Based on the data of the last puzzle in display, check if the next one is overdue
+  const latest_date = relevantPuzzles[relevantPuzzles.length - 1].name
+  const sevenDaysFromNow = new Date(latest_date);
+  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+
+  return formatDate(new Date()) > formatDate(sevenDaysFromNow);
+}
+
 
 // Dynamically import all puzzle files
 const allPuzzles: { [key: string]: CrosswordConfig } = {
@@ -49,10 +55,19 @@ const allPuzzles: { [key: string]: CrosswordConfig } = {
 const relevantPuzzles = Object.fromEntries(
   Object.entries(allPuzzles)
     .filter(([_, puzzle]) => puzzle.name <= formattedDate)
-    .sort((a, b) => a[1].name.localeCompare(b[1].name))
-    .reverse()
 );
 
-export const puzzles = relevantPuzzles;
+// Add 'last' puzzle if needed
+if (missing_next_puzzle(Object.values(relevantPuzzles))) {
+  relevantPuzzles[formattedDate] = require('./last').default;
+}
+
+const sortedPuzzles = Object.fromEntries(
+  Object.entries(relevantPuzzles)
+  .sort((a, b) => a[1].name.localeCompare(b[1].name))
+  .reverse()
+);
+
+export const puzzles = sortedPuzzles;
 
 export type PuzzleId = keyof typeof puzzles;
