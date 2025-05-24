@@ -28,7 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         onClick={onHint}
         disabled={!hasAvailableHints}
         icon="🤔"
-        text="רמז"
+        text="תן אות"
         hoverColor="hover:bg-yellow-100"
       />
       <Button

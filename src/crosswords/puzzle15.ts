@@ -28,7 +28,13 @@ const puzzle: CrosswordConfig = {
     "תפוח שקרוי על שם הר",
     "כמו מישהו שפותר תשבצים ממש קשים בקלות",
     "לא היה מעניין",
-  ]
+  ],
+  "colHints": {
+    2: "רק בישראל",
+  },
+  rowHints: {
+    1: "בתשבץ, זאת אומרת",
+  },
 };
 
 export default puzzle;

@@ -22,6 +22,7 @@ const CrosswordPuzzle = () => {
   // Modify current puzzle state to be null initially
   const [currentPuzzleId, setCurrentPuzzleId] = useState<PuzzleId | null>(null);
   const [currentConfig, setCurrentConfig] = useState<CrosswordConfig | null>(null);
+  const [hintsShown, setHintsShown] = useState<{[key: string]: boolean}>({});
 
   // State for the user's input grid
   const [userGrid, setUserGrid] = useState<Grid>(createEmptyGrid());
@@ -488,7 +489,7 @@ const CrosswordPuzzle = () => {
   // Replace reveal functionality with hint
   const handleHint = () => {
     if (!currentConfig) return;
-    
+
     // Get all unsolved cells (not blank, not correct)
     const unsolvedCells: Array<{ row: number; col: number }> = [];
     for (let row = 0; row < 5; row++) {
@@ -575,6 +576,35 @@ const CrosswordPuzzle = () => {
     return '';
   }
 
+  const definitionName = `${currentConfig?.name}_${direction}_${direction == 'across' ? selected?.row : selected?.col}`
+
+  const toggleHint = () => {
+    setHintsShown({
+      ...hintsShown,
+      [definitionName]: !hintsShown[definitionName],
+    });
+  }
+
+  const currentAvailableHint: string = (() => {
+    if (!currentConfig || !selected || !direction) {
+      return '';
+    }
+    if (direction === 'across') {
+      return (currentConfig.rowHints && currentConfig.rowHints[selected.row]) || '';
+    }
+    if (direction === 'down') {
+      return (currentConfig.colHints && currentConfig.colHints[selected.col]) || '';
+    }
+    return '';
+  })()
+
+  const currentVisibleHint = () => {
+    if (!hintsShown[definitionName]) {
+      return '';
+    }
+    return currentAvailableHint;
+  }
+
   return (
     <div id="crossword-container" className={`absolute w-full md:w-[500px] max-w-[500px] right-0 left-0 m-x-0 flex flex-col items-center p-4 mx-auto`} style={isMobile ? { paddingBottom: bottomPadding } : undefined}>
       <div className={`${titleDesign(gameStarted)}`}>
@@ -650,13 +680,23 @@ const CrosswordPuzzle = () => {
                 </div>
                 {/* Status message */}
                 {message && (
-                  <div className="mb-4 p-2 w-auto px-4 rounded text-[13px] bg-[#2ea199] text-white relative overflow-hidden" style={{ direction: 'rtl' }}>
+                  <div className="p-2 w-auto px-4 rounded text-[13px] bg-[#2ea199] text-white relative overflow-hidden" style={{ direction: 'rtl' }}>
                     <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
                     <span className="relative">{message}</span>
                   </div>
                 )}
+
+                {
+                  currentVisibleHint() && (
+                    <div className="mt-1 p-2 w-auto px-4 border-[0.5px] border-gray-600 rounded text-[13px] bg-[#d1f7eb] text-black relative overflow-hidden" style={{ direction: 'rtl' }}>
+                      <div className="absolute" />
+                      <span className="relative whitespace-pre-wrap">{currentVisibleHint()}</span>
+                    </div>
+                  )
+                }
+
                 {/* Buttons section */}
-                <div id="sidebar-container" className={`text-center flex flex-row gap-2 text-[13px] w-[100px] p-x-4 pb-4`}>
+                <div id="sidebar-container" className={`text-center flex mt-4 flex-row gap-2 text-[13px] w-[100px] p-x-4 pb-4`}>
                   <Sidebar
                     onMarkPuzzle={markPuzzle}
                     onHint={handleHint}
@@ -667,7 +707,7 @@ const CrosswordPuzzle = () => {
                 </div>
 
                 {/* Clues display */}
-                <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={cluesKeyboardLocation(isMobile)} style={{whiteSpace: 'pre-wrap'}}>
+                <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
                   <div className={`min-h-[82px] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg'}`}>
                   <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
                     <div className="flex-none cursor-pointer select-none text-xl"
@@ -686,6 +726,10 @@ const CrosswordPuzzle = () => {
                       </div>
                     )}
                     </div>
+                    {currentAvailableHint && <div className="flex-none cursor-pointer select-none text-2xl" title='להציג/להסתיר רמז'
+                      onClick={toggleHint}>
+                    {"💡"}
+                    </div>}
                     <div className="flex-none cursor-pointer select-none text-2xl"
                     onClick={() => moveToNextDefinition(false)}>
                     {"◀️"}
