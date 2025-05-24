@@ -7,11 +7,19 @@ export type CellStatus = boolean | null;
 export type CellStatusGrid = CellStatus[][];
 export type Direction = 'across' | 'down';
 
+export interface DefinitionHint {
+  direction: Direction;
+  index: number;
+  hint: string;
+}
+
 export interface CrosswordConfig {
   name: string;
   grid: Grid;
   rowClues: string[];
   columnClues: string[];
+  rowHints?: {[key: number]: string};
+  colHints?: {[key: number]: string};
 }
 
 export interface SavedPuzzleState {

@@ -28,7 +28,10 @@ const puzzle: CrosswordConfig = {
     "שמו כסף",
     "מדינה שהנקודה הכי נמוכה בה היא מעל 1,000 מטר",
     "שם",
-  ]
+  ],
+  "rowHints": {
+    4: "ממש            הרבה",
+  },
 };
 
 export default puzzle;

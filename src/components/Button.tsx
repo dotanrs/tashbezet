@@ -17,7 +17,7 @@ const Button: React.FC<ButtonProps> = ({
   hoverColor = 'hover:bg-[#98e0db]',
   disabledStyle = true,
 }) => {
-  const baseClasses = "px-3 py-2 rounded border-[1px] border-gray-800";
+  const baseClasses = "px-3 py-2 rounded border-[1px] border-gray-800 whitespace-nowrap";
   const enabledClasses = `${baseClasses} ${hoverColor} bg-[#dbfcfa] text-black`;
   const disabledClasses = `${baseClasses} bg-gray-300 text-gray-800 cursor-not-allowed`;
 

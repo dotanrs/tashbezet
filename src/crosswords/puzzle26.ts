@@ -1,4 +1,4 @@
-import { CrosswordConfig } from "../types/crossword";
+import { CrosswordConfig, DefinitionHint } from "../types/crossword";
 
 const defs = [
   "_אגדו",
@@ -28,7 +28,7 @@ const puzzle: CrosswordConfig = {
     "כינוי אפשרי לקריש",
     "לפי איזה חוק אסור להגיד ״אני ילך״?",
     "בספרדית: דרך. באנגלית: דרך. אבל לא אותה דרך",
-  ]
+  ],
 };
 
 export default puzzle;

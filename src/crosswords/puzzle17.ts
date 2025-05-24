@@ -28,7 +28,11 @@ const puzzle: CrosswordConfig = {
     "היא לא כינור ולא צ׳לו",
     "עשה שנ״ץ, למשל",
     "״מרוצה?״",
-  ]
+  ],
+  "rowHints": {
+    0: "נשמע כמו 3 מאוזן",
+    2: "נשמע כמו 1 מאוזן",
+  }
 };
 
 export default puzzle;
