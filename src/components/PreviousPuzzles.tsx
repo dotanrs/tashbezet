@@ -20,7 +20,7 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPu
   };
 
   return (
-    <div className="mt-8 w-full">
+    <div className="mt-8 w-full" style={{fontFamily: "'Rubik', sans-serif"}}>
       <div className="flex flex-row justify-between space-x-5 items-center mb-4">
         <div className="h-[1px] bg-gray-300 flex-auto"></div>
         <div onClick={() => setShown(!shown)} className={`text-center text-gray-600 cursor-pointer`}>

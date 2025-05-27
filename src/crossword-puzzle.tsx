@@ -221,7 +221,7 @@ const CrosswordPuzzle = () => {
     
     for (let row = 0; row < 5; row++) {
       for (let col = 0; col < 5; col++) {
-        if (userGrid[row][col] == '') {
+        if (userGrid[row][col] === '') {
           return true;
         }
       }
@@ -562,13 +562,6 @@ const CrosswordPuzzle = () => {
     handleBackspace(row, col);
   };
 
-  const titleDesign = (gameStarted: boolean) => {
-    if (gameStarted) {
-      return 'absolute right-[30px] z-[-1]';
-    }
-    return 'mt-8';
-  }
-
   const cluesKeyboardLocation = (isMobile: boolean) => {
     if (isMobile) {
       return 'fixed bottom-0 right-0 left-0 md:left-auto md:w-[770px]';
@@ -576,7 +569,7 @@ const CrosswordPuzzle = () => {
     return '';
   }
 
-  const definitionName = `${currentConfig?.name}_${direction}_${direction == 'across' ? selected?.row : selected?.col}`
+  const definitionName = `${currentConfig?.name}_${direction}_${direction === 'across' ? selected?.row : selected?.col}`
 
   const toggleHint = () => {
     setHintsShown({
@@ -605,162 +598,206 @@ const CrosswordPuzzle = () => {
     return currentAvailableHint;
   }
 
-  return (
-    <div id="crossword-container" className={`absolute w-full md:w-[500px] max-w-[500px] right-0 left-0 m-x-0 flex flex-col items-center p-4 mx-auto`} style={isMobile ? { paddingBottom: bottomPadding } : undefined}>
-      <div className={`${titleDesign(gameStarted)}`}>
-        <h1 className="mb-8 select-none" style={{ direction: 'rtl' }}>
-          <div className="relative">
-            <div className="absolute left-[-20px] top-[-20px] w-12 aspect-square flex items-center justify-center text-4xl opacity-80">
-              🖋️
-            </div>
-            <div className="grid grid-flow-col gap-[1px] bg-gray-300 p-[1px] rounded">
-              {Array.from("תשבצת").map((letter, index) => (
-                <div
-                  key={index}
-                  className="w-12 aspect-square flex items-center justify-center text-2xl font-bold bg-white"
-                  style={{
-                    fontFamily: "'Rubik', sans-serif",
-                  }}
-                >
-                  <span style={{
-                    background: '#2ea199',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    position: 'relative',
-                    zIndex: 1
-                  }}>
-                    {letter}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </h1>
-      </div>
+  const pageWidth = 'md:w-[500px] max-w-[500px]'
 
-      {!gameStarted ? (
-        <button
-          onClick={handleStartGame}
-          className="px-6 py-3 bg-[#2ea199] text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
-          style={{ direction: 'rtl' }}
+  function getTitle(size: string, width: string, noBottomBorder: boolean, fontColor: string, pencilPosition: string, withPen: boolean) {
+    const word = withPen ? "תשבצת" : 'תשבצת';
+    return <div className="relative">
+      <div className='border-l-[1px] border-gray-400 grid grid-flow-col'>
+        {Array.from(word).map((letter, index) => (
+        <div
+          key={index}
+          className={`${width} aspect-square flex items-center justify-center ${size} font-bold m-0 border-y-[1px] border-r-[1px] ${noBottomBorder && 'border-b-0'} border-gray-400 bg-white`}
+          style={{
+            fontFamily: "'Rubik', sans-serif",
+          }}
         >
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-            <div className="absolute inset-0 translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-          </div>
-          <span className="relative">מוכנים לֶתַשְבֶצ?</span>
-        </button>
-      ) : (
-        <>
-          {showConfetti && (
-            <ReactConfetti
-              width={windowSize.width}
-              height={windowSize.height}
-              recycle={false}
-              numberOfPieces={200}
-              gravity={0.2}
-              colors={['#FFD700', '#FFA500', '#FF6347', '#87CEEB', '#98FB98']}
-            />
-          )}
-
-          {currentConfig && (
-            <>
-            <div id="whole-crossword" className="w-full">
-              <div id="main-content" style={isMobile ? { minHeight: `calc(100vh - ${bottomPadding}px - 15px)` } : undefined}>
-                <div id="crossword-and-buttons" className="flex space-x-5 flex-row justify-between items-start mt-[42px] mb-3">
-                  <CrosswordGrid
-                    userGrid={userGrid}
-                    cellStatus={cellStatus}
-                    selected={selected}
-                    direction={direction}
-                    cellRefs={cellRefs}
-                    onCellClick={handleCellClick}
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                  />
-                </div>
-                {/* Status message */}
-                {message && (
-                  <div className="p-2 w-auto px-4 rounded text-[13px] bg-[#2ea199] text-white relative overflow-hidden" style={{ direction: 'rtl' }}>
-                    <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                    <span className="relative">{message}</span>
-                  </div>
-                )}
-
-                {
-                  currentVisibleHint() && (
-                    <div className="mt-1 p-2 w-auto px-4 border-[0.5px] border-gray-600 rounded text-[13px] bg-[#d1f7eb] text-black relative overflow-hidden" style={{ direction: 'rtl' }}>
-                      <div className="absolute" />
-                      <span className="relative whitespace-pre-wrap">{currentVisibleHint()}</span>
-                    </div>
-                  )
-                }
-
-                {/* Buttons section */}
-                <div id="sidebar-container" className={`text-center flex mt-4 flex-row gap-2 text-[13px] w-[100px] p-x-4 pb-4`}>
-                  <Sidebar
-                    onMarkPuzzle={markPuzzle}
-                    onHint={handleHint}
-                    onReset={handlePuzzleReset}
-                    hasUntestedCells={hasUntestedCells()}
-                    hasAvailableHints={hasAvailableHints()}
-                  />
-                </div>
-
-                {/* Clues display */}
-                <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
-                  <div className={`min-h-[82px] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg'}`}>
-                  <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
-                    <div className="flex-none cursor-pointer select-none text-xl"
-                    onClick={() => moveToNextDefinition(true)}>
-                    {"▶️"}
-                    </div>
-                    <div className="flex-1 gap-2 px-3">
-                    {selected && direction === 'across' && (
-                      <div>
-                        <span className="text-[12px] ml-2">{selected.row + 1} מאוזן</span> {currentConfig.rowClues[selected.row]}
-                      </div>
-                    )}
-                    {selected && direction === 'down' && (
-                      <div>
-                        <span className="text-[12px] ml-2">{selected.col + 1} מאונך</span> {currentConfig.columnClues[selected.col]}
-                      </div>
-                    )}
-                    </div>
-                    {currentAvailableHint && <div className="flex-none cursor-pointer select-none text-2xl" title='להציג/להסתיר רמז'
-                      onClick={toggleHint}>
-                    {"💡"}
-                    </div>}
-                    <div className="flex-none cursor-pointer select-none text-2xl"
-                    onClick={() => moveToNextDefinition(false)}>
-                    {"◀️"}
-                    </div>
-                  </div>
-                </div>
-                {isMobile && <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} />}
-                </div>
-
-              </div>
-            </div>
-            </>
-          )}
-          <PreviousPuzzles
-            currentPuzzleId={currentPuzzleId}
-            onPuzzleChange={handlePuzzleChange}
-            shown={previousPuzzlesShown}
-            setShown={setPreviousPuzzlesShown}
-          />
-        </>
-      )}
-      
-      {gameStarted && (<div className="mt-8 flex gap-3 text-[13px]">
-        <div className="flex items-center gap-10">
-          <a href="https://www.linkedin.com/in/dotanreis/" className="underline">
-            <img src="https://dotanrs.github.io/tashbezet/linkedin.jpg" className="w-4 h-4 rounded-full" />
-          </a>
+          <span style={{
+            background: fontColor,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
+            {letter}
+          </span>
         </div>
-        <div className="items-center gap-10">פותח על ידי דותן רייס 🖋️</div>
+      ))}
+        {withPen && <div
+          key={999}
+          className={`${width} aspect-square flex items-center justify-center ${size} font-bold m-0 border-y-[1px] mr-[-0.5px]
+                  border-r-[1px] ${noBottomBorder && 'border-b-0'} border-gray-400 bg-[#f2fcfb]`}
+          style={{
+            fontFamily: "'Rubik', sans-serif",
+          }}
+        >
+          <span>
+            {<img className='w-5' alt='Pencil emoji' src="https://dotanrs.github.io/tashbezet/pencil_cyan.png"></img>}
+          </span>
+        </div>}
+    </div>
+    <img className={pencilPosition} alt='Pencil emoji' src="https://dotanrs.github.io/tashbezet/pencil.png"></img>
+  </div>
+  }
+
+  function getGameTitle() {
+    return <div className='fixed w-full bg-[#ceeae8] border-b-[1px] border-gray-600 mb-0'>
+    <div className={`${pageWidth} flex flex-row items-center justify-end m-auto`}>
+      <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
+        <a href="https://dotanrs.github.io/tashbezet">
+          {getTitle('text-2xl', 'w-10', true, '#2ea199', 'hidden', true)}
+        </a>
       </div>
-    )}
+    </div>
+  </div>
+  }
+
+  function getWelcomeTitle() {
+    return <div className='w-full mt-10'>
+    <div className={`${pageWidth} flex flex-row items-center justify-center m-auto`}>
+      <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
+        {getTitle('text-4xl', 'w-12', false, '#2ea199', 'absolute left-[-15px] top-[-12px] w-[35px]', false)}
+      </div>
+    </div>
+  </div>
+  }
+
+  function containerStyle(gameStarted: boolean) {
+    return gameStarted ? '' : 'absolute bg-[#ceeae8] h-full'
+  }
+
+  return (
+    <div id="crossword-container"
+      className={`w-full ${containerStyle(gameStarted)} right-0 left-0 m-x-0 flex flex-col items-center pt-0 mx-auto`}
+      style={isMobile ? { paddingBottom: bottomPadding } : undefined}>
+      {gameStarted ? getGameTitle() : getWelcomeTitle()}
+      <div className={`${pageWidth}`}>
+        {!gameStarted ? (
+          <div id="whole-crossword" className="w-full pt-8 text-center">
+            <div className='text-xl text-gray-600 mb-4' style={{fontFamily: "'Rubik', sans-serif"}}>תשבץ קטן כל יום חמישי</div>
+            <img className='mb-16 mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
+            <button
+              onClick={handleStartGame}
+              className="px-6 py-3 bg-[#2ea199] text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
+              style={{ direction: 'rtl' }}
+            >
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
+                <div className="absolute inset-0 translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+              </div>
+              <span className="relative whitespace-pre-wrap">להתחיל  ✍️</span>
+            </button>
+          </div>
+        ) : (
+          <>
+            {showConfetti && (
+              <ReactConfetti
+                width={windowSize.width}
+                height={windowSize.height}
+                recycle={false}
+                numberOfPieces={200}
+                gravity={0.2}
+                colors={['#FFD700', '#FFA500', '#FF6347', '#87CEEB', '#98FB98']}
+              />
+            )}
+
+            {currentConfig && (
+              <>
+              <div id="whole-crossword" className="w-full pt-10">
+                <div id="main-content" style={isMobile ? { minHeight: `calc(100vh - ${bottomPadding}px - 15px)` } : undefined}>
+                  <div id="crossword-and-buttons" className="flex space-x-5 flex-row justify-between items-start mt-0 mb-3">
+                    <CrosswordGrid
+                      userGrid={userGrid}
+                      cellStatus={cellStatus}
+                      selected={selected}
+                      direction={direction}
+                      cellRefs={cellRefs}
+                      onCellClick={handleCellClick}
+                      onChange={handleChange}
+                      onKeyDown={handleKeyDown}
+                    />
+                  </div>
+                  {/* Status message */}
+                  {message && (
+                    <div className="p-2 w-auto px-4 rounded text-[13px] bg-[#2ea199] text-white relative overflow-hidden" style={{ direction: 'rtl' }}>
+                      <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                      <span className="relative">{message}</span>
+                    </div>
+                  )}
+
+                  {
+                    currentVisibleHint() && (
+                      <div className="mt-1 p-2 w-auto px-4 border-[0.5px] border-gray-600 rounded text-[13px] bg-[#d1f7eb] text-black relative overflow-hidden" style={{ direction: 'rtl' }}>
+                        <div className="absolute" />
+                        <span className="relative whitespace-pre-wrap">{currentVisibleHint()}</span>
+                      </div>
+                    )
+                  }
+
+                  {/* Buttons section */}
+                  <div id="sidebar-container" className={`text-center flex mt-4 flex-row gap-2 text-[13px] w-[100px] p-x-4 pb-4`}>
+                    <Sidebar
+                      onMarkPuzzle={markPuzzle}
+                      onHint={handleHint}
+                      onReset={handlePuzzleReset}
+                      hasUntestedCells={hasUntestedCells()}
+                      hasAvailableHints={hasAvailableHints()}
+                    />
+                  </div>
+
+                  {/* Clues display */}
+                  <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
+                    <div className={`min-h-[82px] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg'}`}>
+                    <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
+                      <div className="flex-none cursor-pointer select-none text-xl"
+                      onClick={() => moveToNextDefinition(true)}>
+                      {"▶️"}
+                      </div>
+                      <div className="flex-1 gap-2 px-3">
+                      {selected && direction === 'across' && (
+                        <div>
+                          <span className="text-[12px] ml-2">{selected.row + 1} מאוזן</span> {currentConfig.rowClues[selected.row]}
+                        </div>
+                      )}
+                      {selected && direction === 'down' && (
+                        <div>
+                          <span className="text-[12px] ml-2">{selected.col + 1} מאונך</span> {currentConfig.columnClues[selected.col]}
+                        </div>
+                      )}
+                      </div>
+                      {currentAvailableHint && <div className="flex-none cursor-pointer select-none text-2xl" title='להציג/להסתיר רמז'
+                        onClick={toggleHint}>
+                      {"💡"}
+                      </div>}
+                      <div className="flex-none cursor-pointer select-none text-2xl"
+                      onClick={() => moveToNextDefinition(false)}>
+                      {"◀️"}
+                      </div>
+                    </div>
+                  </div>
+                  {isMobile && <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} />}
+                  </div>
+
+                </div>
+              </div>
+              </>
+            )}
+            <PreviousPuzzles
+              currentPuzzleId={currentPuzzleId}
+              onPuzzleChange={handlePuzzleChange}
+              shown={previousPuzzlesShown}
+              setShown={setPreviousPuzzlesShown}
+            />
+          </>
+        )}
+        
+        {gameStarted && (<div className="mt-8 mb-4 flex gap-3 text-[13px] justify-center">
+          <div className="flex items-center gap-10">
+            <a href="https://www.linkedin.com/in/dotanreis/" className="underline">
+              <img src="https://dotanrs.github.io/tashbezet/linkedin.jpg" alt='Linkedin icon' className="w-4 h-4 rounded-full" />
+            </a>
+          </div>
+          <div className="items-center gap-10">פותח על ידי דותן רייס ✍</div>
+        </div>
+      )}
+      </div>
     </div>
   );
 };
