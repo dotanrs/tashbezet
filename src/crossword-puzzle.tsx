@@ -654,7 +654,7 @@ const CrosswordPuzzle = () => {
     return <div className='w-full mt-10'>
     <div className={`${pageWidth} flex flex-row items-center justify-center m-auto`}>
       <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
-        {getTitle('text-4xl', 'w-12', false, '#2ea199', 'absolute left-[-15px] top-[-12px] w-[35px]', false)}
+        {getTitle('text-2xl', 'w-12', false, '#2ea199', 'absolute left-[-15px] top-[-12px] w-[35px]', false)}
       </div>
     </div>
   </div>
