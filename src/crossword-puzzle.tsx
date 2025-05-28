@@ -564,7 +564,7 @@ const CrosswordPuzzle = () => {
 
   const cluesKeyboardLocation = (isMobile: boolean) => {
     if (isMobile) {
-      return 'fixed bottom-0 right-0 left-0 sm:left-auto sm:w-[770px]';
+      return 'fixed bottom-0 right-0 max-w-[500px]';
     }
     return '';
   }
@@ -664,7 +664,20 @@ const CrosswordPuzzle = () => {
     return gameStarted ? '' : 'absolute bg-[#ceeae8] h-full'
   }
 
+  useEffect(() => {
+    document.body.classList.add('lg:landscape:overflow-auto', 'landscape:overflow-hidden', 'portrait:overflow-auto');
+
+    return () => {
+      document.body.classList.remove('lg:landscape:overflow-auto', 'landscape:overflow-hidden', 'portrait:overflow-auto');
+    };
+  }, []);
+
   return (
+    <>
+    <div className="block lg:landscape:hidden landscape:block portrait:hidden fixed w-full h-full z-30 text-center p-20 text-gray-700 text-l bg-[#ceeae8]" style={{ direction: 'rtl' }}>
+      <div className='text-xl direction-rtl'>אין במסך הזה מקום לתשבץ 😣</div>
+      <div className='pt-4'>אפשר לסובב את המכשיר למצב אופקי?</div>
+    </div>
     <div id="crossword-container"
       className={`w-full ${containerStyle(gameStarted)} right-0 left-0 m-x-0 flex flex-col items-center pt-0 mx-auto`}
       style={isMobile ? { paddingBottom: bottomPadding } : undefined}>
@@ -744,7 +757,7 @@ const CrosswordPuzzle = () => {
 
                   {/* Clues display */}
                   <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
-                    <div className={`min-h-[82px] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg'}`}>
+                    <div className={`min-h-[82px] max-w-[100%] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg'}`}>
                     <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
                       <div className="flex-none cursor-pointer select-none text-xl"
                       onClick={() => moveToNextDefinition(true)}>
@@ -799,6 +812,7 @@ const CrosswordPuzzle = () => {
       )}
       </div>
     </div>
+    </>
   );
 };
 

@@ -10,4 +10,22 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-} 
+}
+
+@media (orientation: portrait) {
+  .portrait\:block {
+    display: block;
+  }
+  .portrait\:hidden {
+    display: none;
+  }
+}
+
+@media (orientation: landscape) {
+  .landscape\:block {
+    display: block;
+  }
+  .landscape\:hidden {
+    display: none;
+  }
+}

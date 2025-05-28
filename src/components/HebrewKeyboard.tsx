@@ -30,7 +30,7 @@ const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBacksp
   const keyClasses = 'aspect-square text-gray-700 w-full flex items-center justify-center rounded border-[0.5px] border-gray-800 text-lg';
 
   return (
-    <div className="w-full bg-gray-100 p-2 border-[0.5px] border-t-0 border-gray-800">
+    <div className="w-full bg-gray-100 p-2 border-[0.5px] border-t-0 border-gray-800 max-w-[100%]">
       {keyboardRows.map((row, rowIndex) => (
         <div key={rowIndex} className="grid gap-1 mb-1" style={{
           gridTemplateColumns: rowIndex === 0 ? 'repeat(8, 1fr)' : 'repeat(8, 1fr)',
