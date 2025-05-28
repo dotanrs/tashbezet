@@ -3,6 +3,11 @@ module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  variants: {
+    extend: {
+      display: ['portrait', 'landscape'],
+    },
+  },
   theme: {
     extend: {
       fontFamily: {
