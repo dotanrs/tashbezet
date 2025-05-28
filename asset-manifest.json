@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/tashbezet/static/css/main.acdb6b6b.css",
-    "main.js": "/tashbezet/static/js/main.74f30d90.js",
+    "main.js": "/tashbezet/static/js/main.1c2ad690.js",
     "index.html": "/tashbezet/index.html",
     "main.acdb6b6b.css.map": "/tashbezet/static/css/main.acdb6b6b.css.map",
-    "main.74f30d90.js.map": "/tashbezet/static/js/main.74f30d90.js.map"
+    "main.1c2ad690.js.map": "/tashbezet/static/js/main.1c2ad690.js.map"
   },
   "entrypoints": [
     "static/css/main.acdb6b6b.css",
-    "static/js/main.74f30d90.js"
+    "static/js/main.1c2ad690.js"
   ]
 }
