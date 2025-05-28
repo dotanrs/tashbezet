@@ -564,7 +564,7 @@ const CrosswordPuzzle = () => {
 
   const cluesKeyboardLocation = (isMobile: boolean) => {
     if (isMobile) {
-      return 'fixed bottom-0 right-0 left-0 md:left-auto md:w-[770px]';
+      return 'fixed bottom-0 right-0 left-0 sm:left-auto sm:w-[770px]';
     }
     return '';
   }
@@ -598,7 +598,7 @@ const CrosswordPuzzle = () => {
     return currentAvailableHint;
   }
 
-  const pageWidth = 'md:w-[500px] max-w-[500px]'
+  const pageWidth = 'sm:w-[500px] max-w-[500px]'
 
   function getTitle(size: string, width: string, noBottomBorder: boolean, fontColor: string, pencilPosition: string, withPen: boolean) {
     const word = withPen ? "תשבצת" : 'תשבצת';
@@ -643,7 +643,7 @@ const CrosswordPuzzle = () => {
     <div className={`${pageWidth} flex flex-row items-center justify-end m-auto`}>
       <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
         <a href="https://dotanrs.github.io/tashbezet">
-          {getTitle('text-2xl', 'w-10', true, '#2ea199', 'hidden', true)}
+          {getTitle('text-2xl', 'sm:w-10 w-[35px]', true, '#2ea199', 'hidden', true)}
         </a>
       </div>
     </div>
@@ -700,7 +700,7 @@ const CrosswordPuzzle = () => {
 
             {currentConfig && (
               <>
-              <div id="whole-crossword" className="w-full pt-10">
+              <div id="whole-crossword" className="sm:w-full w-[calc(100vw-70px)] sm:pt-10 pt-[35px] max-w-[500px]">
                 <div id="main-content" style={isMobile ? { minHeight: `calc(100vh - ${bottomPadding}px - 15px)` } : undefined}>
                   <div id="crossword-and-buttons" className="flex space-x-5 flex-row justify-between items-start mt-0 mb-3">
                     <CrosswordGrid
