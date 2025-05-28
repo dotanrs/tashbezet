@@ -564,7 +564,7 @@ const CrosswordPuzzle = () => {
 
   const cluesKeyboardLocation = (isMobile: boolean) => {
     if (isMobile) {
-      return 'fixed bottom-0 right-0 max-w-[500px]';
+      return 'fixed bottom-0 right-0 w-[100%] max-w-[500px]';
     }
     return '';
   }
