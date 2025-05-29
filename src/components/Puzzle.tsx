@@ -24,8 +24,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const cluesKeyboardRef = useRef<HTMLDivElement>(null);
     const [bottomPadding, setBottomPadding] = useState(0);
   
-    // Add new state for game started
-    const [gameStarted, setGameStarted] = useState(false);
     // Modify current puzzle state to be null initially
     const [hintsShown, setHintsShown] = useState<{[key: string]: boolean}>({});
   
@@ -40,13 +38,12 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     // Track direction
     const [direction, setDirection] = useState<Direction>('across');
   
-    const [previousPuzzlesShown, setPreviousPuzzlesShown] = useState(false);
   
     // Create refs for all cells
     const cellRefs = useRef<(HTMLInputElement | null)[][]>(Array(5).fill(null).map(() => Array(5).fill(null)));
   
     const getNewGrid = (puzzleId: PuzzleId): Grid => {
-      return puzzles[puzzleId].grid.map((row, rowIndex) => 
+      return puzzles[puzzleId].grid.map((row) => 
         row.map((cell) => {
           if (cell === 'blank') return 'blank';
           return '';
@@ -128,14 +125,9 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
           clearTimeout(timeoutId);
         };
       }
-    }, [isMobile, gameStarted]);
+    }, [isMobile]);
   
     // Modify handlePuzzleChange
-    const handlePuzzleChange = (puzzleId: PuzzleId) => {
-      setCurrentPuzzleId(puzzleId);
-      setCurrentConfig(puzzles[puzzleId]);
-      setGameStarted(true);
-    };
   
     const handlePuzzleReset = () => {
       if (currentPuzzleId === null) {
@@ -149,10 +141,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     };
   
     // Add handleStartGame
-    const handleStartGame = () => {
-      const firstPuzzleId = Object.keys(puzzles)[0] as PuzzleId;
-      handlePuzzleChange(firstPuzzleId);
-    };
   
     // Handle cell selection and direction changes
     const handleCellClick = (row: number, col: number) => {
@@ -443,7 +431,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         } else {
           setMessage('כל הכבוד, פתרת את זה! 💪 ביום חמישי יהיה תשבץ חדש ☺️');
         }
-        setPreviousPuzzlesShown(true);
         if (allowConfetti) {
           setShowConfetti(true);
         }
@@ -601,73 +588,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       }
       return currentAvailableHint;
     }
-  
-    const pageWidth = 'sm:w-[500px] max-w-[500px]'
-  
-    function getTitle(size: string, width: string, noBottomBorder: boolean, fontColor: string, pencilPosition: string, withPen: boolean) {
-      const word = withPen ? "תשבצת" : 'תשבצת';
-      return <div className="relative">
-        <div className='border-l-[1px] border-gray-400 grid grid-flow-col'>
-          {Array.from(word).map((letter, index) => (
-          <div
-            key={index}
-            className={`${width} aspect-square flex items-center justify-center ${size} font-bold m-0 border-y-[1px] border-r-[1px] ${noBottomBorder && 'border-b-0'} border-gray-400 bg-white`}
-            style={{
-              fontFamily: "'Rubik', sans-serif",
-            }}
-          >
-            <span style={{
-              background: fontColor,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}>
-              {letter}
-            </span>
-          </div>
-        ))}
-          {withPen && <div
-            key={999}
-            className={`${width} aspect-square flex items-center justify-center ${size} font-bold m-0 border-y-[1px] mr-[-0.5px]
-                    border-r-[1px] ${noBottomBorder && 'border-b-0'} border-gray-400 bg-[#f2fcfb]`}
-            style={{
-              fontFamily: "'Rubik', sans-serif",
-            }}
-          >
-            <span>
-              {<img className='w-5' alt='Pencil emoji' src="https://dotanrs.github.io/tashbezet/pencil_cyan.png"></img>}
-            </span>
-          </div>}
-      </div>
-      <img className={pencilPosition} alt='Pencil emoji' src="https://dotanrs.github.io/tashbezet/pencil.png"></img>
-    </div>
-    }
-  
-    function getGameTitle() {
-      return <div className='fixed z-10 w-full bg-[#ceeae8] border-b-[1px] border-gray-600 mb-0'>
-      <div className={`${pageWidth} flex flex-row items-center justify-end m-auto`}>
-        <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
-          <a href="https://dotanrs.github.io/tashbezet">
-            {getTitle('text-2xl', 'sm:w-10 w-[35px]', true, '#2ea199', 'hidden', true)}
-          </a>
-        </div>
-      </div>
-    </div>
-    }
-  
-    function getWelcomeTitle() {
-      return <div className='w-full mt-10'>
-      <div className={`${pageWidth} flex flex-row items-center justify-center m-auto`}>
-        <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
-          {getTitle('text-2xl', 'w-12', false, '#2ea199', 'absolute left-[-15px] top-[-12px] w-[35px]', false)}
-        </div>
-      </div>
-    </div>
-    }
-  
-    function containerStyle(gameStarted: boolean) {
-      return gameStarted ? '' : 'absolute bg-[#ceeae8] h-full'
-    }
-  
+
     useEffect(() => {
       document.body.classList.add('lg:landscape:overflow-auto', 'landscape:overflow-hidden', 'portrait:overflow-auto');
   
