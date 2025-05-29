@@ -45,7 +45,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
       } else if (isInCurrentWord) {
         return 'bg-highlight-110';
       }
-      return 'bg-green-200';
+      return 'text-green-200';
     }
 
     if (isSelected) {
@@ -77,8 +77,8 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
               {cell !== 'blank' && (
                 isMobile ? (
                   <div className={`w-full h-full flex items-center justify-center text-xl sm:text-3xl font-rubik
-                    ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default' : ''}
-                    ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : 'text-gray-600'}`}>
+                    ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default text-green-200' : ''}
+                    ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : ''}`}>
                     {cell}
                   </div>
                 ) : (
@@ -89,8 +89,8 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
                     onChange={onChange}
                     onKeyDown={onKeyDown}
                     className={`w-full h-full text-center text-xl sm:text-3xl outline-none bg-transparent font-rubik
-                      ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default' : ''}
-                      ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : 'text-gray-600'}`}
+                      ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default text-green-700 text-bold' : ''}
+                      ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : ''}`}
                     maxLength={1}
                     dir="rtl"
                     lang="he"
