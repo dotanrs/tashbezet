@@ -29,7 +29,7 @@ const CrosswordPuzzle = () => {
   // Add handleStartGame
   const handleStartGame = () => {
     const firstPuzzleId = Object.keys(puzzles)[0] as PuzzleId;
-    handlePuzzleChange(firstPuzzleId);
+    handlePuzzleChange(firstPuzzleId, {});
   };
 
 
@@ -50,7 +50,7 @@ const CrosswordPuzzle = () => {
 
     const params = new URLSearchParams(window.location.search);
     const puzzleIdFromParam = params.get("puzzleId");
-    if (puzzleIdFromParam) {
+    if (puzzleIdFromParam && puzzles[puzzleIdFromParam]) {
       handlePuzzleChange(puzzleIdFromParam, true);
     }
 
