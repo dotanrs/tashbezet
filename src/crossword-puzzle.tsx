@@ -11,6 +11,7 @@ import HebrewKeyboard from './components/HebrewKeyboard';
 import Sidebar from './components/Sidebar';
 import { findNextDirectCell, findNextDirectCellV2 } from './utils/crosswordNavigation';
 import useIsMobile from './hooks/useIsMobile';
+import Puzzle from './components/Puzzle';
 
 const CrosswordPuzzle = () => {
   const isMobile = useIsMobile();
@@ -711,86 +712,14 @@ const CrosswordPuzzle = () => {
               />
             )}
 
-            {currentConfig && (
-              <>
-              <div id="whole-crossword" className="sm:w-full w-[calc(100vw-70px)] sm:pt-10 pt-[35px] max-w-[500px]">
-                <div id="main-content" style={isMobile ? { minHeight: `calc(100vh - ${bottomPadding}px - 15px)` } : undefined}>
-                  <div id="crossword-and-buttons" className="flex space-x-5 flex-row justify-between items-start mt-0 mb-3">
-                    <CrosswordGrid
-                      userGrid={userGrid}
-                      cellStatus={cellStatus}
-                      selected={selected}
-                      direction={direction}
-                      cellRefs={cellRefs}
-                      onCellClick={handleCellClick}
-                      onChange={handleChange}
-                      onKeyDown={handleKeyDown}
-                    />
-                  </div>
-                  {/* Status message */}
-                  {message && (
-                    <div className="p-2 w-auto px-4 rounded text-[13px] bg-[#2ea199] text-white relative overflow-hidden" style={{ direction: 'rtl' }}>
-                      <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                      <span className="relative">{message}</span>
-                    </div>
-                  )}
-
-                  {
-                    currentVisibleHint() && (
-                      <div className="mt-1 p-2 w-auto px-4 border-[0.5px] border-gray-600 rounded text-[13px] bg-[#d1f7eb] text-black relative overflow-hidden" style={{ direction: 'rtl' }}>
-                        <div className="absolute" />
-                        <span className="relative whitespace-pre-wrap">{currentVisibleHint()}</span>
-                      </div>
-                    )
-                  }
-
-                  {/* Buttons section */}
-                  <div id="sidebar-container" className={`text-center flex mt-4 flex-row gap-2 text-[13px] w-[100px] p-x-4 pb-4`}>
-                    <Sidebar
-                      onMarkPuzzle={markPuzzle}
-                      onHint={handleHint}
-                      onReset={handlePuzzleReset}
-                      hasUntestedCells={hasUntestedCells()}
-                      hasAvailableHints={hasAvailableHints()}
-                    />
-                  </div>
-
-                  {/* Clues display */}
-                  <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
-                    <div className={`min-h-[82px] max-w-[100%] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg'}`}>
-                    <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
-                      <div className="flex-none cursor-pointer select-none text-xl"
-                      onClick={() => moveToNextDefinition(true)}>
-                      {"▶️"}
-                      </div>
-                      <div className="flex-1 gap-2 px-3">
-                      {selected && direction === 'across' && (
-                        <div>
-                          <span className="text-[12px] ml-2">{selected.row + 1} מאוזן</span> {currentConfig.rowClues[selected.row]}
-                        </div>
-                      )}
-                      {selected && direction === 'down' && (
-                        <div>
-                          <span className="text-[12px] ml-2">{selected.col + 1} מאונך</span> {currentConfig.columnClues[selected.col]}
-                        </div>
-                      )}
-                      </div>
-                      {currentAvailableHint && <div className="flex-none cursor-pointer select-none text-2xl" title='להציג/להסתיר רמז'
-                        onClick={toggleHint}>
-                      {"💡"}
-                      </div>}
-                      <div className="flex-none cursor-pointer select-none text-2xl"
-                      onClick={() => moveToNextDefinition(false)}>
-                      {"◀️"}
-                      </div>
-                    </div>
-                  </div>
-                  {isMobile && <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} />}
-                  </div>
-
-                </div>
-              </div>
-              </>
+            {(currentConfig && currentPuzzleId) && (
+              <Puzzle
+                currentConfig={currentConfig}
+                setShowConfetti={setShowConfetti}
+                setCurrentConfig={setCurrentConfig}
+                setCurrentPuzzleId={setCurrentPuzzleId}
+                currentPuzzleId={currentPuzzleId}
+              />
             )}
             <PreviousPuzzles
               currentPuzzleId={currentPuzzleId}
