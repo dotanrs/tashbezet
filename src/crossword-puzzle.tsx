@@ -34,7 +34,6 @@ const CrosswordPuzzle = () => {
 
 
   // Track confetti state
-  const [showConfetti, setShowConfetti] = useState(false);
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -177,17 +176,6 @@ const CrosswordPuzzle = () => {
           </div>
         ) : (
           <>
-            {showConfetti && (
-              <ReactConfetti
-                width={windowSize.width}
-                height={windowSize.height}
-                recycle={false}
-                numberOfPieces={200}
-                gravity={0.2}
-                colors={['#FFD700', '#FFA500', '#FF6347', '#87CEEB', '#98FB98']}
-              />
-            )}
-
             {previousPuzzlesShown && (
               <PreviousPuzzles
                 currentPuzzleId={currentPuzzleId}
@@ -198,10 +186,9 @@ const CrosswordPuzzle = () => {
             {(!previousPuzzlesShown && currentConfig && currentPuzzleId) && (
               <Puzzle
                 currentConfig={currentConfig}
-                setShowConfetti={setShowConfetti}
                 setCurrentConfig={setCurrentConfig}
-                setCurrentPuzzleId={setCurrentPuzzleId}
                 currentPuzzleId={currentPuzzleId}
+                windowSize={windowSize}
               />
             )}
           </>
