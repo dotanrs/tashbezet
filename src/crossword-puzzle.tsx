@@ -182,8 +182,9 @@ const CrosswordPuzzle = () => {
               />
             )}
 
-            {(!previousPuzzlesShown && currentConfig && currentPuzzleId) && (
+            {(currentConfig && currentPuzzleId) && (
               <Puzzle
+                hidden={previousPuzzlesShown}
                 currentConfig={currentConfig}
                 setCurrentConfig={setCurrentConfig}
                 currentPuzzleId={currentPuzzleId}
