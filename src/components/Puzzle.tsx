@@ -106,7 +106,8 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   
       setDirection('across');
       checkComplete(newGrid, currentPuzzleId);
-    }, [currentPuzzleId]);
+      // eslint-disable-next-line
+    }, [currentPuzzleId, setCurrentConfig]);
   
     useEffect(() => {
       if (isMobile && cluesKeyboardRef.current) {
@@ -386,25 +387,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         handleLetterInput(value);
       }
     };
-  
-    // Track confetti state
-    const [windowSize, setWindowSize] = useState({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
-  
-    // Add window resize handler
-    useEffect(() => {
-      const handleResize = () => {
-        setWindowSize({
-          width: window.innerWidth,
-          height: window.innerHeight,
-        });
-      };
-  
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }, []);
   
     const resetCellStatus = () => {
       setCellStatus(createEmptyCellStatus());

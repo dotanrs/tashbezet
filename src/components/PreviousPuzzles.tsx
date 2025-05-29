@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { PuzzleId } from '../crosswords';
 import { loadPuzzleState } from '../utils/storageUtils';
 import { puzzles } from '../crosswords';
