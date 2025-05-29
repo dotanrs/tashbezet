@@ -5,10 +5,10 @@ import { puzzles, PuzzleId } from './crosswords';
 import PreviousPuzzles from './components/PreviousPuzzles';
 import useIsMobile from './hooks/useIsMobile';
 import Puzzle from './components/Puzzle';
+import { Menu, X } from 'lucide-react';
 
 const CrosswordPuzzle = () => {
   const isMobile = useIsMobile();
-  const [bottomPadding, setBottomPadding] = useState(0);
 
   // Add new state for game started
   const [gameStarted, setGameStarted] = useState(false);
@@ -23,8 +23,8 @@ const CrosswordPuzzle = () => {
     setCurrentPuzzleId(puzzleId);
     setCurrentConfig(puzzles[puzzleId]);
     setGameStarted(true);
+    setPreviousPuzzlesShown(false);
   };
-
 
   // Add handleStartGame
   const handleStartGame = () => {
@@ -32,7 +32,7 @@ const CrosswordPuzzle = () => {
     handlePuzzleChange(firstPuzzleId);
   };
 
-  
+
   // Track confetti state
   const [showConfetti, setShowConfetti] = useState(false);
   const [windowSize, setWindowSize] = useState({
@@ -58,49 +58,65 @@ const CrosswordPuzzle = () => {
 
   function getTitle(size: string, width: string, noBottomBorder: boolean, fontColor: string, pencilPosition: string, withPen: boolean) {
     const word = withPen ? "תשבצת" : 'תשבצת';
-    return <div className="relative">
-      <div className='border-l-[1px] border-gray-400 grid grid-flow-col'>
-        {Array.from(word).map((letter, index) => (
-        <div
-          key={index}
-          className={`${width} aspect-square flex items-center justify-center ${size} font-bold m-0 border-y-[1px] border-r-[1px] ${noBottomBorder && 'border-b-0'} border-gray-400 bg-white`}
-          style={{
-            fontFamily: "'Rubik', sans-serif",
-          }}
-        >
-          <span style={{
-            background: fontColor,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}>
-            {letter}
-          </span>
+    return (
+      <div className="relative flex flex-row justify-between">
+        <div className='border-l-[1px] border-gray-400 grid grid-flow-col'>
+          {Array.from(word).map((letter, index) => (
+          <div
+            key={index}
+            className={`${width} aspect-square flex items-center justify-center ${size} font-bold m-0 border-y-[1px] border-r-[1px] ${noBottomBorder && 'border-b-0'} border-gray-400 bg-white`}
+            style={{
+              fontFamily: "'Rubik', sans-serif",
+            }}
+          >
+            <span style={{
+              background: fontColor,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}>
+              {letter}
+            </span>
+          </div>
+        ))}
+          {withPen && <div
+            key={999}
+            className={`${width} aspect-square flex items-center justify-center ${size} font-bold m-0 border-y-[1px] mr-[-0.5px]
+                    border-r-[1px] ${noBottomBorder && 'border-b-0'} border-gray-400 bg-[#f2fcfb]`}
+            style={{
+              fontFamily: "'Rubik', sans-serif",
+            }}
+          >
+            <span>
+              {<img className='w-5' alt='Pencil emoji' src="https://dotanrs.github.io/tashbezet/pencil_cyan.png"></img>}
+            </span>
+          </div>}
+          {(withPen && currentConfig) && <div
+            key={1000}
+            className={`flex items-center justify-center ${size} m-0 border-y-[1px] mr-[-0.5px] px-2 overflow-hidden truncate text-sm
+                    border-r-[1px] ${noBottomBorder && 'border-b-0'} border-gray-400 bg-white`}
+          >
+            <a href='https://dotanrs.github.io/tashbezet/' title={`תשבצת ${currentConfig.name}`}>
+            <span className={'text-sm text-gray-500'}>
+              {currentConfig.name}
+            </span>
+            </a>
+          </div>}
         </div>
-      ))}
-        {withPen && <div
-          key={999}
-          className={`${width} aspect-square flex items-center justify-center ${size} font-bold m-0 border-y-[1px] mr-[-0.5px]
-                  border-r-[1px] ${noBottomBorder && 'border-b-0'} border-gray-400 bg-[#f2fcfb]`}
-          style={{
-            fontFamily: "'Rubik', sans-serif",
-          }}
-        >
-          <span>
-            {<img className='w-5' alt='Pencil emoji' src="https://dotanrs.github.io/tashbezet/pencil_cyan.png"></img>}
-          </span>
-        </div>}
+      <img className={pencilPosition} alt='Pencil emoji' src="https://dotanrs.github.io/tashbezet/pencil.png"></img>
     </div>
-    <img className={pencilPosition} alt='Pencil emoji' src="https://dotanrs.github.io/tashbezet/pencil.png"></img>
-  </div>
+    )
   }
 
   function getGameTitle() {
     return <div className='fixed z-10 w-full bg-[#ceeae8] border-b-[1px] border-gray-600 mb-0'>
-    <div className={`${pageWidth} flex flex-row items-center justify-end m-auto`}>
-      <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
-        <a href="https://dotanrs.github.io/tashbezet">
-          {getTitle('text-2xl', 'sm:w-10 w-[35px]', true, '#2ea199', 'hidden', true)}
+    <div className={`${pageWidth} flex flex-row items-center justify-between m-auto pl-4 sm:pl-0`}>
+      <div id="options">
+        <a onClick={() => setPreviousPuzzlesShown(!previousPuzzlesShown)}>
+          {previousPuzzlesShown ? <X size={24} className='text-gray-500' /> : <Menu size={24} className='text-gray-500' />}
         </a>
+      </div>
+      <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
+        {getTitle('text-2xl', 'sm:w-10 w-[35px]', true, '#2ea199', 'hidden', true)}
       </div>
     </div>
   </div>
@@ -135,8 +151,7 @@ const CrosswordPuzzle = () => {
       <div className='pt-4'>אפשר לסובב את המכשיר למצב אופקי?</div>
     </div>
     <div id="crossword-container"
-      className={`w-full ${containerStyle(gameStarted)} right-0 left-0 m-x-0 flex flex-col items-center pt-0 mx-auto`}
-      style={isMobile ? { paddingBottom: bottomPadding } : undefined}>
+      className={`w-full ${containerStyle(gameStarted)} right-0 left-0 m-x-0 flex flex-col items-center pt-0 mx-auto`}>
       {gameStarted ? getGameTitle() : getWelcomeTitle()}
       <div className={`${pageWidth}`}>
         {!gameStarted ? (
@@ -167,7 +182,14 @@ const CrosswordPuzzle = () => {
               />
             )}
 
-            {(currentConfig && currentPuzzleId) && (
+            {previousPuzzlesShown && (
+              <PreviousPuzzles
+                currentPuzzleId={currentPuzzleId}
+                onPuzzleChange={handlePuzzleChange}
+              />
+            )}
+
+            {(!previousPuzzlesShown && currentConfig && currentPuzzleId) && (
               <Puzzle
                 currentConfig={currentConfig}
                 setShowConfetti={setShowConfetti}
@@ -176,24 +198,8 @@ const CrosswordPuzzle = () => {
                 currentPuzzleId={currentPuzzleId}
               />
             )}
-            <PreviousPuzzles
-              currentPuzzleId={currentPuzzleId}
-              onPuzzleChange={handlePuzzleChange}
-              shown={previousPuzzlesShown}
-              setShown={setPreviousPuzzlesShown}
-            />
           </>
         )}
-        
-        {gameStarted && (<div className="mt-8 mb-4 flex gap-3 text-[13px] justify-center">
-          <div className="flex items-center gap-10">
-            <a href="https://www.linkedin.com/in/dotanreis/" className="underline">
-              <img src="https://dotanrs.github.io/tashbezet/linkedin.jpg" alt='Linkedin icon' className="w-4 h-4 rounded-full" />
-            </a>
-          </div>
-          <div className="items-center gap-10">פותח על ידי דותן רייס ✍</div>
-        </div>
-      )}
       </div>
     </div>
     </>

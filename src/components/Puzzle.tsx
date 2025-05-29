@@ -598,7 +598,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     }, []);
 
   return currentConfig && <>
-  <div id="whole-crossword" className="sm:w-full w-[calc(100vw-70px)] sm:pt-10 pt-[35px] max-w-[500px]">
+  <div id="whole-crossword" className="sm:w-full w-[100%] sm:pt-10 pt-[35px] max-w-[500px]">
     <div id="main-content" style={isMobile ? { minHeight: `calc(100vh - ${bottomPadding}px - 15px)` } : undefined}>
       <div id="crossword-and-buttons" className="flex space-x-5 flex-row justify-between items-start mt-0 mb-3">
         <CrosswordGrid
@@ -614,7 +614,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       </div>
       {/* Status message */}
       {message && (
-        <div className="p-2 w-auto px-4 rounded text-[13px] bg-[#2ea199] text-white relative overflow-hidden" style={{ direction: 'rtl' }}>
+        <div className="p-2 w-auto mx-2 rounded text-[13px] bg-[#2ea199] text-white relative overflow-hidden" style={{ direction: 'rtl' }}>
           <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
           <span className="relative">{message}</span>
         </div>
@@ -622,7 +622,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
       {
         currentVisibleHint() && (
-          <div className="mt-1 p-2 w-auto px-4 border-[0.5px] border-gray-600 rounded text-[13px] bg-[#d1f7eb] text-black relative overflow-hidden" style={{ direction: 'rtl' }}>
+          <div className="mt-1 p-2 w-auto px-4 border-[0.5px] border-gray-600 sm:rounded text-[13px] bg-[#d1f7eb] text-black relative overflow-hidden" style={{ direction: 'rtl' }}>
             <div className="absolute" />
             <span className="relative whitespace-pre-wrap">{currentVisibleHint()}</span>
           </div>
@@ -630,7 +630,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       }
 
       {/* Buttons section */}
-      <div id="sidebar-container" className={`text-center flex mt-4 flex-row gap-2 text-[13px] w-[100px] p-x-4 pb-4`}>
+      <div id="sidebar-container" className={`text-center flex mt-4 flex-row gap-2 text-[13px] w-[100px] px-2 pb-4`}>
         <Sidebar
           onMarkPuzzle={markPuzzle}
           onHint={handleHint}
@@ -642,7 +642,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
       {/* Clues display */}
       <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
-        <div className={`min-h-[82px] max-w-[100%] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg'}`}>
+        <div className={`min-h-[82px] max-w-[100%] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? '' : 'sm:rounded-lg'}`}>
         <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
           <div className="flex-none cursor-pointer select-none text-xl"
           onClick={() => moveToNextDefinition(true)}>
