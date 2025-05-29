@@ -3,13 +3,10 @@ import { CrosswordConfig } from './types/crossword';
 import ReactConfetti from 'react-confetti';
 import { puzzles, PuzzleId } from './crosswords';
 import PreviousPuzzles from './components/PreviousPuzzles';
-import useIsMobile from './hooks/useIsMobile';
 import Puzzle from './components/Puzzle';
 import { Menu, X } from 'lucide-react';
 
 const CrosswordPuzzle = () => {
-  const isMobile = useIsMobile();
-
   // Add new state for game started
   const [gameStarted, setGameStarted] = useState(false);
   // Modify current puzzle state to be null initially
