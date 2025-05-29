@@ -16,11 +16,14 @@ const CrosswordPuzzle = () => {
   const [previousPuzzlesShown, setPreviousPuzzlesShown] = useState(false);
 
   // Modify handlePuzzleChange
-  const handlePuzzleChange = (puzzleId: PuzzleId) => {
+  const handlePuzzleChange = (puzzleId: PuzzleId, keepUrl: boolean = false) => {
     setCurrentPuzzleId(puzzleId);
     setCurrentConfig(puzzles[puzzleId]);
     setGameStarted(true);
     setPreviousPuzzlesShown(false);
+    if (!keepUrl) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   };
 
   // Add handleStartGame
@@ -45,6 +48,12 @@ const CrosswordPuzzle = () => {
         height: window.innerHeight,
       });
     };
+
+    const params = new URLSearchParams(window.location.search);
+    const puzzleIdFromParam = params.get("puzzleId");
+    if (puzzleIdFromParam) {
+      handlePuzzleChange(puzzleIdFromParam, true);
+    }
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -92,7 +101,7 @@ const CrosswordPuzzle = () => {
             className={`flex items-center justify-center ${size} m-0 border-y-[1px] mr-[-0.5px] px-2 overflow-hidden truncate text-sm
                     border-r-[1px] ${noBottomBorder && 'border-b-0'} border-gray-400 bg-white`}
           >
-            <a href='https://dotanrs.github.io/tashbezet/' title={`תשבצת ${currentConfig.name}`}>
+            <a href={`https://dotanrs.github.io/tashbezet?puzzleId=${currentPuzzleId}`} title={`תשבצת ${currentConfig.name}`}>
             <span className={'text-sm text-gray-500'}>
               {currentConfig.name}
             </span>
@@ -150,7 +159,7 @@ const CrosswordPuzzle = () => {
     <div id="crossword-container"
       className={`w-full ${containerStyle(gameStarted)} right-0 left-0 m-x-0 flex flex-col items-center pt-0 mx-auto`}>
       {gameStarted ? getGameTitle() : getWelcomeTitle()}
-      <div className={`${pageWidth}`}>
+      <div className={`${pageWidth} w-[100%]`}>
         {!gameStarted ? (
           <div id="whole-crossword" className="w-full pt-8 text-center">
             <div className='text-xl text-gray-600 mb-4' style={{fontFamily: "'Rubik', sans-serif"}}>תשבץ קטן כל יום חמישי</div>

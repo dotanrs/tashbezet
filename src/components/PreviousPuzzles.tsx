@@ -18,7 +18,7 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPu
   };
 
   return (
-    <div className="mt-20 w-full" style={{fontFamily: "'Rubik', sans-serif"}}>
+    <div className="mt-20 w-full px-8" style={{fontFamily: "'Rubik', sans-serif"}}>
       <h1 className='text-xl text-gray-700 text-center mb-8'>תשבצת - תשבץ קטן אחד בשבוע</h1>
       <div className="mt-8 mb-10 flex gap-3 text-[13px] justify-center">
         <div className="flex items-center gap-10">
