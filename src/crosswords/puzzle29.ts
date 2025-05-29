@@ -1,0 +1,38 @@
+import { CrosswordConfig } from "../types/crossword";
+
+const defs = [
+  "שטוחה",
+  "טרלול",
+  "איגלו",
+  "זפזפ_",
+  "יה___",
+]
+
+const words = defs.map(def => def.split("").reverse().map(char => char === "_" ? "blank" : char));
+
+const fixedWords = words.map(word => word.reverse());
+
+const puzzle: CrosswordConfig = {
+  name: "2025-09-04",
+  "grid": fixedWords,
+  "rowClues": [
+    "״הארץ לא ____״ (תשובה לקונספירטורים)",
+    "מילת השנה בישראל 2021",
+    "בית קר",
+    "תמשיך הלאה (מטאפורה טלוויזיונית)",
+    "בעברית אלוהים, באנגלית ״כה״",
+  ],
+  "columnClues": [
+    "שם גנאי למשטרה שלא בוחלת באמצעים",
+    "זו נבלה וזו -",
+    "הטור הזה עושה את זה ויוצר אנגרמה",
+    "כל שלטון, אירוע או כאב עושה את זה בסוף",
+    "אסמסים הורידו את השימוש במילה הזאת",
+  ],
+  "rowHints": {
+    1: "יש שיגידו ש1 מאוזן זה דוגמא טובה",
+    2: "אבל האנשים חמים, אולי",
+  }
+};
+
+export default puzzle;
