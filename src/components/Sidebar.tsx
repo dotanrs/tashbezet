@@ -7,6 +7,7 @@ interface SidebarProps {
   onReset: () => void;
   hasUntestedCells: boolean;
   hasAvailableHints: boolean;
+  baseBgColor: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -15,6 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   onReset,
   hasUntestedCells,
   hasAvailableHints,
+  baseBgColor,
 }) => {
   return (
       <>
@@ -23,6 +25,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         disabled={!hasUntestedCells}
         icon="🖋️"
         text="בדיקה"
+        baseBgColor={baseBgColor}
       />
       <Button
         onClick={onHint}
@@ -30,6 +33,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         icon="🤔"
         text="תן אות"
         hoverColor="hover:bg-yellow-100"
+        baseBgColor={baseBgColor}
       />
       <Button
         onClick={onReset}
@@ -37,6 +41,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         text="איפוס"
         hoverColor="hover:bg-red-200"
         disabledStyle={false}
+        baseBgColor={baseBgColor}
       />
     </>
   );
