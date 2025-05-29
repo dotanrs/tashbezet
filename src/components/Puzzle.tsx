@@ -634,7 +634,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
       {/* Clues display */}
       <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
-        <div className={`min-h-[82px] mx-2 max-w-[100%] ${backgroundColorUi} border-[0.5px] border-black ${isMobile ? '' : 'sm:rounded-lg'}`}>
+        <div className={`min-h-[82px] max-w-[100%] ${backgroundColorUi} border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg mx-2'}`}>
         <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
           <div className="flex-none cursor-pointer select-none text-xl"
           onClick={() => moveToNextDefinition(true)}>
