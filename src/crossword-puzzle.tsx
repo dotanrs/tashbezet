@@ -108,9 +108,9 @@ const CrosswordPuzzle = () => {
     return <div className='fixed z-10 w-full bg-[#ceeae8] border-b-[1px] border-gray-600 mb-0'>
     <div className={`${pageWidth} flex flex-row items-center justify-between m-auto pl-4 sm:pl-0`}>
       <div id="options">
-        <a onClick={() => setPreviousPuzzlesShown(!previousPuzzlesShown)}>
+        <button onClick={() => setPreviousPuzzlesShown(!previousPuzzlesShown)}>
           {previousPuzzlesShown ? <X size={24} className='text-gray-500' /> : <Menu size={24} className='text-gray-500' />}
-        </a>
+        </button>
       </div>
       <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
         {getTitle('text-2xl', 'sm:w-10 w-[35px]', true, '#2ea199', 'hidden', true)}
