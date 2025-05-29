@@ -43,8 +43,8 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPu
             style={{ direction: 'ltr' }}
             className={`px-4 py-2 rounded flex items-center gap-2 justify-end border-[1px] border-gray-600 ${
               currentPuzzleId === puzzleId
-                ? 'bg-[#98e0db] cursor-default'
-                : 'bg-white hover:bg-[#d2f4f2]'
+                ? 'bg-highlight-200 cursor-default'
+                : 'bg-white hover:bg-background-100'
             } ${status === '✓' && 'text-green-600'}`}
           >
             {puzzles[puzzleId].name}

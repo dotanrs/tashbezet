@@ -25,7 +25,20 @@ module.exports = {
       animation: {
         keypress: 'keypress 0.5s ease-out',
         shimmer: 'shimmer 2s infinite'
-      }
+      },
+      colors: {
+        background: {
+          10: '#f2fcfb',
+          50: '#ceeae8',
+          100: '#d2f4f2',
+          300: '#2ea199',
+        },
+        highlight: {
+          100: '#dbfcfa',  // light cyan
+          110: '#d1f7eb',
+          200: '#98e0db',  // dark cyan
+        },
+      },
     },
   },
   plugins: [],

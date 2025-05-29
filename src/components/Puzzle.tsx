@@ -597,7 +597,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       </div>
       {/* Status message */}
       {message && (
-        <div className="p-2 w-auto mx-2 rounded text-[13px] bg-[#2ea199] text-white relative overflow-hidden" style={{ direction: 'rtl' }}>
+        <div className="p-2 w-auto mx-2 rounded text-[13px] bg-background-300 text-white relative overflow-hidden" style={{ direction: 'rtl' }}>
           <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
           <span className="relative">{message}</span>
         </div>
@@ -605,7 +605,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
       {
         currentVisibleHint() && (
-          <div className="mt-1 p-2 w-auto mx-2 border-[0.5px] border-gray-600 sm:rounded text-[13px] bg-[#ceeae8] text-black relative overflow-hidden" style={{ direction: 'rtl' }}>
+          <div className="mt-1 p-2 w-auto mx-2 border-[0.5px] border-gray-600 sm:rounded text-[13px] bg-background-50 text-black relative overflow-hidden" style={{ direction: 'rtl' }}>
             <div className="absolute" />
             <span className="relative whitespace-pre-wrap">{currentVisibleHint()}</span>
           </div>
@@ -625,7 +625,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
       {/* Clues display */}
       <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
-        <div className={`min-h-[82px] mx-2 max-w-[100%] bg-[#ceeae8] border-[0.5px] border-black ${isMobile ? '' : 'sm:rounded-lg'}`}>
+        <div className={`min-h-[82px] mx-2 max-w-[100%] bg-highlight-100 border-[0.5px] border-black ${isMobile ? '' : 'sm:rounded-lg'}`}>
         <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
           <div className="flex-none cursor-pointer select-none text-xl"
           onClick={() => moveToNextDefinition(true)}>
