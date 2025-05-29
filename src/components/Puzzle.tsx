@@ -590,7 +590,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const backgroundColorUi = 'bg-highlight-100';
 
   return currentConfig && <>
-  <div id="whole-crossword" className={`sm:w-full sm:pt-10 pt-[35px] max-w-[500px] ${isMobile ? 'w-[calc(100vw-70px)] m-auto': 'w-[100%]'}`}>
+  <div id="whole-crossword" className="sm:w-full w-[100%] sm:pt-10 pt-[35px] max-w-[500px]">
     <div id="main-content" style={isMobile ? { minHeight: `calc(100vh - ${bottomPadding}px - 15px)` } : undefined}>
       <div id="crossword-and-buttons" className="flex space-x-5 flex-row justify-between items-start mt-0 mb-3">
         <CrosswordGrid
