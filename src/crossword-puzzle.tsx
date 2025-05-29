@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { CrosswordConfig } from './types/crossword';
-import ReactConfetti from 'react-confetti';
 import { puzzles, PuzzleId } from './crosswords';
 import PreviousPuzzles from './components/PreviousPuzzles';
 import Puzzle from './components/Puzzle';
@@ -29,7 +28,7 @@ const CrosswordPuzzle = () => {
   // Add handleStartGame
   const handleStartGame = () => {
     const firstPuzzleId = Object.keys(puzzles)[0] as PuzzleId;
-    handlePuzzleChange(firstPuzzleId, {});
+    handlePuzzleChange(firstPuzzleId);
   };
 
 
