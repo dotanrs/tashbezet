@@ -27,7 +27,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   
     // Modify current puzzle state to be null initially
     const [hintsShown, setHintsShown] = useState<{[key: string]: boolean}>({});
-  
+    const [isDone, setIsDone] = useState(false);
     // State for the user's input grid
     const [userGrid, setUserGrid] = useState<Grid>(createEmptyGrid());
     // Track selected cell
@@ -43,6 +43,11 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     // Create refs for all cells
     const cellRefs = useRef<(HTMLInputElement | null)[][]>(Array(5).fill(null).map(() => Array(5).fill(null)));
   
+    const resetMessages = () => {
+        setIsDone(false);
+        setMessage('');
+    }
+
     const getNewGrid = (puzzleId: PuzzleId): Grid => {
       return puzzles[puzzleId].grid.map((row) => 
         row.map((cell) => {
@@ -92,7 +97,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
           return initialGrid;
         }
       }
-      setMessage('');
+      resetMessages();
       const newGrid = getUpdatedGrid();
       resetCellStatus();
   
@@ -139,7 +144,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       const newGrid = getNewGrid(currentPuzzleId);
       setUserGrid(newGrid);
       setCellStatus(createEmptyCellStatus());
-      setMessage('');
+      resetMessages();
     };
   
     // Add handleStartGame
@@ -408,6 +413,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         puzzleId,
       });
       if (result.isCorrect) {
+        setIsDone(true);
         setCellStatus(result.newCellStatus);
         if (allPuzzlesSolved()) {
           setMessage('וואו, פתרת הכל! זה בשבילך: ⭐️ נתראה בתשבץ הבא ביום חמישי 💪');
@@ -580,6 +586,8 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       };
     }, []);
 
+    const backgroundColorUi = isDone ? 'bg-highlight-110' : 'bg-highlight-100';
+
   return currentConfig && <>
   <div id="whole-crossword" className="sm:w-full w-[100%] sm:pt-10 pt-[35px] max-w-[500px]">
     <div id="main-content" style={isMobile ? { minHeight: `calc(100vh - ${bottomPadding}px - 15px)` } : undefined}>
@@ -605,7 +613,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
       {
         currentVisibleHint() && (
-          <div className="mt-1 p-2 w-auto mx-2 border-[0.5px] border-gray-600 sm:rounded text-[13px] bg-background-50 text-black relative overflow-hidden" style={{ direction: 'rtl' }}>
+          <div className={`mt-1 p-2 w-auto mx-2 border-[0.5px] border-gray-600 sm:rounded text-[13px] ${backgroundColorUi} text-black relative overflow-hidden`} style={{ direction: 'rtl' }}>
             <div className="absolute" />
             <span className="relative whitespace-pre-wrap">{currentVisibleHint()}</span>
           </div>
@@ -620,12 +628,13 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
           onReset={handlePuzzleReset}
           hasUntestedCells={hasUntestedCells()}
           hasAvailableHints={hasAvailableHints()}
+          baseBgColor={backgroundColorUi}
         />
       </div>
 
       {/* Clues display */}
       <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
-        <div className={`min-h-[82px] mx-2 max-w-[100%] bg-highlight-100 border-[0.5px] border-black ${isMobile ? '' : 'sm:rounded-lg'}`}>
+        <div className={`min-h-[82px] mx-2 max-w-[100%] ${backgroundColorUi} border-[0.5px] border-black ${isMobile ? '' : 'sm:rounded-lg'}`}>
         <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
           <div className="flex-none cursor-pointer select-none text-xl"
           onClick={() => moveToNextDefinition(true)}>
