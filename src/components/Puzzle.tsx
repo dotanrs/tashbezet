@@ -10,7 +10,7 @@ import { findNextDefinition, handleArrowNavigation } from '../utils/navigationUt
 import useIsMobile from '../hooks/useIsMobile';
 import { checkPuzzle, createEmptyCellStatus, createEmptyGrid } from '../utils/puzzleUtils';
 import HebrewKeyboard from './HebrewKeyboard';
-import { MoveRight, MoveLeft, CircleHelp, LucideMinusCircle, Medal, Trophy } from 'lucide-react';
+import { MoveRight, MoveLeft, CircleHelp, Trophy } from 'lucide-react';
 import ReactConfetti from 'react-confetti';
 
 interface PuzzlesProps {
@@ -27,7 +27,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   
     // Modify current puzzle state to be null initially
     const [hintsShown, setHintsShown] = useState<{[key: string]: boolean}>({});
-    const [isDone, setIsDone] = useState(false);
     // State for the user's input grid
     const [userGrid, setUserGrid] = useState<Grid>(createEmptyGrid());
     // Track selected cell
@@ -45,7 +44,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const cellRefs = useRef<(HTMLInputElement | null)[][]>(Array(5).fill(null).map(() => Array(5).fill(null)));
   
     const resetMessages = () => {
-        setIsDone(false);
         setMessage('');
     }
 
@@ -414,9 +412,8 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         puzzleId,
       });
       if (result.isCorrect) {
-        setIsDone(true);
         setCellStatus(result.newCellStatus);
-        if (allPuzzlesSolved()) {
+        if (allowConfetti && allPuzzlesSolved()) {
           setMessage('פתרת את כל התשבצים!\nנתראה בפעם הבאה ביום חמישי');
         } else {
           setMessage('כל הכבוד, פתרת את זה!\n ביום חמישי יהיה תשבץ חדש ☺️');
