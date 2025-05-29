@@ -53,7 +53,7 @@ const CrosswordPuzzle = () => {
 
   const pageWidth = 'sm:w-[500px] max-w-[500px]'
 
-  function getTitle(size: string, width: string, noBottomBorder: boolean, fontColor: string, pencilPosition: string, withPen: boolean) {
+  function getTitle(size: string, width: string, noBottomBorder: boolean, pencilPosition: string, withPen: boolean) {
     const word = withPen ? "תשבצת" : 'תשבצת';
     return (
       <div className="relative flex flex-row justify-between">
@@ -67,7 +67,7 @@ const CrosswordPuzzle = () => {
             }}
           >
             <span style={{
-              background: fontColor,
+              background: '#2ea199',  // background-300
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>
@@ -78,7 +78,7 @@ const CrosswordPuzzle = () => {
           {withPen && <div
             key={999}
             className={`${width} aspect-square flex items-center justify-center ${size} font-bold m-0 border-y-[1px] mr-[-0.5px]
-                    border-r-[1px] ${noBottomBorder && 'border-b-0'} border-gray-400 bg-[#f2fcfb]`}
+                    border-r-[1px] ${noBottomBorder && 'border-b-0'} border-gray-400 bg-background-10`}
             style={{
               fontFamily: "'Rubik', sans-serif",
             }}
@@ -105,7 +105,7 @@ const CrosswordPuzzle = () => {
   }
 
   function getGameTitle() {
-    return <div className='fixed z-10 w-full bg-[#ceeae8] border-b-[1px] border-gray-600 mb-0'>
+    return <div className='fixed z-10 w-full bg-background-50 border-b-[1px] border-gray-600 mb-0'>
     <div className={`${pageWidth} flex flex-row items-center justify-between m-auto pl-4 sm:pl-0`}>
       <div id="options">
         <button onClick={() => setPreviousPuzzlesShown(!previousPuzzlesShown)}>
@@ -113,7 +113,7 @@ const CrosswordPuzzle = () => {
         </button>
       </div>
       <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
-        {getTitle('text-2xl', 'sm:w-10 w-[35px]', true, '#2ea199', 'hidden', true)}
+        {getTitle('text-2xl', 'sm:w-10 w-[35px]', true, 'hidden', true)}
       </div>
     </div>
   </div>
@@ -123,14 +123,14 @@ const CrosswordPuzzle = () => {
     return <div className='w-full mt-10'>
     <div className={`${pageWidth} flex flex-row items-center justify-center m-auto`}>
       <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
-        {getTitle('text-2xl', 'w-12', false, '#2ea199', 'absolute left-[-15px] top-[-12px] w-[35px]', false)}
+        {getTitle('text-2xl', 'w-12', false, 'absolute left-[-15px] top-[-12px] w-[35px]', false)}
       </div>
     </div>
   </div>
   }
 
   function containerStyle(gameStarted: boolean) {
-    return gameStarted ? '' : 'absolute bg-[#ceeae8] h-full'
+    return gameStarted ? '' : 'absolute bg-background-50 h-full'
   }
 
   useEffect(() => {
@@ -143,7 +143,7 @@ const CrosswordPuzzle = () => {
 
   return (
     <>
-    <div className="block lg:landscape:hidden landscape:block portrait:hidden fixed w-full h-full z-30 text-center p-20 text-gray-700 text-l bg-[#ceeae8]" style={{ direction: 'rtl' }}>
+    <div className="block lg:landscape:hidden landscape:block portrait:hidden fixed w-full h-full z-30 text-center p-20 text-gray-700 text-l bg-background-50" style={{ direction: 'rtl' }}>
       <div className='text-xl direction-rtl'>אין במסך הזה מקום לתשבץ 😣</div>
       <div className='pt-4'>אפשר לסובב את המכשיר למצב אופקי?</div>
     </div>
@@ -157,7 +157,7 @@ const CrosswordPuzzle = () => {
             <img className='mb-16 mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
             <button
               onClick={handleStartGame}
-              className="px-6 py-3 bg-[#2ea199] text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
+              className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
               style={{ direction: 'rtl' }}
             >
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
