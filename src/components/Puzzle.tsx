@@ -10,6 +10,7 @@ import { findNextDefinition, handleArrowNavigation } from '../utils/navigationUt
 import useIsMobile from '../hooks/useIsMobile';
 import { checkPuzzle, createEmptyCellStatus, createEmptyGrid } from '../utils/puzzleUtils';
 import HebrewKeyboard from './HebrewKeyboard';
+import { MoveRight, MoveLeft, CircleHelp } from 'lucide-react';
 
 interface PuzzlesProps {
   currentConfig: CrosswordConfig;
@@ -622,7 +623,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
       {
         currentVisibleHint() && (
-          <div className="mt-1 p-2 w-auto px-4 border-[0.5px] border-gray-600 sm:rounded text-[13px] bg-[#d1f7eb] text-black relative overflow-hidden" style={{ direction: 'rtl' }}>
+          <div className="mt-1 p-2 w-auto mx-2 border-[0.5px] border-gray-600 sm:rounded text-[13px] bg-[#ceeae8] text-black relative overflow-hidden" style={{ direction: 'rtl' }}>
             <div className="absolute" />
             <span className="relative whitespace-pre-wrap">{currentVisibleHint()}</span>
           </div>
@@ -642,11 +643,11 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
       {/* Clues display */}
       <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
-        <div className={`min-h-[82px] max-w-[100%] bg-[#dbfcfa] border-[0.5px] border-black ${isMobile ? '' : 'sm:rounded-lg'}`}>
+        <div className={`min-h-[82px] mx-2 max-w-[100%] bg-[#ceeae8] border-[0.5px] border-black ${isMobile ? '' : 'sm:rounded-lg'}`}>
         <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
           <div className="flex-none cursor-pointer select-none text-xl"
           onClick={() => moveToNextDefinition(true)}>
-          {"▶️"}
+          {<MoveRight />}
           </div>
           <div className="flex-1 gap-2 px-3">
           {selected && direction === 'across' && (
@@ -662,11 +663,11 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
           </div>
           {currentAvailableHint && <div className="flex-none cursor-pointer select-none text-2xl" title='להציג/להסתיר רמז'
             onClick={toggleHint}>
-          {"💡"}
+          {<CircleHelp />}
           </div>}
           <div className="flex-none cursor-pointer select-none text-2xl"
           onClick={() => moveToNextDefinition(false)}>
-          {"◀️"}
+          {<MoveLeft />}
           </div>
         </div>
       </div>
