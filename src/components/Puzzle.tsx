@@ -10,17 +10,17 @@ import { findNextDefinition, handleArrowNavigation } from '../utils/navigationUt
 import useIsMobile from '../hooks/useIsMobile';
 import { checkPuzzle, createEmptyCellStatus, createEmptyGrid } from '../utils/puzzleUtils';
 import HebrewKeyboard from './HebrewKeyboard';
-import { MoveRight, MoveLeft, CircleHelp } from 'lucide-react';
+import { MoveRight, MoveLeft, CircleHelp, LucideMinusCircle, Medal, Trophy } from 'lucide-react';
+import ReactConfetti from 'react-confetti';
 
 interface PuzzlesProps {
   currentConfig: CrosswordConfig;
-  setShowConfetti: (newVal: boolean) => void;
-  setCurrentPuzzleId: (newId: PuzzleId) => void;
   setCurrentConfig: (newConfig: CrosswordConfig) => void;
   currentPuzzleId: PuzzleId;
+  windowSize: {width: number, height: number};
 }
 
-const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCurrentConfig, setCurrentPuzzleId, setShowConfetti }) => {
+const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCurrentConfig, windowSize }) => {
     const isMobile = useIsMobile();
     const cluesKeyboardRef = useRef<HTMLDivElement>(null);
     const [bottomPadding, setBottomPadding] = useState(0);
@@ -38,6 +38,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const [cellStatus, setCellStatus] = useState<CellStatusGrid>(createEmptyCellStatus());
     // Track direction
     const [direction, setDirection] = useState<Direction>('across');
+    const [showConfetti, setShowConfetti] = useState(false);
   
   
     // Create refs for all cells
@@ -416,9 +417,9 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         setIsDone(true);
         setCellStatus(result.newCellStatus);
         if (allPuzzlesSolved()) {
-          setMessage('וואו, פתרת הכל! זה בשבילך: ⭐️ נתראה בתשבץ הבא ביום חמישי 💪');
+          setMessage('פתרת את כל התשבצים!\nנתראה בפעם הבאה ביום חמישי');
         } else {
-          setMessage('כל הכבוד, פתרת את זה! 💪 ביום חמישי יהיה תשבץ חדש ☺️');
+          setMessage('כל הכבוד, פתרת את זה!\n ביום חמישי יהיה תשבץ חדש ☺️');
         }
         if (allowConfetti) {
           setShowConfetti(true);
@@ -605,20 +606,24 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       </div>
       {/* Status message */}
       {message && (
-        <div className="p-2 w-auto mx-2 rounded text-[13px] bg-background-300 text-white relative overflow-hidden" style={{ direction: 'rtl' }}>
-          <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-          <span className="relative">{message}</span>
+        <div className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-gray-500/50 pt-20' onClick={() => setMessage('')}>
+             {showConfetti && (
+              <ReactConfetti
+                width={windowSize.width}
+                height={windowSize.height}
+                recycle={false}
+                numberOfPieces={400}
+                gravity={0.2}
+                colors={['#d1f7eb', '#98e0db', '#dbfcfa', '#2ea199', '#f2fcfb']}
+              />
+            )}
+            <div className="p-8 w-auto max-w-[400px] text-center mx-auto mx-2 rounded-xl text-xl bg-background-300 text-white relative shadow-xl overflow-hidden" style={{ direction: 'rtl' }}>
+                <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                <Trophy className='w-[150px] h-[150px] mx-auto mb-6' />
+                {message.split('\n').map((text: string) => <div key={text} className="relative">{text}</div>)}
+            </div>
         </div>
       )}
-
-      {
-        currentVisibleHint() && (
-          <div className={`mt-1 p-2 w-auto mx-2 border-[0.5px] border-gray-600 sm:rounded text-[13px] ${backgroundColorUi} text-black relative overflow-hidden`} style={{ direction: 'rtl' }}>
-            <div className="absolute" />
-            <span className="relative whitespace-pre-wrap">{currentVisibleHint()}</span>
-          </div>
-        )
-      }
 
       {/* Buttons section */}
       <div id="sidebar-container" className={`text-center flex mt-4 flex-row gap-2 text-[13px] w-[100px] px-2 pb-4`}>
@@ -634,6 +639,14 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
       {/* Clues display */}
       <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
+        {
+            currentVisibleHint() && (
+            <div className={`mt-1 p-2 w-auto mx-4 border-[0.5px] border-b-0 border-gray-600 rounded-t text-[13px] ${backgroundColorUi} opacity-[0.9] text-black relative overflow-hidden`} style={{ direction: 'rtl' }}>
+                <div className="absolute" />
+                <span className="relative whitespace-pre-wrap">{currentVisibleHint()}</span>
+            </div>
+            )
+        }
         <div className={`min-h-[82px] max-w-[100%] ${backgroundColorUi} border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg mx-2'}`}>
         <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
           <div className="flex-none cursor-pointer select-none text-xl"
