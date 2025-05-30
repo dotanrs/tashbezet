@@ -11,6 +11,7 @@ interface CrosswordGridProps {
   onCellClick: (row: number, col: number) => void;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  isDone: boolean;
 }
 
 const CrosswordGrid: React.FC<CrosswordGridProps> = ({
@@ -22,6 +23,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
   onCellClick,
   onChange,
   onKeyDown,
+  isDone,
 }) => {
   const isMobile = useIsMobile();
 
@@ -41,9 +43,9 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
 
     if (isCompleted) {
       if (isSelected) {
-        return 'bg-highlight-200';
+        return 'bg-highlight-200/80';
       } else if (isInCurrentWord) {
-        return 'bg-highlight-110';
+        return 'bg-highlight-110/80';
       }
       return 'text-green-200';
     }
@@ -58,9 +60,10 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
   };
 
   const displayToLogicalCol = (displayCol: number) => 4 - displayCol;
+  const victoryGradient = 'bg-[linear-gradient(45deg,_white_5%,_#cff7e2_40%,_white_100%)]'
 
   return (
-    <div className="grid grid-cols-5 gap-0 border-[0.5px] border-gray-800 w-full">
+    <div className={`grid grid-cols-5 gap-0 border-[0.5px] border-gray-800 w-full ${isDone && victoryGradient}`}>
       {userGrid.map((row, rowIndex) => (
         row.map((_, displayColIndex) => {
           const colIndex = displayToLogicalCol(displayColIndex);
