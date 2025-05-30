@@ -416,7 +416,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       if (result.isCorrect) {
         setCellStatus(result.newCellStatus);
         if (allowConfetti && allPuzzlesSolved()) {
-          setMessage('פתרת את כל התשבצים!\nנתראה בפעם הבאה ביום חמישי');
+          setMessage('פתרת את כל התשבצים! ⭐️\nנתראה בפעם הבאה ביום חמישי');
         } else {
           setMessage('כל הכבוד, פתרת את זה!\n ביום חמישי יהיה תשבץ חדש ☺️');
         }
