@@ -589,7 +589,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const backgroundColorUi = 'bg-highlight-100';
 
     const drawCrossword = () => {
-        return currentConfig.grid.map(row => row.map(cell => cell === 'blank' ? '◼️' : '◻️').join('')).join('\n')
+        return currentConfig.grid.map(row => row.map(cell => cell === 'blank' ? '◼️' : '◻️').reverse().join('')).join('\n')
     }
 
     const handleShareButtonClicked = async (e: React.MouseEvent) => {
