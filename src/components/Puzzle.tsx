@@ -25,6 +25,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const isMobile = useIsMobile();
     const cluesKeyboardRef = useRef<HTMLDivElement>(null);
     const [bottomPadding, setBottomPadding] = useState(0);
+    const [isDone, setIsDone] = useState(false);
   
     // Modify current puzzle state to be null initially
     const [hintsShown, setHintsShown] = useState<{[key: string]: boolean}>({});
@@ -44,10 +45,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   
     // Create refs for all cells
     const cellRefs = useRef<(HTMLInputElement | null)[][]>(Array(5).fill(null).map(() => Array(5).fill(null)));
-  
-    const resetMessages = () => {
-        setMessage('');
-    }
+
 
     const getNewGrid = (puzzleId: PuzzleId): Grid => {
       return puzzles[puzzleId].grid.map((row) => 
@@ -98,7 +96,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
           return initialGrid;
         }
       }
-      resetMessages();
       const newGrid = getUpdatedGrid();
       resetCellStatus();
   
@@ -144,8 +141,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       clearPuzzleState(currentPuzzleId);
       const newGrid = getNewGrid(currentPuzzleId);
       setUserGrid(newGrid);
-      setCellStatus(createEmptyCellStatus());
-      resetMessages();
+      resetCellStatus();
     };
   
     // Add handleStartGame
@@ -395,7 +391,9 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     };
   
     const resetCellStatus = () => {
+      setIsDone(false);
       setCellStatus(createEmptyCellStatus());
+      setMessage('');
     };
   
     const allPuzzlesSolved = () => {
@@ -414,6 +412,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         puzzleId,
       });
       if (result.isCorrect) {
+        setIsDone(true);
         setCellStatus(result.newCellStatus);
         if (allowConfetti && allPuzzlesSolved()) {
           setMessage('פתרת את כל התשבצים! ⭐️\nנתראה בפעם הבאה ביום חמישי');
@@ -618,6 +617,7 @@ https://dotanrs.github.io/tashbezet/?puzzleId=${currentPuzzleId}
           onCellClick={handleCellClick}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          isDone={isDone}
         />
       </div>
       {/* Status message */}
