@@ -405,6 +405,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   
     const checkComplete = (grid: Grid, puzzleId: PuzzleId, allowConfetti: boolean = false) => {  
       const result = checkPuzzle(grid, currentConfig);
+      setShowConfetti(false);
       savePuzzleState(puzzleId, {
         userGrid: grid,
         cellStatus: cellStatus,
