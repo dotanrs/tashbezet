@@ -10,7 +10,7 @@ import { findNextDefinition, handleArrowNavigation } from '../utils/navigationUt
 import useIsMobile from '../hooks/useIsMobile';
 import { checkPuzzle, createEmptyCellStatus, createEmptyGrid } from '../utils/puzzleUtils';
 import HebrewKeyboard from './HebrewKeyboard';
-import { MoveRight, MoveLeft, CircleHelp, Trophy } from 'lucide-react';
+import { MoveRight, MoveLeft, CircleHelp, Trophy, Share2Icon } from 'lucide-react';
 import ReactConfetti from 'react-confetti';
 
 interface PuzzlesProps {
@@ -39,6 +39,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     // Track direction
     const [direction, setDirection] = useState<Direction>('across');
     const [showConfetti, setShowConfetti] = useState(false);
+    const [shareLinkClicked, setShareLinkClicked] = useState(false);
   
   
     // Create refs for all cells
@@ -587,6 +588,23 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
     const backgroundColorUi = 'bg-highlight-100';
 
+    const drawCrossword = () => {
+        return currentConfig.grid.map(row => row.map(cell => cell === 'blank' ? '◼️' : '◻️').join('')).join('\n')
+    }
+
+    const handleShareButtonClicked = async (e: React.MouseEvent) => {
+        try {
+          await navigator.clipboard.writeText(`כרגע פתרתי את תשבצת ${currentConfig.name}, בא לך לנסות גם?
+${drawCrossword()}
+https://dotanrs.github.io/tashbezet/?puzzleId=${currentPuzzleId}
+`);
+          setShareLinkClicked(true);
+          setTimeout(() => setShareLinkClicked(false), 2000);
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+      };
+
   return currentConfig && <>
   <div id="whole-crossword" className={`sm:w-full w-[100%] sm:pt-10 pt-[35px] max-w-[500px] ${hidden && 'hidden'}`}>
     <div id="main-content" style={isMobile ? { minHeight: `calc(100vh - ${bottomPadding}px - 15px)` } : undefined}>
@@ -615,10 +633,17 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
                 colors={['#d1f7eb', '#98e0db', '#dbfcfa', '#2ea199', '#f2fcfb']}
               />
             )}
-            <div className="p-8 w-auto max-w-[400px] text-center mx-auto mx-2 rounded-xl text-xl bg-background-300 text-white relative shadow-xl overflow-hidden" style={{ direction: 'rtl' }}>
+            <div className="p-8 w-auto max-w-[400px] text-center mx-auto mx-2 rounded-xl text-xl bg-background-300 text-white relative shadow-xl overflow-hidden"
+            style={{ direction: 'rtl' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
                 <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
                 <Trophy className='w-[150px] h-[150px] mx-auto mb-6' />
                 {message.split('\n').map((text: string) => <div key={text} className="relative">{text}</div>)}
+                <div
+                  className={`text-sm ${shareLinkClicked ? '' : 'hover:underline cursor-pointer'} text-gray-300 mt-8`}
+                  onClick={handleShareButtonClicked}>
+                  <Share2Icon className='inline ml-1 w-4 h-4' /> 
+                  {shareLinkClicked ? 'הקישור הועתק!' : 'לשתף את התשבץ'}
+                </div>
             </div>
         </div>
       )}
