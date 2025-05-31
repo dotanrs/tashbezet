@@ -151,9 +151,9 @@ const CrosswordPuzzle = () => {
 
   return (
     <>
-    <div className="block lg:landscape:hidden landscape:block portrait:hidden fixed w-full h-full z-30 text-center p-20 text-gray-700 text-l bg-background-50" style={{ direction: 'rtl' }}>
+    <div className="block md:landscape:hidden landscape:block portrait:hidden fixed w-full h-full z-50 text-center p-20 text-gray-700 text-l bg-background-50" style={{ direction: 'rtl' }}>
       <div className='text-xl direction-rtl'>אין במסך הזה מקום לתשבץ 😣</div>
-      <div className='pt-4'>אפשר לסובב את המכשיר למצב אופקי?</div>
+      <div className='pt-4'>אפשר לסובב את המכשיר למצב אנכי?</div>
     </div>
     <div id="crossword-container"
       className={`w-full ${containerStyle(gameStarted)} right-0 left-0 m-x-0 flex flex-col items-center pt-0 mx-auto`}>

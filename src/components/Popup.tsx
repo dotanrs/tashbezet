@@ -1,4 +1,4 @@
-import { HandHeart, LucideProps, Phone, Share2Icon, Trophy } from 'lucide-react';
+import { HandHeart, LucideProps, Share2Icon, Trophy } from 'lucide-react';
 import React, { useState } from 'react';
 import { CrosswordConfig } from '../types/crossword';
 import ReactConfetti from 'react-confetti';
@@ -67,7 +67,7 @@ const Popup: React.FC<BasePopupProps> = ({
       };
 
     return (
-    <div className='fixed z-40 w-[100%] h-[100%] px-10 top-0 left-0 bg-gray-500/50 pt-20' onClick={onClose}>
+    <div className='fixed z-40 w-[100%] h-[100%] px-10 top-0 left-0 bg-gray-500/50 pt-[8vh]' onClick={onClose}>
         {confetti && confetti.showConfetti && (
             <ReactConfetti
             width={confetti.windowSize.width}
