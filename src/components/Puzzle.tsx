@@ -11,7 +11,7 @@ import useIsMobile from '../hooks/useIsMobile';
 import { checkPuzzle, createEmptyCellStatus, createEmptyGrid } from '../utils/puzzleUtils';
 import HebrewKeyboard from './HebrewKeyboard';
 import { MoveRight, MoveLeft, CircleHelp } from 'lucide-react';
-import { AllPuzzlesDonePopup, PhoneFriendPopup, PuzzleDonePopup } from './Popup';
+import { AllPuzzlesDonePopup, SharePopup, PuzzleDonePopup } from './Popup';
 
 interface PuzzlesProps {
   currentConfig: CrosswordConfig;
@@ -45,7 +45,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     // Track direction
     const [direction, setDirection] = useState<Direction>('across');
     const [showConfetti, setShowConfetti] = useState(false);
-    const [showPhoneFriend, setShowPhoneFriend] = useState(false);
+    const [showSharePopup, setShowSharePopup] = useState(false);
   
   
     // Create refs for all cells
@@ -623,8 +623,8 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
               onClose={() => setMessage(null)}
           />)
       }
-      {(!message && showPhoneFriend) && (
-        <PhoneFriendPopup currentConfig={currentConfig} puzzleId={currentPuzzleId} onClose={() => setShowPhoneFriend(false)} />
+      {(!message && showSharePopup) && (
+        <SharePopup currentConfig={currentConfig} puzzleId={currentPuzzleId} onClose={() => setShowSharePopup(false)} />
       )}
 
       {/* Buttons section */}
@@ -635,7 +635,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
           onReset={handlePuzzleReset}
           hasUntestedCells={hasUntestedCells()}
           hasAvailableHints={hasAvailableHints()}
-          openPhoneFriend={() => setShowPhoneFriend(true)}
+          openSharePopup={() => setShowSharePopup(true)}
           baseBgColor={backgroundColorUi}
         />
       </div>

@@ -1,11 +1,12 @@
 import React from 'react';
 import Button from './Button';
+import { Share2 } from 'lucide-react';
 
 interface SidebarProps {
   onMarkPuzzle: () => void;
   onHint: () => void;
   onReset: () => void;
-  openPhoneFriend: () => void;
+  openSharePopup: () => void;
   hasUntestedCells: boolean;
   hasAvailableHints: boolean;
   baseBgColor: string;
@@ -18,35 +19,34 @@ const Sidebar: React.FC<SidebarProps> = ({
   hasUntestedCells,
   hasAvailableHints,
   baseBgColor,
-  openPhoneFriend,
+  openSharePopup,
 }) => {
   return (
       <>
       <Button
-        onClick={openPhoneFriend}
-        disabled={!hasAvailableHints}
-        icon="📞"
+        onClick={openSharePopup}
+        Icon={Share2}
         text=""
         baseBgColor={baseBgColor}
       />
       <Button
         onClick={onMarkPuzzle}
         disabled={!hasUntestedCells}
-        icon="🖋️"
+        Icon="🖋️"
         text="בדיקה"
         baseBgColor={baseBgColor}
       />
       <Button
         onClick={onHint}
         disabled={!hasAvailableHints}
-        icon="🤔"
+        Icon="🤔"
         text="תן אות"
         hoverColor="hover:bg-yellow-100"
         baseBgColor={baseBgColor}
       />
       <Button
         onClick={onReset}
-        icon="🧹"
+        Icon="🧹"
         text="איפוס"
         hoverColor="hover:bg-red-200"
         disabledStyle={false}

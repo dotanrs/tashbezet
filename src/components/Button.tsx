@@ -1,9 +1,10 @@
+import { LucideProps } from 'lucide-react';
 import React from 'react';
 
 interface ButtonProps {
   onClick: () => void;
   disabled?: boolean;
-  icon: string;
+  Icon: string | React.ComponentType<LucideProps>;
   text: string;
   hoverColor?: string;
   disabledStyle?: boolean;
@@ -13,7 +14,7 @@ interface ButtonProps {
 const Button: React.FC<ButtonProps> = ({
   onClick,
   disabled = false,
-  icon,
+  Icon,
   text,
   baseBgColor,
   hoverColor = 'hover:bg-highlight-200',
@@ -30,7 +31,7 @@ const Button: React.FC<ButtonProps> = ({
       className={disabled && disabledStyle ? disabledClasses : enabledClasses}
     >
       <div className="flex flex-row justify-between">
-        {icon}
+        {(typeof Icon == 'string') ? Icon : <Icon className='w-3 h-3' />}
        {text && <div className="pl-2">
           {text}
         </div>}

@@ -1,4 +1,4 @@
-import { LucideProps, Phone, Share2Icon, Trophy } from 'lucide-react';
+import { HandHeart, LucideProps, Phone, Share2Icon, Trophy } from 'lucide-react';
 import React, { useState } from 'react';
 import { CrosswordConfig } from '../types/crossword';
 import ReactConfetti from 'react-confetti';
@@ -121,16 +121,13 @@ export const AllPuzzlesDonePopup: React.FC<PopupProps> = ({ currentConfig, puzzl
     />
 }
 
-export const PhoneFriendPopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onClose }) => {
-    const helpMessage = `הסתבכתי קצת עם ${getPuzzleName(currentConfig)} 😣, בא לך לנסות לעזור?
-    https://dotanrs.github.io/tashbezet/?puzzleId=${puzzleId}
-    `
+export const SharePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onClose }) => {
+    const shareContent = `https://dotanrs.github.io/tashbezet/?puzzleId=${puzzleId}`
     return <Popup 
-        shareContent={helpMessage}
-        message={['אין כמו חבר טלפוני כדי לעזור', 'בתשבץ קשה']}
-        explanation={['החבר (או חברה) - עליך', 'הטלפון - גם עליך', 'אבל הלינק עלינו!']}
+        shareContent={shareContent}
+        message={['לשתף זה לאהוב']}
         onClose={onClose}
-        Icon={Phone}
-        shareLinkText='לינק לשיתוף'
+        Icon={HandHeart}
+        shareLinkText='קישור לתשבץ הנוכחי'
     />
 }
