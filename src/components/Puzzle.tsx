@@ -33,6 +33,8 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const cluesKeyboardRef = useRef<HTMLDivElement>(null);
     const [bottomPadding, setBottomPadding] = useState(0);
     const [isDone, setIsDone] = useState(false);
+
+    const audioRef = useRef<HTMLAudioElement | null>(null);
   
     // Modify current puzzle state to be null initially
     const [hintsShown, setHintsShown] = useState<{[key: string]: boolean}>({});
@@ -429,12 +431,17 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
           setMessage(PuzzleDoneMessage.THIS_DONE);
         }
         if (allowConfetti) {
+          if (audioRef.current) {
+            audioRef.current.play().catch((err) => {
+                console.log('Oh no, we wanted to play a success sound but couldn\'t :(', err);
+            });
+          }
           setShowConfetti(true);
         }
       }
       setPageReady(true);
     };
-  
+
     const markPuzzle = () => {
       const result = checkPuzzle(userGrid, currentConfig);
       setCellStatus(result.newCellStatus);
@@ -614,6 +621,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
           isDone={isDone}
         />
       </div>
+      <audio ref={audioRef} src="https://dotanrs.github.io/tashbezet/win.mp3" preload="auto" style={{ display: 'none' }}/>
       {/* Status message */}
       {pageReady && (<>
         {message && (
