@@ -148,50 +148,55 @@ export const SharePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onCl
     />
 }
 
-const welcomeDescription = (puzzleName: string, isAlreadySolved: boolean) => {
-    if (!isAlreadySolved) {
-        return <div className='text-sm text-black mb-6'>התשבצת השבועי:<br />יום חמישי {puzzleName}</div>
-    }
-    return <div className='text-sm text-black mb-6'>
-        <div className='font-bold text-base mb-2'>עבודה יפה על התשבצת השבועי!</div>
-        התשבץ הבא בעוד:
-        <CountdownTimer />
-    </div>
+const wellDoneDescription = (onClose: () => void) => {
+    return <>
+        <div className='text-xl text-gray-600 mb-4 font-arial'>פתרת את זה!</div>
+        <img className='mb-8 mx-auto' alt='Tashbezet logo with trophy' src='https://dotanrs.github.io/tashbezet/welldone.png'></img>
+        <div className='text-sm text-black mb-6'>
+            התשבץ הבא בעוד:
+            <CountdownTimer />
+        </div>
+        <button
+          onClick={onClose}
+          className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
+          style={{ direction: 'rtl' }}
+          >
+        <span className="relative whitespace-pre-wrap">לחזור לתשבץ</span>
+       </button>
+    </>
 }
 
-const welcomeButton = (isAlreadySolved: boolean) => {
-    if (!isAlreadySolved) {
-        return <>
+const welcomeDescription = (puzzleName: string, onClose: () => void) => {
+    return <>
+    <div className='text-xl text-gray-600 mb-4 font-rubik'>תשבץ קטן אחד בשבוע</div>
+        <img className='mb-8 mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
+        <div className='text-sm text-black mb-6'>התשבצת השבועי:<br />יום חמישי {puzzleName}</div>
+        <button
+          onClick={onClose}
+          className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
+          style={{ direction: 'rtl' }}
+          >
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
             <div className="absolute inset-0 translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
         </div>
         <span className="relative whitespace-pre-wrap">להתחיל  ✍️</span>
-      </>
-    }
-    return <span className="relative whitespace-pre-wrap">לחזור לתשבץ</span>
+       </button>
+    </>
 }
 
 const WelcomeContent = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, isAlreadySolved: boolean, onClose: () => void) => {
-    return () => (<>
-<div className='w-full mt-4 flex'>
-    <div className={`$flex flex-row items-center justify-center m-auto mb-4`}>
-      <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
-        {getTitle(currentConfig, currentPuzzleId, 'text-2xl', 'w-12', false, 'absolute left-[-15px] top-[-12px] w-[35px]', false)}
+    return () => (
+    <div className='font-rubik'>
+      <div className='w-full mt-4 flex font-rubik'>
+        <div className={`$flex flex-row items-center justify-center m-auto mb-4`}>
+          <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
+            {getTitle(currentConfig, currentPuzzleId, 'text-2xl', 'w-12', false, 'absolute left-[-15px] top-[-12px] w-[35px]', false)}
+          </div>
+        </div>
       </div>
+      {isAlreadySolved ? wellDoneDescription(onClose) : welcomeDescription(currentConfig.name, onClose)}
     </div>
-  </div>
-<div className='text-xl text-gray-600 mb-4' style={{fontFamily: "'Rubik', sans-serif"}}>תשבץ קטן אחד בשבוע</div>
-<img className='mb-8 mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
-{welcomeDescription(currentConfig.name, isAlreadySolved)}
-  <button
-  onClick={onClose}
-  className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
-  style={{ direction: 'rtl' }}
-  >
- {welcomeButton(isAlreadySolved)}
- </button>
-</>)
-}
+)}
 
 interface WelcomePopupProps extends PopupProps {
     isAlreadySolved: boolean;
