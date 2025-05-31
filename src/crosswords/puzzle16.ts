@@ -1,11 +1,11 @@
 import { CrosswordConfig } from "../types/crossword";
 
 const defs = [
-  "__מהא",
-  "במחול",
-  "וישנו",
-  "מציאה",
-  "בודהה",
+  "_בומב",
+  "_מיצו",
+  "מחשיד",
+  "הונאה",
+  "אלוהה",
 ]
 
 const words = defs.map(def => def.split("").reverse().map(char => char === "_" ? "blank" : char));
@@ -16,19 +16,19 @@ const puzzle: CrosswordConfig = {
   name: "2025-06-05",
   "grid": fixedWords,
   "rowClues": [
+    "💣 + E",
+    "הוציאו את המיץ",
+    "כמו מייל לא צפוי שמודיע שזכית בהרבה כסף",
+    "כמו ההסבר ל-3 מאונך, כנראה",
+    "ברכה שמגיעה לפעמים עם זר פרחים על הצוואר",
+  ],
+  "columnClues": [
     "כשמנסים להקליד ״מהר״ מהר, אולי",
     "כשנעלזה ונשמחה, כך נצאה",
     "האל המשמר בהינדואיזם",
     "כמו משהו יד שניה במצב מעולה ובזול",
     "סידהרתא גאוטמה, בבגרותו",
   ],
-  "columnClues": [
-    "💣 בלעז",
-    "הספיק להם",
-    "כמו מייל לא צפוי שמודיע שזכית בהרבה כסף",
-    "כמו ההסבר ל-3 מאונך, כנראה",
-    "ברכה שמגיעה לפעמים עם זר פרחים על הצוואר",
-  ]
 };
 
 export default puzzle;
