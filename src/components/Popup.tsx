@@ -1,4 +1,4 @@
-import { HandHeart, Share2Icon, Trophy, LucideProps, X, Pencil, TreePalm, TreePine, Bird } from 'lucide-react';
+import { HandHeart, Share2Icon, Trophy, LucideProps, X, Bird } from 'lucide-react';
 import React, { useState } from 'react';
 import { CrosswordConfig } from '../types/crossword';
 import ReactConfetti from 'react-confetti';
@@ -29,8 +29,6 @@ interface BasePopupProps extends CommonPopupProps {
   addGlaze?: boolean;
   Icon: React.ComponentType<LucideProps>;
   ContentOverride?: React.ComponentType<any>;
-  backgroundColor?: string;
-  borderColor?: string;
   showCloseButton?: boolean;
 }
 
@@ -75,15 +73,13 @@ const Popup: React.FC<BasePopupProps> = ({
     message,
     explanation = [],
     shareContent,
-    shareLinkText = "לשתף את התשבץ",
     addGlaze = false,
     confetti = null,
     onClose,
     Icon,
     ContentOverride = null,
-    backgroundColor = 'bg-background-10',
-    borderColor = 'border-gray-200',
     showCloseButton = true,
+    shareLinkText = 'שיתוף',
 }) => {
 
     return (
@@ -98,7 +94,7 @@ const Popup: React.FC<BasePopupProps> = ({
             colors={['#d1f7eb', '#98e0db', '#dbfcfa', '#2ea199', '#f2fcfb']}
             />
         )}
-        <div className={`p-8 pb-6 ${borderColor} border-0 w-auto max-w-[400px] text-center mb-8 mx-auto rounded-xl text-xl ${backgroundColor} text-gray-700 relative shadow-xl overflow-hidden`}
+        <div className={`p-8 pb-6 w-auto max-w-[400px] text-center mb-8 mx-auto rounded-xl text-xl bg-background-10 text-gray-700 relative shadow-xl overflow-hidden`}
             style={{ direction: 'rtl' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
             {showCloseButton && <div className='z-1 text-sm flex flex-end flex-col' style={{direction: 'ltr'}}><X onClick={onClose} className='cursor-pointer' /></div>}
             {addGlaze && <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />}
@@ -114,7 +110,7 @@ const Popup: React.FC<BasePopupProps> = ({
                         {explanation.map((text: string, index: number) => <div key={index} className="relative">{text}</div>)}
                     </div>
                 )}
-                {ShareLink('שיתוף', 'text-sm text-gray-700 mt-4', shareContent)}
+                {ShareLink(shareLinkText, 'text-sm text-gray-700 mt-4', shareContent)}
             </>)
             }
         </div>
@@ -223,8 +219,6 @@ export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzle
         Icon={HandHeart}
         shareLinkText='קישור לתשבץ הנוכחי'
         ContentOverride={WelcomeContent(currentConfig, puzzleId, isAlreadySolved, onClose)}
-        backgroundColor={'bg-background-10'}
-        borderColor={'border-background-50'}
         showCloseButton={false}
     />
 }
