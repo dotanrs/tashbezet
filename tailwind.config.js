@@ -34,7 +34,8 @@ module.exports = {
           300: '#2ea199',
         },
         highlight: {
-          110: '#c6f4e6',
+          100: '#dbfcfa',  // light cyan
+          110: '#c6f4e6', // greenish
           200: '#98e0db',  // dark cyan
         },
       },
