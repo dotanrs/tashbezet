@@ -67,7 +67,7 @@ const Popup: React.FC<BasePopupProps> = ({
       };
 
     return (
-    <div className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-gray-500/50 pt-20' onClick={onClose}>
+    <div className='fixed z-40 w-[100%] h-[100%] px-10 top-0 left-0 bg-gray-500/50 pt-20' onClick={onClose}>
         {confetti && confetti.showConfetti && (
             <ReactConfetti
             width={confetti.windowSize.width}
@@ -78,10 +78,10 @@ const Popup: React.FC<BasePopupProps> = ({
             colors={['#d1f7eb', '#98e0db', '#dbfcfa', '#2ea199', '#f2fcfb']}
             />
         )}
-        <div className="p-8 w-auto max-w-[400px] text-center mx-auto mx-2 rounded-xl text-xl bg-background-300 text-white relative shadow-xl overflow-hidden"
+        <div className="p-8 border-gray-200 border-2 w-auto max-w-[400px] text-center mx-auto rounded-xl text-xl bg-background-300 text-white relative shadow-xl overflow-hidden"
             style={{ direction: 'rtl' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
             {addGlaze && <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />}
-            <Icon className='w-[150px] h-[150px] mx-auto mb-6' />
+            <Icon className='w-[150px] h-[150px] mx-auto mb-6 max-w-[80%]' />
             {message.map((text: string, index: number) => <div key={index} className="relative">{text}</div>)}
 
             {explanation && (
