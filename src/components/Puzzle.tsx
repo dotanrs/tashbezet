@@ -11,8 +11,7 @@ import useIsMobile from '../hooks/useIsMobile';
 import { checkPuzzle, createEmptyCellStatus, createEmptyGrid } from '../utils/puzzleUtils';
 import HebrewKeyboard from './HebrewKeyboard';
 import { MoveRight, MoveLeft, CircleHelp } from 'lucide-react';
-import ReactConfetti from 'react-confetti';
-import { AllPuzzlesDonePopup, PuzzleDonePopup } from './Popup';
+import { AllPuzzlesDonePopup, PhoneFriendPopup, PuzzleDonePopup } from './Popup';
 
 interface PuzzlesProps {
   currentConfig: CrosswordConfig;
@@ -611,26 +610,18 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       </div>
       {/* Status message */}
       {message && (
-        <div className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-gray-500/50 pt-20' onClick={() => setMessage(null)}>
-             {showConfetti && (
-              <ReactConfetti
-                width={windowSize.width}
-                height={windowSize.height}
-                recycle={false}
-                numberOfPieces={400}
-                gravity={0.2}
-                colors={['#d1f7eb', '#98e0db', '#dbfcfa', '#2ea199', '#f2fcfb']}
-              />
-            )}
-            {(message === PuzzleDoneMessage.ALL_DONE) ? (<AllPuzzlesDonePopup
-                currentConfig={currentConfig}
-                puzzleId={currentPuzzleId}
-            />) : <PuzzleDonePopup
-                currentConfig={currentConfig}
-                puzzleId={currentPuzzleId}
-            />}
-        </div>
-      )}
+          (message === PuzzleDoneMessage.ALL_DONE) ? (<AllPuzzlesDonePopup
+              currentConfig={currentConfig}
+              puzzleId={currentPuzzleId}
+              confetti={{showConfetti, windowSize}}
+              onClose={() => setMessage(null)}
+          />) : <PuzzleDonePopup
+              currentConfig={currentConfig}
+              puzzleId={currentPuzzleId}
+              confetti={{showConfetti, windowSize}}
+              onClose={() => setMessage(null)}
+          />)
+      }
 
       {/* Buttons section */}
       <div id="sidebar-container" className={`text-center flex mt-4 flex-row gap-2 text-[13px] w-[100px] px-2 pb-4`}>

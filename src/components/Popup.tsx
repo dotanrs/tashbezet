@@ -1,17 +1,29 @@
-import { Share2Icon, Trophy } from 'lucide-react';
-import React, { useState } from 'react';
+import { LucideProps, Phone, Share2Icon, Trophy } from 'lucide-react';
+import React, { ReactNode, useState } from 'react';
 import { CrosswordConfig } from '../types/crossword';
+import ReactConfetti from 'react-confetti';
 
-interface PopupProps {
+interface ConfettiProps {
+    showConfetti: boolean;
+    windowSize: {width: number, height: number};
+}
+
+interface CommonPopupProps {
+    confetti?: ConfettiProps;
+    onClose: () => void;
+}
+
+interface PopupProps extends CommonPopupProps {
     currentConfig: CrosswordConfig;
     puzzleId: string | number;
 }
 
-interface BasePopupProps {
+interface BasePopupProps extends CommonPopupProps {
   message: string[];
   shareContent: string;
   shareLinkText?: string;
   addGlaze?: boolean;
+  Icon: React.ComponentType<LucideProps>;
 }
 
 const drawCrossword = (currentConfig: CrosswordConfig) => {
@@ -30,6 +42,9 @@ const Popup: React.FC<BasePopupProps> = ({
     shareContent,
     shareLinkText = "לשתף את התשבץ",
     addGlaze = false,
+    confetti = null,
+    onClose,
+    Icon,
 }) => {
     const [shareLinkClicked, setShareLinkClicked] = useState(false); 
 
@@ -43,32 +58,61 @@ const Popup: React.FC<BasePopupProps> = ({
         }
       };
 
-    return <div className="p-8 w-auto max-w-[400px] text-center mx-auto mx-2 rounded-xl text-xl bg-background-300 text-white relative shadow-xl overflow-hidden"
-        style={{ direction: 'rtl' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-        {addGlaze && <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />}
-        <Trophy className='w-[150px] h-[150px] mx-auto mb-6' />
-        {message.map((text: string) => <div key={text} className="relative">{text}</div>)}
-        <div
-          className={`text-sm ${shareLinkClicked ? '' : 'hover:underline cursor-pointer'} text-gray-300 mt-8`}
-          onClick={handleShareButtonClicked}>
-          <Share2Icon className='inline ml-1 w-4 h-4' /> 
-          {shareLinkClicked ? 'הקישור הועתק!' : shareLinkText}
+    return (
+    <div className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-gray-500/50 pt-20' onClick={onClose}>
+        {confetti && confetti.showConfetti && (
+            <ReactConfetti
+            width={confetti.windowSize.width}
+            height={confetti.windowSize.height}
+            recycle={false}
+            numberOfPieces={400}
+            gravity={0.2}
+            colors={['#d1f7eb', '#98e0db', '#dbfcfa', '#2ea199', '#f2fcfb']}
+            />
+        )}
+        <div className="p-8 w-auto max-w-[400px] text-center mx-auto mx-2 rounded-xl text-xl bg-background-300 text-white relative shadow-xl overflow-hidden"
+            style={{ direction: 'rtl' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+            {addGlaze && <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />}
+            <Icon className='w-[150px] h-[150px] mx-auto mb-6' />
+            {message.map((text: string, index: number) => <div key={index} className="relative">{text}</div>)}
+            <div
+            className={`text-sm ${shareLinkClicked ? '' : 'hover:underline cursor-pointer'} text-gray-300 mt-8`}
+            onClick={handleShareButtonClicked}>
+            <Share2Icon className='inline ml-1 w-4 h-4' /> 
+            {shareLinkClicked ? 'הקישור הועתק!' : shareLinkText}
+            </div>
         </div>
-    </div>
+    </div>)
 }
 
-export const PuzzleDonePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId }) => {
+export const PuzzleDonePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, confetti, onClose }) => {
     return <Popup 
         shareContent={getShareMessage(currentConfig, `${puzzleId}`)}
         message={['כל הכבוד, פתרת את זה!', ' ביום חמישי יהיה תשבץ חדש ☺️']}
         addGlaze={true}
+        confetti={confetti}
+        onClose={onClose}
+        Icon={Trophy}
     />
 }
 
-export const AllPuzzlesDonePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId }) => {
+export const AllPuzzlesDonePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, confetti, onClose }) => {
     return <Popup 
         shareContent={getShareMessage(currentConfig, `${puzzleId}`)}
         message={['פתרת את כל התשבצים! ⭐️', 'נתראה בפעם הבאה ביום חמישי']}
         addGlaze={true}
+        confetti={confetti}
+        onClose={onClose}
+        Icon={Trophy}
+    />
+}
+
+export const PhoneFriendPopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onClose }) => {
+    return <Popup 
+        shareContent={getShareMessage(currentConfig, `${puzzleId}`)}
+        message={['אין כמו חבר טלפוני כדי לעזור בתשבץ קשה', '', 'החבר (או חברה) - עליך', 'הטלפון - גם עליך', 'אבל הלינק עלינו!']}
+        onClose={onClose}
+        Icon={Phone}
+        shareLinkText='לינק לשיתוף'
     />
 }
