@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { PuzzleId } from '../crosswords';
+import { getLatestPuzzleName, PuzzleId } from '../crosswords';
 import { clearPuzzleState, loadPuzzleState, savePuzzleState } from '../utils/storageUtils';
 import { puzzles } from '../crosswords';
 import CrosswordGrid from './CrosswordGrid';
@@ -614,6 +614,12 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       </div>
       {/* Status message */}
       {message && (
+        (currentConfig.name === getLatestPuzzleName()) ? <WelcomePopup
+            onClose={() => {setGameStarted(true); setMessage(null)}}
+            currentConfig={currentConfig}
+            puzzleId={currentPuzzleId}
+            isAlreadySolved={true}
+        /> :
           (message === PuzzleDoneMessage.ALL_DONE) ? (<AllPuzzlesDonePopup
               currentConfig={currentConfig}
               puzzleId={currentPuzzleId}
