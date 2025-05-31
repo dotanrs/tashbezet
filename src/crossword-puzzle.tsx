@@ -4,8 +4,10 @@ import { puzzles, PuzzleId } from './crosswords';
 import PreviousPuzzles from './components/PreviousPuzzles';
 import Puzzle from './components/Puzzle';
 import { Menu, X } from 'lucide-react';
+import useIsMobile from './hooks/useIsMobile';
 
 const CrosswordPuzzle = () => {
+  const isMobile = useIsMobile();
   const firstPuzzleId = Object.keys(puzzles)[0] as PuzzleId;
 
   // Add new state for game started
@@ -149,12 +151,14 @@ const CrosswordPuzzle = () => {
     };
   }, []);
 
+  const shortWindow = isMobile ? windowSize.height < 520 : windowSize.height < 400;
+
   return (
     <>
-    <div className="block md:landscape:hidden landscape:block portrait:hidden fixed w-full h-full z-50 text-center p-20 text-gray-700 text-l bg-background-50" style={{ direction: 'rtl' }}>
+    {shortWindow && <div className="block fixed w-full h-full z-50 text-center p-20 text-gray-700 text-l bg-background-50" style={{ direction: 'rtl' }}>
       <div className='text-xl direction-rtl'>אין במסך הזה מקום לתשבץ 😣</div>
       <div className='pt-4'>אפשר לסובב את המכשיר למצב אנכי?</div>
-    </div>
+    </div>}
     <div id="crossword-container"
       className={`w-full ${containerStyle(gameStarted)} right-0 left-0 m-x-0 flex flex-col items-center pt-0 mx-auto`}>
       {gameStarted ? getGameTitle() : getWelcomeTitle()}
