@@ -4,6 +4,7 @@ import { CrosswordConfig } from '../types/crossword';
 import ReactConfetti from 'react-confetti';
 import { getLatestPuzzleName, PuzzleId } from '../crosswords';
 import { getTitle } from '../utils/logo';
+import { CountdownTimer } from '../utils/countdown';
 
 interface ConfettiProps {
     showConfetti: boolean;
@@ -85,7 +86,7 @@ const Popup: React.FC<BasePopupProps> = ({
             colors={['#d1f7eb', '#98e0db', '#dbfcfa', '#2ea199', '#f2fcfb']}
             />
         )}
-        <div className={`p-8 ${borderColor} border-2 w-auto max-w-[400px] text-center mx-auto rounded-xl text-xl ${backgroundColor} text-white relative shadow-xl overflow-hidden`}
+        <div className={`p-8 ${borderColor} border-0 w-auto max-w-[400px] text-center mx-auto rounded-xl text-xl ${backgroundColor} text-white relative shadow-xl overflow-hidden`}
             style={{ direction: 'rtl' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
             {addGlaze && <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />}
             
@@ -106,6 +107,7 @@ const Popup: React.FC<BasePopupProps> = ({
                 <Share2Icon className='inline ml-1 w-4 h-4' /> 
                 {shareLinkClicked ? 'הקישור הועתק!' : shareLinkText}
                 </div>
+                <div onClick={onClose} className='text-sm text-white mt-4 cursor-pointer'>סגור</div>
             </>)
             }
         </div>
@@ -115,7 +117,7 @@ const Popup: React.FC<BasePopupProps> = ({
 export const PuzzleDonePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, confetti, onClose }) => {
     return <Popup 
         shareContent={getShareMessage(currentConfig, `${puzzleId}`)}
-        message={['כל הכבוד, פתרת את זה!', ' ביום חמישי יהיה תשבץ חדש ☺️']}
+        message={['כל הכבוד, פתרת את זה!']}
         addGlaze={true}
         confetti={confetti}
         onClose={onClose}
@@ -139,38 +141,63 @@ export const SharePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onCl
     return <Popup 
         shareContent={shareContent}
         message={['משתפים עם מי שאוהבים']}
-        explanation={['או עם מי שיכולים לעזור בהגדרות קשות 🙃']}
+        explanation={['(או עם מי שיכולים לעזור בהגדרות קשות)']}
         onClose={onClose}
         Icon={HandHeart}
         shareLinkText='קישור לתשבץ הנוכחי'
     />
 }
 
-const WelcomeContent = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void) => {
+const welcomeDescription = (puzzleName: string, isAlreadySolved: boolean) => {
+    if (!isAlreadySolved) {
+        return <div className='text-sm text-black mb-6'>התשבצת השבועי:<br />יום חמישי {puzzleName}</div>
+    }
+    return <div className='text-sm text-black mb-6'>
+        <div className='font-bold text-base mb-2'>עבודה יפה על התשבצת השבועי!</div>
+        התשבץ הבא בעוד:
+        <CountdownTimer />
+    </div>
+}
+
+const welcomeButton = (isAlreadySolved: boolean) => {
+    if (!isAlreadySolved) {
+        return <>
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
+            <div className="absolute inset-0 translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+        </div>
+        <span className="relative whitespace-pre-wrap">להתחיל  ✍️</span>
+      </>
+    }
+    return <span className="relative whitespace-pre-wrap">לחזור לתשבץ</span>
+}
+
+const WelcomeContent = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, isAlreadySolved: boolean, onClose: () => void) => {
     return () => (<>
-<div className='w-full mt-10 flex'>
-    <div className={`$flex flex-row items-center justify-center m-auto mb-8`}>
+<div className='w-full mt-4 flex'>
+    <div className={`$flex flex-row items-center justify-center m-auto mb-4`}>
       <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
         {getTitle(currentConfig, currentPuzzleId, 'text-2xl', 'w-12', false, 'absolute left-[-15px] top-[-12px] w-[35px]', false)}
       </div>
     </div>
   </div>
-<div className='text-xl text-gray-600 mb-4' style={{fontFamily: "'Rubik', sans-serif"}}>תשבצת {currentConfig.name}</div>
-<img className='mb-16 mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
+<div className='text-xl text-gray-600 mb-4' style={{fontFamily: "'Rubik', sans-serif"}}>תשבץ קטן אחד בשבוע</div>
+<img className='mb-8 mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
+{welcomeDescription(currentConfig.name, isAlreadySolved)}
   <button
   onClick={onClose}
   className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
   style={{ direction: 'rtl' }}
   >
-  <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-      <div className="absolute inset-0 translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-  </div>
-  <span className="relative whitespace-pre-wrap">להתחיל  ✍️</span>
+ {welcomeButton(isAlreadySolved)}
  </button>
 </>)
 }
 
-export const WelcomePopup: React.FC<PopupProps> = ({currentConfig, puzzleId, onClose }) => {
+interface WelcomePopupProps extends PopupProps {
+    isAlreadySolved: boolean;
+}
+
+export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, isAlreadySolved }) => {
     return <Popup
         shareContent={''}
         message={[]}
@@ -178,7 +205,7 @@ export const WelcomePopup: React.FC<PopupProps> = ({currentConfig, puzzleId, onC
         onClose={onClose}
         Icon={HandHeart}
         shareLinkText='קישור לתשבץ הנוכחי'
-        ContentOverride={WelcomeContent(currentConfig, puzzleId, onClose)}
+        ContentOverride={WelcomeContent(currentConfig, puzzleId, isAlreadySolved, onClose)}
         backgroundColor={'bg-background-50'}
         borderColor={'border-background-50'}
     />

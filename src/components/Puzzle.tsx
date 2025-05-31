@@ -631,9 +631,10 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       )}
       {!gameStarted && (
         <WelcomePopup
-            onClose={() => setGameStarted(true)}
+            onClose={() => {setGameStarted(true); setMessage(null)}}
             currentConfig={currentConfig}
             puzzleId={currentPuzzleId}
+            isAlreadySolved={!!message}
         />
       )}
 
