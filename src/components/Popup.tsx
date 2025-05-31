@@ -1,4 +1,4 @@
-import { HandHeart, Share2Icon, Trophy, LucideProps, X } from 'lucide-react';
+import { HandHeart, Share2Icon, Trophy, LucideProps, X, Pencil, TreePalm, TreePine, Bird } from 'lucide-react';
 import React, { useState } from 'react';
 import { CrosswordConfig } from '../types/crossword';
 import ReactConfetti from 'react-confetti';
@@ -125,6 +125,7 @@ export const PuzzleDonePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId,
     return <Popup 
         shareContent={getShareMessage(currentConfig, `${puzzleId}`)}
         message={['כל הכבוד, פתרת את זה!']}
+        explanation={['תזכורת: כל יום חמישי תשבץ חדש 🙂']}
         addGlaze={true}
         confetti={confetti}
         onClose={onClose}
@@ -162,8 +163,8 @@ const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Pu
          <Trophy className='mx-auto mt-0 w-[150px] h-[150px] text-gold text-background-300' strokeWidth={'2px'} />
          <div className='text-xl'>פתרת את התשבצת השבועי!</div>
          {ShareLink('שיתוף', 'text-base text-gray-700 mt-4 font-bold', getShareMessage(currentConfig, `${currentPuzzleId}`))}
-        <div className='text-sm mt-4 text-background-300-200 mb-6'>
-            התשבץ הבא בעוד:
+        <div className='text-sm mt-4 text-black mb-6'>
+            <div className='text-gray-500'>התשבץ הבא בעוד:</div>
             <CountdownTimer />
         </div>
           <button
@@ -179,8 +180,9 @@ const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Pu
 const welcomeDescription = (puzzleName: string, onClose: () => void) => {
     return <>
     <div className='text-xl text-gray-600 mb-4 font-rubik'>תשבץ קטן אחד בשבוע</div>
-        <img className='mb-8 mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
-        <div className='text-sm text-black mb-6'>התשבצת השבועי:<br />יום חמישי {puzzleName}</div>
+        <Bird className='mx-auto z-1 mt-0 w-[80px] h-[80px] text-gold text-background-300' strokeWidth={'2px'} />
+        <img className='relative top-[-22px] left-[30px] mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
+        <div className='text-sm text-gray-600'>התשבצת השבועי:</div><div className='text-sm text-black mb-6'>יום חמישי {puzzleName}</div>
         <button
           onClick={onClose}
           className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
@@ -189,7 +191,7 @@ const welcomeDescription = (puzzleName: string, onClose: () => void) => {
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
             <div className="absolute inset-0 translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
         </div>
-        <span className="relative whitespace-pre-wrap">להתחיל  ✍️</span>
+        <span className="relative whitespace-pre-wrap">להתחיל</span>
        </button>
     </>
 }
