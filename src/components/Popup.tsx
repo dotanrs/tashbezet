@@ -211,9 +211,10 @@ const WelcomeContent = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleI
 
 interface WelcomePopupProps extends PopupProps {
     isAlreadySolved: boolean;
+    confetti?: ConfettiProps;
 }
 
-export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, isAlreadySolved }) => {
+export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, isAlreadySolved, confetti = undefined }) => {
     return <Popup
         shareContent={''} // No effect
         message={[]} // No effect
@@ -222,5 +223,6 @@ export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzle
         Icon={HandHeart} // No effect
         ContentOverride={WelcomeContent(currentConfig, puzzleId, isAlreadySolved, onClose)}
         showCloseButton={false}
+        confetti={confetti}
     />
 }

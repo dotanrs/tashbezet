@@ -622,6 +622,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
               currentConfig={currentConfig}
               puzzleId={currentPuzzleId}
               isAlreadySolved={true}
+              confetti={{showConfetti, windowSize}}
           /> :
             (message === PuzzleDoneMessage.ALL_DONE) ? (<AllPuzzlesDonePopup
                 currentConfig={currentConfig}
@@ -643,7 +644,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
               onClose={() => {setGameStarted(true); setMessage(null)}}
               currentConfig={currentConfig}
               puzzleId={currentPuzzleId}
-              isAlreadySolved={!!message}
+              isAlreadySolved={false}
           />
         )}
       </>)}
