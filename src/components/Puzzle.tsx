@@ -591,7 +591,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       };
     }, []);
 
-    const backgroundColorUi = 'bg-highlight-100';
+    const backgroundColorUi = 'bg-background-50/30';
 
   return currentConfig && <>
   <div id="whole-crossword" className={`sm:w-full w-[100%] sm:pt-10 pt-[35px] max-w-[500px] ${hidden && 'hidden'}`}>

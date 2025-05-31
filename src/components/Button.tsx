@@ -20,9 +20,9 @@ const Button: React.FC<ButtonProps> = ({
   hoverColor = 'hover:bg-highlight-200',
   disabledStyle = true,
 }) => {
-  const baseClasses = "px-3 py-2 rounded border-[1px] border-gray-800 whitespace-nowrap";
+  const baseClasses = "px-3 py-2 rounded border-[0.5px] border-black whitespace-nowrap";
   const enabledClasses = `${baseClasses} ${hoverColor} ${baseBgColor} text-black`;
-  const disabledClasses = `${baseClasses} bg-gray-300 text-gray-800 cursor-not-allowed`;
+  const disabledClasses = `${baseClasses} bg-gray-300 text-black cursor-not-allowed`;
 
   return (
     <button
