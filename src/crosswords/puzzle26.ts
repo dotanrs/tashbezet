@@ -1,4 +1,4 @@
-import { CrosswordConfig, DefinitionHint } from "../types/crossword";
+import { CrosswordConfig } from "../types/crossword";
 
 const defs = [
   "_אגדו",

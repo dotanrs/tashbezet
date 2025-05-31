@@ -10,8 +10,9 @@ import { findNextDefinition, handleArrowNavigation } from '../utils/navigationUt
 import useIsMobile from '../hooks/useIsMobile';
 import { checkPuzzle, createEmptyCellStatus, createEmptyGrid } from '../utils/puzzleUtils';
 import HebrewKeyboard from './HebrewKeyboard';
-import { MoveRight, MoveLeft, CircleHelp, Trophy, Share2Icon } from 'lucide-react';
+import { MoveRight, MoveLeft, CircleHelp } from 'lucide-react';
 import ReactConfetti from 'react-confetti';
+import { AllPuzzlesDonePopup, PuzzleDonePopup } from './Popup';
 
 interface PuzzlesProps {
   currentConfig: CrosswordConfig;
@@ -19,6 +20,11 @@ interface PuzzlesProps {
   currentPuzzleId: PuzzleId;
   windowSize: {width: number, height: number};
   hidden: boolean;
+}
+
+enum PuzzleDoneMessage {
+    THIS_DONE = "done",
+    ALL_DONE = "all_done",
 }
 
 const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCurrentConfig, windowSize, hidden }) => {
@@ -34,13 +40,12 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     // Track selected cell
     const [selected, setSelected] = useState<Selected>(null);
     // Status message
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState<PuzzleDoneMessage | null>(null);
     // Track cell validation status
     const [cellStatus, setCellStatus] = useState<CellStatusGrid>(createEmptyCellStatus());
     // Track direction
     const [direction, setDirection] = useState<Direction>('across');
     const [showConfetti, setShowConfetti] = useState(false);
-    const [shareLinkClicked, setShareLinkClicked] = useState(false);
   
   
     // Create refs for all cells
@@ -393,7 +398,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const resetCellStatus = () => {
       setIsDone(false);
       setCellStatus(createEmptyCellStatus());
-      setMessage('');
+      setMessage(null);
     };
   
     const allPuzzlesSolved = () => {
@@ -416,9 +421,9 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         setIsDone(true);
         setCellStatus(result.newCellStatus);
         if (allowConfetti && allPuzzlesSolved()) {
-          setMessage('פתרת את כל התשבצים! ⭐️\nנתראה בפעם הבאה ביום חמישי');
+          setMessage(PuzzleDoneMessage.ALL_DONE);
         } else {
-          setMessage('כל הכבוד, פתרת את זה!\n ביום חמישי יהיה תשבץ חדש ☺️');
+          setMessage(PuzzleDoneMessage.THIS_DONE);
         }
         if (allowConfetti) {
           setShowConfetti(true);
@@ -588,23 +593,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
     const backgroundColorUi = 'bg-highlight-100';
 
-    const drawCrossword = () => {
-        return currentConfig.grid.map(row => row.map(cell => cell === 'blank' ? '◼️' : '◻️').reverse().join('')).join('\n')
-    }
-
-    const handleShareButtonClicked = async (e: React.MouseEvent) => {
-        try {
-          await navigator.clipboard.writeText(`כרגע פתרתי את תשבצת ${currentConfig.name}, בא לך לנסות גם?
-${drawCrossword()}
-https://dotanrs.github.io/tashbezet/?puzzleId=${currentPuzzleId}
-`);
-          setShareLinkClicked(true);
-          setTimeout(() => setShareLinkClicked(false), 2000);
-        } catch (err) {
-          console.error('Failed to copy:', err);
-        }
-      };
-
   return currentConfig && <>
   <div id="whole-crossword" className={`sm:w-full w-[100%] sm:pt-10 pt-[35px] max-w-[500px] ${hidden && 'hidden'}`}>
     <div id="main-content" style={isMobile ? { minHeight: `calc(100vh - ${bottomPadding}px - 15px)` } : undefined}>
@@ -623,7 +611,7 @@ https://dotanrs.github.io/tashbezet/?puzzleId=${currentPuzzleId}
       </div>
       {/* Status message */}
       {message && (
-        <div className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-gray-500/50 pt-20' onClick={() => setMessage('')}>
+        <div className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-gray-500/50 pt-20' onClick={() => setMessage(null)}>
              {showConfetti && (
               <ReactConfetti
                 width={windowSize.width}
@@ -634,18 +622,13 @@ https://dotanrs.github.io/tashbezet/?puzzleId=${currentPuzzleId}
                 colors={['#d1f7eb', '#98e0db', '#dbfcfa', '#2ea199', '#f2fcfb']}
               />
             )}
-            <div className="p-8 w-auto max-w-[400px] text-center mx-auto mx-2 rounded-xl text-xl bg-background-300 text-white relative shadow-xl overflow-hidden"
-            style={{ direction: 'rtl' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-                <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                <Trophy className='w-[150px] h-[150px] mx-auto mb-6' />
-                {message.split('\n').map((text: string) => <div key={text} className="relative">{text}</div>)}
-                <div
-                  className={`text-sm ${shareLinkClicked ? '' : 'hover:underline cursor-pointer'} text-gray-300 mt-8`}
-                  onClick={handleShareButtonClicked}>
-                  <Share2Icon className='inline ml-1 w-4 h-4' /> 
-                  {shareLinkClicked ? 'הקישור הועתק!' : 'לשתף את התשבץ'}
-                </div>
-            </div>
+            {(message === PuzzleDoneMessage.ALL_DONE) ? (<AllPuzzlesDonePopup
+                currentConfig={currentConfig}
+                puzzleId={currentPuzzleId}
+            />) : <PuzzleDonePopup
+                currentConfig={currentConfig}
+                puzzleId={currentPuzzleId}
+            />}
         </div>
       )}
 
