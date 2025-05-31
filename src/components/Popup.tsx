@@ -102,6 +102,7 @@ const Popup: React.FC<BasePopupProps> = ({
             {
                 ContentOverride ? <ContentOverride /> :
             (<>
+                {/* Default popup content */}
                 <Icon className='w-[150px] h-[150px] mx-auto mb-6 max-w-[80%] text-background-300' />
                 {message.map((text: string, index: number) => <div key={index} className="relative">{text}</div>)}
 
@@ -212,12 +213,11 @@ interface WelcomePopupProps extends PopupProps {
 
 export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, isAlreadySolved }) => {
     return <Popup
-        shareContent={''}
-        message={[]}
-        explanation={[]}
+        shareContent={''} // No effect
+        message={[]} // No effect
+        explanation={[]} // No effect
         onClose={onClose}
-        Icon={HandHeart}
-        shareLinkText='קישור לתשבץ הנוכחי'
+        Icon={HandHeart} // No effect
         ContentOverride={WelcomeContent(currentConfig, puzzleId, isAlreadySolved, onClose)}
         showCloseButton={false}
     />
