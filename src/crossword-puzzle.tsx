@@ -6,11 +6,13 @@ import Puzzle from './components/Puzzle';
 import { Menu, X } from 'lucide-react';
 
 const CrosswordPuzzle = () => {
+  const firstPuzzleId = Object.keys(puzzles)[0] as PuzzleId;
+
   // Add new state for game started
   const [gameStarted, setGameStarted] = useState(false);
   // Modify current puzzle state to be null initially
-  const [currentPuzzleId, setCurrentPuzzleId] = useState<PuzzleId | null>(null);
-  const [currentConfig, setCurrentConfig] = useState<CrosswordConfig | null>(null);
+  const [currentPuzzleId, setCurrentPuzzleId] = useState<PuzzleId>(firstPuzzleId);
+  const [currentConfig, setCurrentConfig] = useState<CrosswordConfig>(puzzles[firstPuzzleId]);
 
   const [previousPuzzlesShown, setPreviousPuzzlesShown] = useState(false);
 
@@ -27,7 +29,6 @@ const CrosswordPuzzle = () => {
 
   // Add handleStartGame
   const handleStartGame = () => {
-    const firstPuzzleId = Object.keys(puzzles)[0] as PuzzleId;
     handlePuzzleChange(firstPuzzleId);
   };
 
@@ -182,7 +183,7 @@ const CrosswordPuzzle = () => {
               />
             )}
 
-            {(currentConfig && currentPuzzleId) && (
+            {(
               <Puzzle
                 hidden={previousPuzzlesShown}
                 currentConfig={currentConfig}
