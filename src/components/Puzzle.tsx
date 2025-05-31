@@ -11,7 +11,7 @@ import useIsMobile from '../hooks/useIsMobile';
 import { checkPuzzle, createEmptyCellStatus, createEmptyGrid } from '../utils/puzzleUtils';
 import HebrewKeyboard from './HebrewKeyboard';
 import { MoveRight, MoveLeft, CircleHelp } from 'lucide-react';
-import { AllPuzzlesDonePopup, SharePopup, PuzzleDonePopup } from './Popup';
+import { AllPuzzlesDonePopup, SharePopup, PuzzleDonePopup, WelcomePopup } from './Popup';
 
 interface PuzzlesProps {
   currentConfig: CrosswordConfig;
@@ -19,6 +19,8 @@ interface PuzzlesProps {
   currentPuzzleId: PuzzleId;
   windowSize: {width: number, height: number};
   hidden: boolean;
+  gameStarted: boolean;
+  setGameStarted: (val: boolean) => void;
 }
 
 enum PuzzleDoneMessage {
@@ -26,7 +28,7 @@ enum PuzzleDoneMessage {
     ALL_DONE = "all_done",
 }
 
-const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCurrentConfig, windowSize, hidden }) => {
+const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCurrentConfig, windowSize, hidden, gameStarted, setGameStarted }) => {
     const isMobile = useIsMobile();
     const cluesKeyboardRef = useRef<HTMLDivElement>(null);
     const [bottomPadding, setBottomPadding] = useState(0);
@@ -626,6 +628,13 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       }
       {(!message && showSharePopup) && (
         <SharePopup currentConfig={currentConfig} puzzleId={currentPuzzleId} onClose={() => setShowSharePopup(false)} />
+      )}
+      {!gameStarted && (
+        <WelcomePopup
+            onClose={() => setGameStarted(true)}
+            currentConfig={currentConfig}
+            puzzleId={currentPuzzleId}
+        />
       )}
 
       {/* Buttons section */}
