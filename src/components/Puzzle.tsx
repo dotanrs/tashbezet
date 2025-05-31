@@ -45,6 +45,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     // Track direction
     const [direction, setDirection] = useState<Direction>('across');
     const [showConfetti, setShowConfetti] = useState(false);
+    const [showPhoneFriend, setShowPhoneFriend] = useState(false);
   
   
     // Create refs for all cells
@@ -622,6 +623,9 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
               onClose={() => setMessage(null)}
           />)
       }
+      {(!message && showPhoneFriend) && (
+        <PhoneFriendPopup currentConfig={currentConfig} puzzleId={currentPuzzleId} onClose={() => setShowPhoneFriend(false)} />
+      )}
 
       {/* Buttons section */}
       <div id="sidebar-container" className={`text-center flex mt-4 flex-row gap-2 text-[13px] w-[100px] px-2 pb-4`}>
@@ -631,6 +635,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
           onReset={handlePuzzleReset}
           hasUntestedCells={hasUntestedCells()}
           hasAvailableHints={hasAvailableHints()}
+          openPhoneFriend={() => setShowPhoneFriend(true)}
           baseBgColor={backgroundColorUi}
         />
       </div>

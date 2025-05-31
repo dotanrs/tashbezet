@@ -1,7 +1,8 @@
 import { LucideProps, Phone, Share2Icon, Trophy } from 'lucide-react';
-import React, { ReactNode, useState } from 'react';
+import React, { useState } from 'react';
 import { CrosswordConfig } from '../types/crossword';
 import ReactConfetti from 'react-confetti';
+import { getLatestPuzzleName } from '../crosswords';
 
 interface ConfettiProps {
     showConfetti: boolean;
@@ -20,10 +21,16 @@ interface PopupProps extends CommonPopupProps {
 
 interface BasePopupProps extends CommonPopupProps {
   message: string[];
+  explanation?: string[];
   shareContent: string;
   shareLinkText?: string;
   addGlaze?: boolean;
   Icon: React.ComponentType<LucideProps>;
+}
+
+const getPuzzleName = (currentConfig: CrosswordConfig) => {
+    const isLatestPuzzle = currentConfig.name === getLatestPuzzleName();
+    return isLatestPuzzle ? `התשבצת השבועי (${currentConfig.name})` : `תשבצת ${currentConfig.name}`;
 }
 
 const drawCrossword = (currentConfig: CrosswordConfig) => {
@@ -31,7 +38,7 @@ const drawCrossword = (currentConfig: CrosswordConfig) => {
 }
 
 const getShareMessage = (currentConfig: CrosswordConfig, puzzleId: string) => {
-        return `כרגע פתרתי את תשבצת ${currentConfig.name}, בא לך לנסות גם?
+        return `כרגע פתרתי את ${getPuzzleName(currentConfig)}, בא לך לנסות גם?
 ${drawCrossword(currentConfig)}
 https://dotanrs.github.io/tashbezet/?puzzleId=${puzzleId}
 `
@@ -39,6 +46,7 @@ https://dotanrs.github.io/tashbezet/?puzzleId=${puzzleId}
 
 const Popup: React.FC<BasePopupProps> = ({
     message,
+    explanation = [],
     shareContent,
     shareLinkText = "לשתף את התשבץ",
     addGlaze = false,
@@ -75,6 +83,12 @@ const Popup: React.FC<BasePopupProps> = ({
             {addGlaze && <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />}
             <Icon className='w-[150px] h-[150px] mx-auto mb-6' />
             {message.map((text: string, index: number) => <div key={index} className="relative">{text}</div>)}
+
+            {explanation && (
+                <div className='mt-3 text-sm'>
+                    {explanation.map((text: string, index: number) => <div key={index} className="relative">{text}</div>)}
+                </div>
+            )}
             <div
             className={`text-sm ${shareLinkClicked ? '' : 'hover:underline cursor-pointer'} text-gray-300 mt-8`}
             onClick={handleShareButtonClicked}>
@@ -108,9 +122,13 @@ export const AllPuzzlesDonePopup: React.FC<PopupProps> = ({ currentConfig, puzzl
 }
 
 export const PhoneFriendPopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onClose }) => {
+    const helpMessage = `הסתבכתי קצת עם ${getPuzzleName(currentConfig)} 😣, בא לך לנסות לעזור?
+    https://dotanrs.github.io/tashbezet/?puzzleId=${puzzleId}
+    `
     return <Popup 
-        shareContent={getShareMessage(currentConfig, `${puzzleId}`)}
-        message={['אין כמו חבר טלפוני כדי לעזור בתשבץ קשה', '', 'החבר (או חברה) - עליך', 'הטלפון - גם עליך', 'אבל הלינק עלינו!']}
+        shareContent={helpMessage}
+        message={['אין כמו חבר טלפוני כדי לעזור', 'בתשבץ קשה']}
+        explanation={['החבר (או חברה) - עליך', 'הטלפון - גם עליך', 'אבל הלינק עלינו!']}
         onClose={onClose}
         Icon={Phone}
         shareLinkText='לינק לשיתוף'

@@ -5,6 +5,7 @@ interface SidebarProps {
   onMarkPuzzle: () => void;
   onHint: () => void;
   onReset: () => void;
+  openPhoneFriend: () => void;
   hasUntestedCells: boolean;
   hasAvailableHints: boolean;
   baseBgColor: string;
@@ -17,9 +18,17 @@ const Sidebar: React.FC<SidebarProps> = ({
   hasUntestedCells,
   hasAvailableHints,
   baseBgColor,
+  openPhoneFriend,
 }) => {
   return (
       <>
+      <Button
+        onClick={openPhoneFriend}
+        disabled={!hasAvailableHints}
+        icon="📞"
+        text=""
+        baseBgColor={baseBgColor}
+      />
       <Button
         onClick={onMarkPuzzle}
         disabled={!hasUntestedCells}

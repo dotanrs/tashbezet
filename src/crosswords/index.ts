@@ -72,6 +72,8 @@ const sortedPuzzles = Object.fromEntries(
   .reverse()
 );
 
+export const getLatestPuzzleName = () => Object.values(sortedPuzzles)[0].name;
+
 export const puzzles = sortedPuzzles;
 
 export type PuzzleId = keyof typeof puzzles;
