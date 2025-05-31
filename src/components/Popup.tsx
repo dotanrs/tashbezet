@@ -125,7 +125,8 @@ export const SharePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onCl
     const shareContent = `https://dotanrs.github.io/tashbezet/?puzzleId=${puzzleId}`
     return <Popup 
         shareContent={shareContent}
-        message={['לשתף זה לאהוב']}
+        message={['משתפים עם מי שאוהבים']}
+        explanation={['או עם מי שיכולים לעזור בהגדרות קשות 🙃']}
         onClose={onClose}
         Icon={HandHeart}
         shareLinkText='קישור לתשבץ הנוכחי'
