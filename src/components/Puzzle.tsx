@@ -48,6 +48,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const [direction, setDirection] = useState<Direction>('across');
     const [showConfetti, setShowConfetti] = useState(false);
     const [showSharePopup, setShowSharePopup] = useState(false);
+    const [pageReady, setPageReady] = useState(false);
   
   
     // Create refs for all cells
@@ -431,6 +432,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
           setShowConfetti(true);
         }
       }
+      setPageReady(true);
     };
   
     const markPuzzle = () => {
@@ -613,36 +615,38 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         />
       </div>
       {/* Status message */}
-      {message && (
-        (currentConfig.name === getLatestPuzzleName()) ? <WelcomePopup
-            onClose={() => {setGameStarted(true); setMessage(null)}}
-            currentConfig={currentConfig}
-            puzzleId={currentPuzzleId}
-            isAlreadySolved={true}
-        /> :
-          (message === PuzzleDoneMessage.ALL_DONE) ? (<AllPuzzlesDonePopup
+      {pageReady && (<>
+        {message && (
+          (currentConfig.name === getLatestPuzzleName()) ? <WelcomePopup
+              onClose={() => {setGameStarted(true); setMessage(null)}}
               currentConfig={currentConfig}
               puzzleId={currentPuzzleId}
-              confetti={{showConfetti, windowSize}}
-              onClose={() => setMessage(null)}
-          />) : <PuzzleDonePopup
+              isAlreadySolved={true}
+          /> :
+            (message === PuzzleDoneMessage.ALL_DONE) ? (<AllPuzzlesDonePopup
+                currentConfig={currentConfig}
+                puzzleId={currentPuzzleId}
+                confetti={{showConfetti, windowSize}}
+                onClose={() => setMessage(null)}
+            />) : <PuzzleDonePopup
+                currentConfig={currentConfig}
+                puzzleId={currentPuzzleId}
+                confetti={{showConfetti, windowSize}}
+                onClose={() => setMessage(null)}
+            />)
+        }
+        {(!message && showSharePopup) && (
+          <SharePopup currentConfig={currentConfig} puzzleId={currentPuzzleId} onClose={() => setShowSharePopup(false)} />
+        )}
+        {(!message && !gameStarted) && (
+          <WelcomePopup
+              onClose={() => {setGameStarted(true); setMessage(null)}}
               currentConfig={currentConfig}
               puzzleId={currentPuzzleId}
-              confetti={{showConfetti, windowSize}}
-              onClose={() => setMessage(null)}
-          />)
-      }
-      {(!message && showSharePopup) && (
-        <SharePopup currentConfig={currentConfig} puzzleId={currentPuzzleId} onClose={() => setShowSharePopup(false)} />
-      )}
-      {(!message && !gameStarted) && (
-        <WelcomePopup
-            onClose={() => {setGameStarted(true); setMessage(null)}}
-            currentConfig={currentConfig}
-            puzzleId={currentPuzzleId}
-            isAlreadySolved={!!message}
-        />
-      )}
+              isAlreadySolved={!!message}
+          />
+        )}
+      </>)}
 
       {/* Buttons section */}
       <div id="sidebar-container" className={`text-center flex mt-4 flex-row gap-2 text-[13px] w-[100px] px-2 pb-4`}>
