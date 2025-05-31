@@ -96,14 +96,16 @@ const Popup: React.FC<BasePopupProps> = ({
         )}
         <div className={`p-8 pb-6 w-auto max-w-[400px] text-center mb-8 mx-auto rounded-xl text-xl bg-background-10 text-gray-700 relative shadow-xl overflow-hidden`}
             style={{ direction: 'rtl' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-            {showCloseButton && <div className='z-1 text-sm flex flex-end flex-col' style={{direction: 'ltr'}}><X onClick={onClose} className='cursor-pointer' /></div>}
-            {addGlaze && <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />}
+            {showCloseButton && <div className='text-sm flex flex-end flex-col' style={{direction: 'ltr'}}><X onClick={onClose} className='cursor-pointer' /></div>}
             
             {
                 ContentOverride ? <ContentOverride /> :
             (<>
                 {/* Default popup content */}
+                <div className='relative'>
+                {addGlaze && <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />}
                 <Icon className='w-[150px] h-[150px] mx-auto mb-6 max-w-[80%] text-background-300' />
+                </div>
                 {message.map((text: string, index: number) => <div key={index} className="relative">{text}</div>)}
 
                 {explanation && (
