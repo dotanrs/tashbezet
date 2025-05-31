@@ -28,6 +28,7 @@ module.exports = {
       },
       colors: {
         background: {
+          0: '#f3f3f3',
           10: '#f2fcfb',
           50: '#ceeae8',
           100: '#d2f4f2',
