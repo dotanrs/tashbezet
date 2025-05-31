@@ -50,21 +50,8 @@ https://dotanrs.github.io/tashbezet/?puzzleId=${puzzleId}
 `
 }
 
-const Popup: React.FC<BasePopupProps> = ({
-    message,
-    explanation = [],
-    shareContent,
-    shareLinkText = "לשתף את התשבץ",
-    addGlaze = false,
-    confetti = null,
-    onClose,
-    Icon,
-    ContentOverride = null,
-    backgroundColor = 'bg-background-300',
-    borderColor = 'border-gray-200',
-    showCloseButton = true,
-}) => {
-    const [shareLinkClicked, setShareLinkClicked] = useState(false); 
+const ShareLink = (shareLinkText: string, shareLinkDesign: string, shareContent: string) => {
+    const [shareLinkClicked, setShareLinkClicked] = useState(false);
 
     const handleShareButtonClicked = async (e: React.MouseEvent) => {
         try {
@@ -76,8 +63,31 @@ const Popup: React.FC<BasePopupProps> = ({
         }
       };
 
+    return <div
+      className={`${shareLinkClicked ? '' : 'hover:underline cursor-pointer'} ${shareLinkDesign}`}
+      onClick={handleShareButtonClicked}>
+      <Share2Icon className='inline ml-1 w-4 h-4' />
+      {shareLinkClicked ? 'הקישור הועתק!' : shareLinkText}
+    </div>
+}
+
+const Popup: React.FC<BasePopupProps> = ({
+    message,
+    explanation = [],
+    shareContent,
+    shareLinkText = "לשתף את התשבץ",
+    addGlaze = false,
+    confetti = null,
+    onClose,
+    Icon,
+    ContentOverride = null,
+    backgroundColor = 'bg-background-10',
+    borderColor = 'border-gray-200',
+    showCloseButton = true,
+}) => {
+
     return (
-    <div className='fixed z-40 w-[100%] h-[100%] px-10 top-0 left-0 bg-gray-500/50 pt-[8vh]' onClick={onClose}>
+    <div id='popup-container' className='fixed z-40 w-[100%] h-[100%] px-10 top-0 left-0 bg-gray-500/50 pt-[8vh] inset-0 overflow-y-auto' onClick={onClose}>
         {confetti && confetti.showConfetti && (
             <ReactConfetti
             width={confetti.windowSize.width}
@@ -88,15 +98,15 @@ const Popup: React.FC<BasePopupProps> = ({
             colors={['#d1f7eb', '#98e0db', '#dbfcfa', '#2ea199', '#f2fcfb']}
             />
         )}
-        <div className={`p-8 pb-6 ${borderColor} border-0 w-auto max-w-[400px] text-center mx-auto rounded-xl text-xl ${backgroundColor} text-white relative shadow-xl overflow-hidden`}
+        <div className={`p-8 pb-6 ${borderColor} border-0 w-auto max-w-[400px] text-center mb-8 mx-auto rounded-xl text-xl ${backgroundColor} text-gray-700 relative shadow-xl overflow-hidden`}
             style={{ direction: 'rtl' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-                {showCloseButton && <div className='z-1 text-sm text-white cursor-pointer direction-ltr'><X onClick={onClose} className='' /></div>}
+            {showCloseButton && <div className='z-1 text-sm flex flex-end flex-col' style={{direction: 'ltr'}}><X onClick={onClose} className='cursor-pointer' /></div>}
             {addGlaze && <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />}
             
             {
                 ContentOverride ? <ContentOverride /> :
             (<>
-                <Icon className='w-[150px] h-[150px] mx-auto mb-6 max-w-[80%]' />
+                <Icon className='w-[150px] h-[150px] mx-auto mb-6 max-w-[80%] text-background-300' />
                 {message.map((text: string, index: number) => <div key={index} className="relative">{text}</div>)}
 
                 {explanation && (
@@ -104,12 +114,7 @@ const Popup: React.FC<BasePopupProps> = ({
                         {explanation.map((text: string, index: number) => <div key={index} className="relative">{text}</div>)}
                     </div>
                 )}
-                <div
-                className={`text-sm ${shareLinkClicked ? '' : 'hover:underline cursor-pointer'} text-gray-300 mt-8`}
-                onClick={handleShareButtonClicked}>
-                <Share2Icon className='inline ml-1 w-4 h-4' /> 
-                {shareLinkClicked ? 'הקישור הועתק!' : shareLinkText}
-                </div>
+                {ShareLink('שיתוף', 'text-sm text-gray-700 mt-4', shareContent)}
             </>)
             }
         </div>
@@ -151,18 +156,19 @@ export const SharePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onCl
     />
 }
 
-const wellDoneDescription = (onClose: () => void) => {
+const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void) => {
     return <>
-         <img className='relative top-[9px] mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
-         <Trophy className='mx-auto mt-0 w-20 h-20 text-gold text-background-300' strokeWidth={'2px'} />
-         <div className='text-xl text-background-300 font-bold mb-4 font-arial'>פתרת את התשבצת השבועי!</div>
-        <div className='text-sm text-gray-600 mb-6'>
+         <img className='relative top-[12px] mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
+         <Trophy className='mx-auto mt-0 w-[150px] h-[150px] text-gold text-background-300' strokeWidth={'2px'} />
+         <div className='text-xl'>פתרת את התשבצת השבועי!</div>
+         {ShareLink('שיתוף', 'text-base text-gray-700 mt-4 font-bold', getShareMessage(currentConfig, `${currentPuzzleId}`))}
+        <div className='text-sm mt-4 text-background-300-200 mb-6'>
             התשבץ הבא בעוד:
             <CountdownTimer />
         </div>
-        <button
-          onClick={onClose}
-          className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
+          <button
+            onClick={onClose}
+          className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden hover:shadow-lg"
           style={{ direction: 'rtl' }}
           >
         <span className="relative whitespace-pre-wrap">לחזור לתשבץ</span>
@@ -190,7 +196,7 @@ const welcomeDescription = (puzzleName: string, onClose: () => void) => {
 
 const WelcomeContent = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, isAlreadySolved: boolean, onClose: () => void) => {
     return () => (
-    <div className='font-rubik mb-2'>
+    <div className='mb-2 text-gray-700'>
       <div className='w-full mt-4 flex font-rubik'>
         <div className={`$flex flex-row items-center justify-center m-auto mb-4`}>
           <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
@@ -198,7 +204,7 @@ const WelcomeContent = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleI
           </div>
         </div>
       </div>
-      {isAlreadySolved ? wellDoneDescription(onClose) : welcomeDescription(currentConfig.name, onClose)}
+      {isAlreadySolved ? wellDoneDescription(currentConfig, currentPuzzleId, onClose) : welcomeDescription(currentConfig.name, onClose)}
     </div>
 )}
 
@@ -215,7 +221,7 @@ export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzle
         Icon={HandHeart}
         shareLinkText='קישור לתשבץ הנוכחי'
         ContentOverride={WelcomeContent(currentConfig, puzzleId, isAlreadySolved, onClose)}
-        backgroundColor={'bg-background-50'}
+        backgroundColor={'bg-background-10'}
         borderColor={'border-background-50'}
         showCloseButton={false}
     />

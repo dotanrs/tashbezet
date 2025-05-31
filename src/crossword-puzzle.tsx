@@ -4,11 +4,9 @@ import { puzzles, PuzzleId } from './crosswords';
 import PreviousPuzzles from './components/PreviousPuzzles';
 import Puzzle from './components/Puzzle';
 import { Menu, X } from 'lucide-react';
-import useIsMobile from './hooks/useIsMobile';
 import { getTitle } from './utils/logo';
 
 const CrosswordPuzzle = () => {
-  const isMobile = useIsMobile();
   const firstPuzzleId = Object.keys(puzzles)[0] as PuzzleId;
 
   // Add new state for game started
@@ -81,7 +79,7 @@ const CrosswordPuzzle = () => {
     };
   }, []);
 
-  const shortWindow = isMobile ? windowSize.height < 520 : windowSize.height < 400;
+  const shortWindow = windowSize.height < 520;
 
   return (
     <>
