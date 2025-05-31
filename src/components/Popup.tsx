@@ -130,7 +130,8 @@ export const PuzzleDonePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId,
 export const AllPuzzlesDonePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, confetti, onClose }) => {
     return <Popup 
         shareContent={getShareMessage(currentConfig, `${puzzleId}`)}
-        message={['פתרת את כל התשבצים! ⭐️', 'נתראה בפעם הבאה ביום חמישי']}
+        message={['פתרת את כל התשבצים!']}
+        explanation={['נתראה בתשבץ הבא ביום חמישי ☺️']}
         addGlaze={true}
         confetti={confetti}
         onClose={onClose}
@@ -152,9 +153,9 @@ export const SharePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onCl
 
 const wellDoneDescription = (onClose: () => void) => {
     return <>
-         <img className='relative top-[10px] mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
+         <img className='relative top-[9px] mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
          <Trophy className='mx-auto mt-0 w-20 h-20 text-gold text-background-300' strokeWidth={'2px'} />
-         <div className='text-xl text-background-300 font-bold mb-4 font-arial'>פתרת את זה!</div>
+         <div className='text-xl text-background-300 font-bold mb-4 font-arial'>פתרת את התשבצת השבועי!</div>
         <div className='text-sm text-gray-600 mb-6'>
             התשבץ הבא בעוד:
             <CountdownTimer />
