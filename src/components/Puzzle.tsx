@@ -635,7 +635,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       {(!message && showSharePopup) && (
         <SharePopup currentConfig={currentConfig} puzzleId={currentPuzzleId} onClose={() => setShowSharePopup(false)} />
       )}
-      {!gameStarted && (
+      {(!message && !gameStarted) && (
         <WelcomePopup
             onClose={() => {setGameStarted(true); setMessage(null)}}
             currentConfig={currentConfig}
