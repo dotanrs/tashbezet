@@ -1,4 +1,4 @@
-import { HandHeart, Share2Icon, Trophy, LucideProps } from 'lucide-react';
+import { HandHeart, Share2Icon, Trophy, LucideProps, X } from 'lucide-react';
 import React, { useState } from 'react';
 import { CrosswordConfig } from '../types/crossword';
 import ReactConfetti from 'react-confetti';
@@ -31,6 +31,7 @@ interface BasePopupProps extends CommonPopupProps {
   ContentOverride?: React.ComponentType<any>;
   backgroundColor?: string;
   borderColor?: string;
+  showCloseButton?: boolean;
 }
 
 const getPuzzleName = (currentConfig: CrosswordConfig) => {
@@ -61,6 +62,7 @@ const Popup: React.FC<BasePopupProps> = ({
     ContentOverride = null,
     backgroundColor = 'bg-background-300',
     borderColor = 'border-gray-200',
+    showCloseButton = true,
 }) => {
     const [shareLinkClicked, setShareLinkClicked] = useState(false); 
 
@@ -86,8 +88,9 @@ const Popup: React.FC<BasePopupProps> = ({
             colors={['#d1f7eb', '#98e0db', '#dbfcfa', '#2ea199', '#f2fcfb']}
             />
         )}
-        <div className={`p-8 ${borderColor} border-0 w-auto max-w-[400px] text-center mx-auto rounded-xl text-xl ${backgroundColor} text-white relative shadow-xl overflow-hidden`}
+        <div className={`p-8 pb-6 ${borderColor} border-0 w-auto max-w-[400px] text-center mx-auto rounded-xl text-xl ${backgroundColor} text-white relative shadow-xl overflow-hidden`}
             style={{ direction: 'rtl' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+                {showCloseButton && <div className='z-1 text-sm text-white cursor-pointer direction-ltr'><X onClick={onClose} className='' /></div>}
             {addGlaze && <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />}
             
             {
@@ -107,7 +110,6 @@ const Popup: React.FC<BasePopupProps> = ({
                 <Share2Icon className='inline ml-1 w-4 h-4' /> 
                 {shareLinkClicked ? 'הקישור הועתק!' : shareLinkText}
                 </div>
-                <div onClick={onClose} className='text-sm text-white mt-4 cursor-pointer'>סגור</div>
             </>)
             }
         </div>
@@ -150,9 +152,10 @@ export const SharePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onCl
 
 const wellDoneDescription = (onClose: () => void) => {
     return <>
-        <div className='text-xl text-gray-600 mb-4 font-arial'>פתרת את זה!</div>
-        <img className='mb-8 mx-auto' alt='Tashbezet logo with trophy' src='https://dotanrs.github.io/tashbezet/welldone.png'></img>
-        <div className='text-sm text-black mb-6'>
+         <img className='relative top-[10px] mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
+         <Trophy className='mx-auto mt-0 w-20 h-20 text-gold text-background-300' strokeWidth={'2px'} />
+         <div className='text-xl text-background-300 font-bold mb-4 font-arial'>פתרת את זה!</div>
+        <div className='text-sm text-gray-600 mb-6'>
             התשבץ הבא בעוד:
             <CountdownTimer />
         </div>
@@ -186,7 +189,7 @@ const welcomeDescription = (puzzleName: string, onClose: () => void) => {
 
 const WelcomeContent = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, isAlreadySolved: boolean, onClose: () => void) => {
     return () => (
-    <div className='font-rubik'>
+    <div className='font-rubik mb-2'>
       <div className='w-full mt-4 flex font-rubik'>
         <div className={`$flex flex-row items-center justify-center m-auto mb-4`}>
           <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
@@ -213,5 +216,6 @@ export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzle
         ContentOverride={WelcomeContent(currentConfig, puzzleId, isAlreadySolved, onClose)}
         backgroundColor={'bg-background-50'}
         borderColor={'border-background-50'}
+        showCloseButton={false}
     />
 }
