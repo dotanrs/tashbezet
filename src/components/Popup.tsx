@@ -83,7 +83,7 @@ const Popup: React.FC<BasePopupProps> = ({
 }) => {
 
     return (
-    <div id='popup-container' className='fixed z-40 w-[100%] h-[100%] px-10 top-0 left-0 bg-gray-500/50 pt-[8vh] inset-0 overflow-y-auto' onClick={onClose}>
+    <div id='popup-container' className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-gray-500/50 pt-[8vh] inset-0 overflow-y-auto' onClick={onClose}>
         {confetti && confetti.showConfetti && (
             <ReactConfetti
             width={confetti.windowSize.width}
