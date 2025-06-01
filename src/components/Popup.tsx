@@ -204,7 +204,7 @@ const WelcomeContent = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleI
       <div className='w-full mt-4 flex font-rubik'>
         <div className={`$flex flex-row items-center justify-center m-auto mb-4`}>
           <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
-            {getTitle(currentConfig, currentPuzzleId, 'text-2xl', 'w-12', false, 'absolute left-[-15px] top-[-12px] w-[35px]', false)}
+            {getTitle(currentConfig, currentPuzzleId, 'text-2xl', 'w-12', false, 'absolute left-[-15px] top-[-12px] w-[35px]', false, false)}
           </div>
         </div>
       </div>

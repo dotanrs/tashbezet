@@ -56,6 +56,7 @@ const CrosswordPuzzle = () => {
 
 
   const pageWidth = 'sm:w-[500px] max-w-[500px]'
+  const showPuzzleName = windowSize.width > 350;
 
   const GameTitle = () => {
     return <div className='fixed z-10 w-full bg-background-50 border-b-[1px] border-gray-600 mb-0'>
@@ -66,7 +67,7 @@ const CrosswordPuzzle = () => {
         </button>
       </div>
       <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
-        {getTitle(currentConfig, currentPuzzleId, 'text-2xl', 'sm:w-10 w-[35px]', true, 'hidden', true)}
+        {getTitle(currentConfig, currentPuzzleId, 'text-2xl', 'sm:w-10 w-[35px]', true, 'hidden', true, showPuzzleName)}
       </div>
     </div>
   </div>
