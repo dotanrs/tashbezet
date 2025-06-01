@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { CrosswordConfig } from '../types/crossword';
 import ReactConfetti from 'react-confetti';
 import { getLatestPuzzleName, PuzzleId } from '../crosswords';
-import { getTitle } from '../utils/logo';
+import { TashbezetTitle } from '../utils/logo';
 import { CountdownTimer } from '../utils/countdown';
 
 interface ConfettiProps {
@@ -204,7 +204,15 @@ const WelcomeContent = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleI
       <div className='w-full mt-4 flex font-rubik'>
         <div className={`$flex flex-row items-center justify-center m-auto mb-4`}>
           <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
-            {getTitle(currentConfig, currentPuzzleId, 'text-2xl', 'w-12', false, 'absolute left-[-15px] top-[-12px] w-[35px]', false, false)}
+            {<TashbezetTitle
+             currentConfig={currentConfig}
+             currentPuzzleId={currentPuzzleId}
+             size={'text-2xl'}
+             width={'w-12'}
+             pencilPosition={'absolute left-[-15px] top-[-12px] w-[35px]'}
+             showPen={false}
+             showPuzzleName={false}
+            />}
           </div>
         </div>
       </div>
