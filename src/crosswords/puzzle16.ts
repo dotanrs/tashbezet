@@ -17,7 +17,7 @@ const puzzle: CrosswordConfig = {
   "grid": fixedWords,
   "rowClues": [
     "💣 + E",
-    "הוציאו את המיץ",
+    "מילה ראויה ל״סחטו״ (למשל תפוז)",
     "כמו מייל לא צפוי שמודיע שזכית בהרבה כסף",
     "כמו ההסבר ל-3 מאונך, כנראה",
     "ברכה שמגיעה לפעמים עם זר פרחים על הצוואר",
