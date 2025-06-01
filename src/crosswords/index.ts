@@ -72,6 +72,8 @@ const sortedPuzzles = Object.fromEntries(
   .reverse()
 );
 
+export const notFoundPuzzle: CrosswordConfig = require('./notFound').default;
+
 export const getLatestPuzzleName = () => Object.values(sortedPuzzles)[0].name;
 
 export const puzzles = sortedPuzzles;

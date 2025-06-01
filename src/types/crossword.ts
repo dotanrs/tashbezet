@@ -16,6 +16,7 @@ export interface DefinitionHint {
 export interface CrosswordConfig {
   name: string;
   grid: Grid;
+  hidden?: boolean;
   rowClues: string[];
   columnClues: string[];
   rowHints?: {[key: number]: string};

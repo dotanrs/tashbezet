@@ -9,7 +9,8 @@ interface PreviousPuzzlesProps {
 }
 
 const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPuzzleChange }) => {
-  const puzzleIds = Object.keys(puzzles) as PuzzleId[];
+  const puzzleList = Object.fromEntries(Object.entries(puzzles).filter(([_, value]) => !value.hidden))
+  const puzzleIds = Object.keys(puzzleList) as PuzzleId[];
 
   const getPuzzleStatus = (puzzleId: PuzzleId) => {
     const savedState = loadPuzzleState(puzzleId);

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { CrosswordConfig } from './types/crossword';
-import { puzzles, PuzzleId } from './crosswords';
+import { puzzles, PuzzleId, notFoundPuzzle } from './crosswords';
 import PreviousPuzzles from './components/PreviousPuzzles';
 import Puzzle from './components/Puzzle';
 import { Menu, X } from 'lucide-react';
@@ -19,8 +19,14 @@ const CrosswordPuzzle = () => {
 
   // Modify handlePuzzleChange
   const handlePuzzleChange = (puzzleId: PuzzleId, keepUrl: boolean = false) => {
-    setCurrentPuzzleId(puzzleId);
-    setCurrentConfig(puzzles[puzzleId]);
+    if (puzzleId in puzzles) {
+      setCurrentPuzzleId(puzzleId);
+      setCurrentConfig(puzzles[puzzleId]);
+    } else {
+      puzzleId = '404'
+      setCurrentPuzzleId(puzzleId);
+      setCurrentConfig(notFoundPuzzle);
+    }
     setGameStarted(true);
     setPreviousPuzzlesShown(false);
     if (!keepUrl) {
@@ -45,7 +51,7 @@ const CrosswordPuzzle = () => {
 
     const params = new URLSearchParams(window.location.search);
     const puzzleIdFromParam = params.get("puzzleId");
-    if (puzzleIdFromParam && puzzles[puzzleIdFromParam]) {
+    if (puzzleIdFromParam) {
       handlePuzzleChange(puzzleIdFromParam, true);
     }
 

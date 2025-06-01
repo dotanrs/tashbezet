@@ -56,7 +56,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
 
     const getNewGrid = (puzzleId: PuzzleId): Grid => {
-      return puzzles[puzzleId].grid.map((row) => 
+      return currentConfig.grid.map((row) => 
         row.map((cell) => {
           if (cell === 'blank') return 'blank';
           return '';
@@ -96,7 +96,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
           setCellStatus(savedState.cellStatus);
           return newGrid;
         } else {
-          const initialGrid = puzzles[currentPuzzleId].grid.map(row => 
+          const initialGrid = currentConfig.grid.map(row => 
             row.map(cell => cell === 'blank' ? 'blank' : '')
           );
           setUserGrid(initialGrid);
