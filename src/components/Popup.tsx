@@ -18,7 +18,7 @@ interface CommonPopupProps {
 
 interface PopupProps extends CommonPopupProps {
     currentConfig: CrosswordConfig;
-    puzzleId: string | number;
+    puzzleId: string;
 }
 
 interface BasePopupProps extends CommonPopupProps {

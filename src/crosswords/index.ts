@@ -21,7 +21,6 @@ function missing_next_puzzle(relevantPuzzles: CrosswordConfig[]) {
   return formatDate(new Date()) > formatDate(sevenDaysFromNow);
 }
 
-
 // Dynamically import all puzzle files
 const allPuzzles: { [key: string]: CrosswordConfig } = {
   puzzle1: require('./puzzle1').default,
@@ -76,4 +75,9 @@ export const getLatestPuzzleName = () => Object.values(sortedPuzzles)[0].name;
 
 export const puzzles = sortedPuzzles;
 
-export type PuzzleId = keyof typeof puzzles;
+export const PUZZLE_ID_404 = '404';
+
+export const viewablePuzzles = relevantPuzzles;
+viewablePuzzles[PUZZLE_ID_404] = require('./notFound').default;
+
+export type PuzzleId = string;
