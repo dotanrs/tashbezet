@@ -14,7 +14,6 @@ const fixedWords = words.map(word => word.reverse());
 
 const puzzle: CrosswordConfig = {
   name: "999 הודעת מערכת",
-  hidden: true,
   "grid": fixedWords,
   "rowClues": [
     "מה קרה לתשבצים?",

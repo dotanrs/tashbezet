@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { getLatestPuzzleName, PuzzleId } from '../crosswords';
+import { getLatestPuzzleName, PuzzleId, viewablePuzzles } from '../crosswords';
 import { clearPuzzleState, loadPuzzleState, savePuzzleState } from '../utils/storageUtils';
 import { puzzles } from '../crosswords';
 import CrosswordGrid from './CrosswordGrid';
@@ -56,7 +56,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
 
     const getNewGrid = (puzzleId: PuzzleId): Grid => {
-      return currentConfig.grid.map((row) => 
+      return viewablePuzzles[puzzleId].grid.map((row) =>
         row.map((cell) => {
           if (cell === 'blank') return 'blank';
           return '';
@@ -66,7 +66,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   
     const mergeStateWithPuzzle = (puzzleId: PuzzleId, savedState: SavedPuzzleState): Grid => {
       try {
-        const newGrid = puzzles[puzzleId].grid.map((row, rowIndex) => 
+        const newGrid = viewablePuzzles[puzzleId].grid.map((row, rowIndex) =>
           row.map((cell, colIndex) => {
             if (cell === 'blank') return 'blank';
             if (savedState.userGrid[rowIndex][colIndex] === 'blank') {
@@ -89,8 +89,8 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   
       const getUpdatedGrid = () => {
         const savedState = loadPuzzleState(currentPuzzleId);
-        if (savedState && puzzles[savedState.puzzleId]) {
-          setCurrentConfig(puzzles[savedState.puzzleId]);
+        if (savedState && viewablePuzzles[savedState.puzzleId]) {
+          setCurrentConfig(viewablePuzzles[savedState.puzzleId]);
           const newGrid = mergeStateWithPuzzle(currentPuzzleId, savedState);
           setUserGrid(newGrid);
           setCellStatus(savedState.cellStatus);

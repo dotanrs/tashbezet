@@ -14,7 +14,6 @@ const fixedWords = words.map(word => word.reverse());
 
 const puzzle: CrosswordConfig = {
   name: "404",
-  hidden: true,
   "grid": fixedWords,
   "rowClues": [
     "404 - התשבץ לא ____ (מה שחווית כרגע)",
