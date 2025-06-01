@@ -166,7 +166,7 @@ const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Pu
          <div className='text-xl'>פתרת את התשבצת השבועי!</div>
          {ShareLink('שיתוף', 'text-base text-gray-700 mt-4 font-bold', getShareMessage(currentConfig, `${currentPuzzleId}`))}
         <div className='text-sm mt-4 text-black mb-6'>
-            <div className='text-gray-500'>התשבץ הבא בעוד:</div>
+            <div className='text-gray-500'>תשבץ חדש בעוד:</div>
             <CountdownTimer />
         </div>
           <button
