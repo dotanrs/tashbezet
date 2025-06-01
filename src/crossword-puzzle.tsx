@@ -4,7 +4,7 @@ import { puzzles, PuzzleId, viewablePuzzles, PUZZLE_ID_404 } from './crosswords'
 import PreviousPuzzles from './components/PreviousPuzzles';
 import Puzzle from './components/Puzzle';
 import { Menu, X } from 'lucide-react';
-import { getTitle } from './utils/logo';
+import { TashbezetTitle } from './utils/logo';
 
 const CrosswordPuzzle = () => {
   const firstPuzzleId = Object.keys(puzzles)[0] as PuzzleId;
@@ -67,7 +67,16 @@ const CrosswordPuzzle = () => {
         </button>
       </div>
       <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
-        {getTitle(currentConfig, currentPuzzleId, 'text-2xl', 'sm:w-10 w-[35px]', true, 'hidden', true, showPuzzleName)}
+        {<TashbezetTitle
+         currentConfig={currentConfig}
+         currentPuzzleId={currentPuzzleId}
+         size={'text-2xl'}
+         width={'sm:w-10 w-[35px]'}
+         showBottomBorder={false}
+         pencilPosition={'hidden'}
+         showPen={true}
+         showPuzzleName={showPuzzleName}
+        />}
       </div>
     </div>
   </div>
