@@ -19,7 +19,7 @@ const puzzle: CrosswordConfig = {
     "💣 + E",
     "מילה ראויה ל״סחטו״ (למשל תפוז)",
     "כמו מייל לא צפוי שמודיע שזכית בהרבה כסף",
-    "כמו ההסבר ל-3 מאונך, כנראה",
+    "כמו ההסבר ל-3 מאוזן, כנראה",
     "ברכה שמגיעה לפעמים עם זר פרחים על הצוואר",
   ],
   "columnClues": [
