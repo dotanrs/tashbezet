@@ -27,7 +27,7 @@ const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBacksp
     setTimeout(() => setPressedKey(null), 500);
   };
 
-  const keyClasses = 'aspect-square text-gray-700 w-full flex items-center justify-center rounded border-[0.5px] border-gray-800 text-lg';
+  const keyClasses = 'aspect-square max-h-10 text-gray-700 w-full flex items-center justify-center rounded border-[0.5px] border-gray-800 text-lg';
 
   return (
     <div className="w-full bg-gray-100 p-2 border-[0.5px] border-t-0 border-gray-800 max-w-[100%]">
