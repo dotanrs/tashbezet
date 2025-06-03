@@ -49,6 +49,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const [showConfetti, setShowConfetti] = useState(false);
     const [showSharePopup, setShowSharePopup] = useState(false);
     const [pageReady, setPageReady] = useState(false);
+    const [isFirstClick, setIsFirstClick] = useState(false);
   
   
     // Create refs for all cells
@@ -155,13 +156,18 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     // Add handleStartGame
   
     // Handle cell selection and direction changes
-    const handleCellClick = (row: number, col: number) => {
+    const handleCellClick = (row: number, col: number, isFocused: boolean) => {
       if (userGrid[row][col] === 'blank') return;
   
       if (selected && selected.row === row && selected.col === col) {
         // If clicking the same cell, switch direction
-        setDirection(prev => prev === 'across' ? 'down' : 'across');
+        if (isFirstClick || isFocused) {
+          setDirection(prev => prev === 'across' ? 'down' : 'across');
+        } else {
+          setIsFirstClick(true);
+        }
       } else {
+        setIsFirstClick(false);
         setSelected({ row, col });
         // Keep the same direction when moving to a new cell
       }

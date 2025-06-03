@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Grid, Selected, CellStatusGrid, Direction } from '../types/crossword';
 import useIsMobile from '../hooks/useIsMobile';
 
@@ -8,7 +8,7 @@ interface CrosswordGridProps {
   selected: Selected;
   direction: Direction;
   cellRefs: React.MutableRefObject<(HTMLInputElement | null)[][]>;
-  onCellClick: (row: number, col: number) => void;
+  onCellClick: (row: number, col: number, isFocused: boolean) => void;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   isDone: boolean;
@@ -27,6 +27,8 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
 }) => {
   const isMobile = useIsMobile();
 
+  const [gridFocued, setGridFocused] = useState(false);
+
   const getCellStyle = (row: number, col: number, isSelected: boolean | null) => {
     if (userGrid[row][col] === 'blank') {
       return 'bg-gray-800';
@@ -41,6 +43,10 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
       (direction === 'down' && selected.col === col)
     );
 
+    return getBackgroundColor(isCompleted, isSelected, isInCurrentWord);
+  }
+
+  const getBackgroundColor = (isCompleted: boolean, isSelected: boolean | null, isInCurrentWord: boolean | null) => {
     if (isCompleted) {
       if (isSelected) {
         return 'bg-highlight-200/80';
@@ -63,7 +69,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
   const victoryGradient = 'bg-[linear-gradient(45deg,_white_5%,_#cff7e2_40%,_white_100%)]'
 
   return (
-    <div className={`grid grid-cols-5 gap-0 border-[0.5px] border-gray-800 w-full ${isDone && victoryGradient}`}>
+    <div className={` grid grid-cols-5 gap-0 border-[0.5px] border-gray-800 w-full ${isDone && victoryGradient}`} tabIndex={-1} onFocus={() => setGridFocused(true)} onBlur={() => setGridFocused(false)}>
       {userGrid.map((row, rowIndex) => (
         row.map((_, displayColIndex) => {
           const colIndex = displayToLogicalCol(displayColIndex);
@@ -75,7 +81,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
                 w-full aspect-square border-[0.5px] border-gray-800 flex items-center justify-center
                 ${getCellStyle(rowIndex, colIndex, selected && selected.row === rowIndex && selected.col === colIndex)}
               `}
-              onClick={() => onCellClick(rowIndex, colIndex)}
+              onMouseDown={() => onCellClick(rowIndex, colIndex, gridFocued)}
             >
               {cell !== 'blank' && (
                 isMobile ? (
