@@ -79,7 +79,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
             >
               {cell !== 'blank' && (
                 isMobile ? (
-                  <div className={`w-full h-full flex items-center justify-center text-xl sm:text-3xl font-rubik
+                  <div className={`w-full h-full flex items-center justify-center text-3xl sm:text-4xl font-rubik
                     ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default text-green-700 text-bold' : ''}
                     ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : ''}`}>
                     {cell}

@@ -61,7 +61,7 @@ const CrosswordPuzzle = () => {
   const GameTitle = () => {
     return <div className='fixed z-10 w-full bg-background-50 border-b-[1px] border-gray-600 mb-0'>
     <div className={`${pageWidth} flex flex-row items-center justify-between m-auto pl-4 sm:pl-0 leading-[15px]`}>
-      <div id="options">
+      <div id="options" className='mt-1'>
         <button onClick={() => setPreviousPuzzlesShown(!previousPuzzlesShown)}>
           {previousPuzzlesShown ? <X size={24} className='text-gray-500' /> : <Menu size={24} className='text-gray-500' />}
         </button>

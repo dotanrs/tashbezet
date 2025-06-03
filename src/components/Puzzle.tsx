@@ -595,7 +595,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       };
     }, []);
 
-    const backgroundColorUi = 'bg-background-50/30';
+    const backgroundColorUi = 'bg-background-50/50';
 
   return currentConfig && <>
   <div id="whole-crossword" className={`sm:w-full w-[100%] sm:pt-10 pt-[35px] max-w-[500px] ${hidden && 'hidden'}`}>
@@ -672,13 +672,13 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
             </div>
             )
         }
-        <div className={`min-h-[82px] max-w-[100%] ${backgroundColorUi} border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg mx-2'}`}>
-        <div className="p-4 w-full direction-rtl text-right flex gap-[15px] justify-between" style={{ direction: 'rtl' }}>
-          <div className="flex-none cursor-pointer select-none text-xl"
+        <div className={`min-h-[65px] max-w-[100%] ${backgroundColorUi} border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg mx-2'}`}>
+        <div className="p-2 w-full direction-rtl text-right flex gap-0 justify-between" style={{ direction: 'rtl' }}>
+          <div className="flex-none cursor-pointer select-none text-xl pt-2"
           onClick={() => moveToNextDefinition(true)}>
           {<MoveRight />}
           </div>
-          <div className="flex-1 gap-2 px-3">
+          <div className="flex-1 gap-0 px-2">
           {selected && direction === 'across' && (
             <div>
               <span className="text-[12px] ml-2">{selected.row + 1} מאוזן</span> {currentConfig.rowClues[selected.row]}
@@ -690,11 +690,11 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
             </div>
           )}
           </div>
-          {currentAvailableHint && <div className="flex-none cursor-pointer select-none text-2xl" title='להציג/להסתיר רמז'
+          {currentAvailableHint && <div className="flex-none cursor-pointer select-none text-2xl px-2  pt-2" title='להציג/להסתיר רמז'
             onClick={toggleHint}>
           {<CircleHelp />}
           </div>}
-          <div className="flex-none cursor-pointer select-none text-2xl"
+          <div className="flex-none cursor-pointer select-none text-2xl  pt-2"
           onClick={() => moveToNextDefinition(false)}>
           {<MoveLeft />}
           </div>
