@@ -35,7 +35,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const [isDone, setIsDone] = useState(false);
   
     // Modify current puzzle state to be null initially
-    const [hintsShown, setHintsShown] = useState<{[key: string]: boolean}>({});
+    const [hintsShown, setHintsShown] = useState<boolean>(false);
     // State for the user's input grid
     const [userGrid, setUserGrid] = useState<Grid>(createEmptyGrid());
     // Track selected cell
@@ -558,13 +558,9 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       return '';
     }
   
-    const definitionName = `${currentConfig?.name}_${direction}_${direction === 'across' ? selected?.row : selected?.col}`
   
     const toggleHint = () => {
-      setHintsShown({
-        ...hintsShown,
-        [definitionName]: !hintsShown[definitionName],
-      });
+      setHintsShown(!hintsShown);
     }
   
     const currentAvailableHint: string = (() => {
@@ -579,13 +575,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       }
       return '';
     })()
-  
-    const currentVisibleHint = () => {
-      if (!hintsShown[definitionName]) {
-        return '';
-      }
-      return currentAvailableHint;
-    }
 
     useEffect(() => {
       document.body.classList.add('lg:landscape:overflow-auto', 'landscape:overflow-hidden', 'portrait:overflow-auto');
@@ -596,6 +585,20 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     }, []);
 
     const backgroundColorUi = 'bg-background-50/50';
+
+    function HintText({defaultText}: {defaultText: string}) {
+      return (
+        (hintsShown && currentAvailableHint) ? (
+          <span className='text-bold'>{currentAvailableHint}</span>
+        ) : <span>{defaultText}</span>
+      )
+    }
+
+    // Id the definition changes, reset the hint
+    const definitionName = `${currentConfig?.name}_${direction}_${direction === 'across' ? selected?.row : selected?.col}`
+    useEffect(() => {
+      setHintsShown(false);
+    }, [definitionName]);
 
   return currentConfig && <>
   <div id="whole-crossword" className={`sm:w-full w-[100%] sm:pt-10 pt-[35px] max-w-[500px] ${hidden && 'hidden'}`}>
@@ -664,29 +667,21 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
       {/* Clues display */}
       <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
-        {
-            currentVisibleHint() && (
-            <div className={`mt-1 p-2 w-auto mx-4 border-[0.5px] border-b-0 border-gray-600 rounded-t text-[13px] ${backgroundColorUi} opacity-[0.9] text-black relative overflow-hidden`} style={{ direction: 'rtl' }}>
-                <div className="absolute" />
-                <span className="relative whitespace-pre-wrap">{currentVisibleHint()}</span>
-            </div>
-            )
-        }
-        <div className={`min-h-[65px] max-w-[100%] ${backgroundColorUi} border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg mx-2'}`}>
+        <div className={`min-h-[65px] max-w-[100%] ${hintsShown ? 'bg-yellow-200/70' : backgroundColorUi} border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg mx-2'}`}>
         <div className="p-2 w-full direction-rtl text-right flex gap-0 justify-between" style={{ direction: 'rtl' }}>
           <div className="flex-none cursor-pointer select-none text-xl pt-2"
           onClick={() => moveToNextDefinition(true)}>
           {<MoveRight />}
           </div>
-          <div className="flex-1 gap-0 px-2">
+          <div className="flex-1 gap-0 px-3">
           {selected && direction === 'across' && (
             <div>
-              <span className="text-[12px] ml-2">{selected.row + 1} מאוזן</span> {currentConfig.rowClues[selected.row]}
+              <span className="text-[12px] ml-2">{selected.row + 1} מאוזן</span> {<HintText defaultText={currentConfig.rowClues[selected.row]} />}
             </div>
           )}
           {selected && direction === 'down' && (
             <div>
-              <span className="text-[12px] ml-2">{selected.col + 1} מאונך</span> {currentConfig.columnClues[selected.col]}
+              <span className="text-[12px] ml-2">{selected.col + 1} מאונך</span> {<HintText defaultText={currentConfig.columnClues[selected.col]} />}
             </div>
           )}
           </div>
