@@ -10,7 +10,7 @@ import { findNextDefinition, handleArrowNavigation } from '../utils/navigationUt
 import useIsMobile from '../hooks/useIsMobile';
 import { checkPuzzle, createEmptyCellStatus, createEmptyGrid } from '../utils/puzzleUtils';
 import HebrewKeyboard from './HebrewKeyboard';
-import { MoveRight, MoveLeft, CircleHelp } from 'lucide-react';
+import { CircleHelp, ArrowRight, ArrowLeft } from 'lucide-react';
 import { AllPuzzlesDonePopup, SharePopup, PuzzleDonePopup, WelcomePopup } from './Popup';
 
 interface PuzzlesProps {
@@ -559,7 +559,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   
     const cluesKeyboardLocation = (isMobile: boolean) => {
       if (isMobile) {
-        return 'fixed bottom-0 right-0 w-[100%] max-w-[500px]';
+        return 'fixed bottom-0 right-0 w-[100%]';
       }
       return '';
     }
@@ -590,7 +590,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       };
     }, []);
 
-    const backgroundColorUi = 'bg-background-50/50';
+    const backgroundColorUi = 'bg-background-100';
 
     function HintText({defaultText}: {defaultText: string}) {
       return (
@@ -673,35 +673,35 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
       {/* Clues display */}
       <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
-        <div className={`min-h-[65px] max-w-[100%] ${hintsShown ? 'bg-yellow-200/70' : backgroundColorUi} border-[0.5px] border-black ${isMobile ? '' : 'rounded-lg mx-2'}`}>
-        <div className="p-2 w-full direction-rtl text-right flex gap-0 justify-between" style={{ direction: 'rtl' }}>
-          <div className="flex-none cursor-pointer select-none text-xl pt-2"
-          onClick={() => moveToNextDefinition(true)}>
-          {<MoveRight />}
-          </div>
-          <div className="flex-1 gap-0 px-3">
-          {selected && direction === 'across' && (
-            <div>
-              <span className="text-[12px] ml-2">{selected.row + 1} מאוזן</span> {<HintText defaultText={currentConfig.rowClues[selected.row]} />}
+        <div className={`min-h-[65px] w-[100%] ${hintsShown ? 'bg-yellow-200/70' : 'bg-highlight-200/80'} border-[0.5px] ${isMobile ? '' : 'rounded-lg mx-2'}`}>
+          <div className="p-2 w-full max-w-[500px] mx-auto direction-rtl text-right flex gap-0 justify-between" style={{ direction: 'rtl' }}>
+            <div className="flex-none cursor-pointer select-none text-xl pt-2"
+            onClick={() => moveToNextDefinition(true)}>
+            {<ArrowRight />}
             </div>
-          )}
-          {selected && direction === 'down' && (
-            <div>
-              <span className="text-[12px] ml-2">{selected.col + 1} מאונך</span> {<HintText defaultText={currentConfig.columnClues[selected.col]} />}
+            <div className="flex-1 gap-0 px-3">
+            {selected && direction === 'across' && (
+              <div>
+                <span className="text-[12px] ml-2">{selected.row + 1} מאוזן</span> {<HintText defaultText={currentConfig.rowClues[selected.row]} />}
+              </div>
+            )}
+            {selected && direction === 'down' && (
+              <div>
+                <span className="text-[12px] ml-2">{selected.col + 1} מאונך</span> {<HintText defaultText={currentConfig.columnClues[selected.col]} />}
+              </div>
+            )}
             </div>
-          )}
-          </div>
-          {currentAvailableHint && <div className="flex-none cursor-pointer select-none text-2xl px-2  pt-2" title='להציג/להסתיר רמז'
-            onClick={toggleHint}>
-          {<CircleHelp />}
-          </div>}
-          <div className="flex-none cursor-pointer select-none text-2xl  pt-2"
-          onClick={() => moveToNextDefinition(false)}>
-          {<MoveLeft />}
+            {currentAvailableHint && <div className="flex-none cursor-pointer select-none text-2xl px-2  pt-2" title='להציג/להסתיר רמז'
+              onClick={toggleHint}>
+            {<CircleHelp />}
+            </div>}
+            <div className="flex-none cursor-pointer select-none text-2xl  pt-2"
+            onClick={() => moveToNextDefinition(false)}>
+            {<ArrowLeft />}
+            </div>
           </div>
         </div>
-      </div>
-      {isMobile && <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} />}
+        {isMobile && <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} />}
       </div>
 
     </div>
