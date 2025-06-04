@@ -10,7 +10,7 @@ const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBacksp
 
   // Hebrew keyboard layout in three rows
   const keyboardRows = [
-    ['ק', 'ר', 'א', 'ט', 'ו', 'ן', 'פ'],
+    ['ק', 'ר', 'א', 'ט', 'ו', 'פ'],
     ['ש', 'ד', 'ג', 'כ', 'ע', 'י', 'ח', 'ל'],
     ['ז', 'ס', 'ב', 'ה', 'נ', 'מ', 'צ', 'ת']
   ];
@@ -48,7 +48,7 @@ const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBacksp
               ))}
               <button
                 onClick={handleBackspace}
-                className={`${keyClasses} bg-gray-200 ${pressedKey === 'backspace' ? 'animate-keypress' : ''}`}
+                className={`${keyClasses} bg-gray-200 col-span-2 ${pressedKey === 'backspace' ? 'animate-keypress' : ''}`}
               >
                 ⌫
               </button>
