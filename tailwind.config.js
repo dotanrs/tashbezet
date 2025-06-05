@@ -38,6 +38,7 @@ module.exports = {
           100: '#dbfcfa',  // light cyan
           110: '#c6f4e6', // greenish
           200: '#98e0db',  // dark cyan
+          300: '#34918b',  // darker cyan
         },
       },
     },
