@@ -5,6 +5,7 @@ import ReactConfetti from 'react-confetti';
 import { getLatestPuzzleName, PuzzleId } from '../crosswords';
 import { TashbezetTitle } from '../utils/logo';
 import { CountdownTimer } from '../utils/countdown';
+import useIsMobile from '../hooks/useIsMobile';
 
 interface ConfettiProps {
     showConfetti: boolean;
@@ -81,7 +82,6 @@ const Popup: React.FC<BasePopupProps> = ({
     showCloseButton = true,
     shareLinkText = 'שיתוף',
 }) => {
-
     return (
     <div id='popup-container' className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-gray-500/50 pt-[8vh] inset-0 overflow-y-auto' onClick={onClose}>
         {confetti && confetti.showConfetti && (
@@ -179,46 +179,56 @@ const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Pu
     </>
 }
 
-const welcomeDescription = (puzzleName: string, onClose: () => void) => {
-    return <>
-    <div className='text-xl text-gray-600 mb-4 font-rubik'>תשבץ קטן אחד בשבוע</div>
-        <Bird className='mx-auto z-1 mt-0 w-[80px] h-[80px] text-gold text-background-300' strokeWidth={'2px'} />
-        <img className='relative top-[-22px] left-[30px] mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
-        <div className='text-sm text-gray-600'>התשבצת השבועי:</div><div className='text-sm text-black mb-6'>יום חמישי {puzzleName}</div>
-        <button
-          onClick={onClose}
-          className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
-          style={{ direction: 'rtl' }}
-          >
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-            <div className="absolute inset-0 translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, isMobile: boolean) => {
+    return (
+        <div id='popup-container' className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-background-300 pt-[8vh] inset-0 overflow-y-auto'>
+        <div className={`p-8 pb-6 w-auto sm:max-w-[400px] sm:h-auto ${isMobile && 'min-h-[90%]'} text-center mb-8 mx-auto sm:rounded-xl text-xl
+                    bg-background-10 text-gray-700 relative shadow-xl overflow-hidden flex flex-col`}
+            style={{ direction: 'rtl' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+              <div className='grow'></div>
+              <div>
+                <div className='w-full mt-4 flex font-rubik'>
+                    <div className={`$flex flex-row items-center justify-center m-auto mb-4`}>
+                    <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
+                        {<TashbezetTitle
+                        currentConfig={currentConfig}
+                        currentPuzzleId={currentPuzzleId}
+                        size={'text-2xl'}
+                        width={'w-12'}
+                        pencilPosition={'absolute left-[-15px] top-[-12px] w-[35px]'}
+                        showPen={false}
+                        showPuzzleName={false}
+                        />}
+                    </div>
+                    </div>
+                </div>
+                <div className='text-xl text-gray-600 mb-4 font-rubik'>תשבץ קטן אחד בשבוע</div>
+                <Bird className='mx-auto z-1 mt-0 w-[80px] h-[80px] text-gold text-background-300' strokeWidth={'2px'} />
+                <img className='relative top-[-22px] left-[30px] mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
+                <div className='text-sm text-gray-600'>התשבצת השבועי:</div><div className='text-sm text-black mb-6'>יום חמישי {currentConfig.name}</div>
+                <button
+                    onClick={onClose}
+                    className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
+                    style={{ direction: 'rtl' }}
+                    >
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
+                        <div className="absolute inset-0 translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                    </div>
+                    <span className="relative whitespace-pre-wrap">להתחיל</span>
+                </button>
+            </div>
+            <div className='grow'></div>
         </div>
-        <span className="relative whitespace-pre-wrap">להתחיל</span>
-       </button>
-    </>
+    </div>)
 }
 
-const WelcomeContent = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, isAlreadySolved: boolean, onClose: () => void) => {
-    return () => (
-    <div className='mb-2 text-gray-700'>
-      <div className='w-full mt-4 flex font-rubik'>
-        <div className={`$flex flex-row items-center justify-center m-auto mb-4`}>
-          <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
-            {<TashbezetTitle
-             currentConfig={currentConfig}
-             currentPuzzleId={currentPuzzleId}
-             size={'text-2xl'}
-             width={'w-12'}
-             pencilPosition={'absolute left-[-15px] top-[-12px] w-[35px]'}
-             showPen={false}
-             showPuzzleName={false}
-            />}
-          </div>
+const welcomeContent = (currentConfig:CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, isMobile: boolean) => {
+    return (
+        <div className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-gray-500/50 pt-[8vh] inset-0 overflow-y-auto'>
+            {welcomeDescription(currentConfig, currentPuzzleId, onClose, isMobile)}
         </div>
-      </div>
-      {isAlreadySolved ? wellDoneDescription(currentConfig, currentPuzzleId, onClose) : welcomeDescription(currentConfig.name, onClose)}
-    </div>
-)}
+    )
+}
 
 interface WelcomePopupProps extends PopupProps {
     isAlreadySolved: boolean;
@@ -226,13 +236,17 @@ interface WelcomePopupProps extends PopupProps {
 }
 
 export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, isAlreadySolved, confetti = undefined }) => {
+    const isMobile = useIsMobile();
+    if (!isAlreadySolved) {
+        return welcomeContent(currentConfig, puzzleId, onClose, isMobile);
+    }
     return <Popup
         shareContent={''} // No effect
         message={[]} // No effect
         explanation={[]} // No effect
         onClose={onClose}
         Icon={HandHeart} // No effect
-        ContentOverride={WelcomeContent(currentConfig, puzzleId, isAlreadySolved, onClose)}
+        ContentOverride={() => wellDoneDescription(currentConfig, puzzleId, onClose)}
         showCloseButton={false}
         confetti={confetti}
     />
