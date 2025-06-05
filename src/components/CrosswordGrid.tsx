@@ -51,9 +51,9 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
       if (isSelected) {
         return 'bg-highlight-200/80';
       } else if (isInCurrentWord) {
-        return 'bg-highlight-110/80';
+        return 'bg-highlight-200/30';
       }
-      return 'text-green-200';
+      return;
     }
 
     if (isSelected) {
@@ -66,7 +66,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
   };
 
   const displayToLogicalCol = (displayCol: number) => 4 - displayCol;
-  const victoryGradient = 'bg-[linear-gradient(45deg,_white_5%,_#cff7e2_40%,_white_100%)]'
+  const victoryGradient = 'bg-[linear-gradient(45deg,_white_20%,_#e1f2f1_35%,_white_55%)]'
 
   return (
     <div className={` grid grid-cols-5 gap-0 border-[0.5px] border-gray-800 w-full ${isDone && victoryGradient}`} tabIndex={-1} onFocus={() => setGridFocused(true)} onBlur={() => setGridFocused(false)}>
@@ -86,8 +86,8 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
               {cell !== 'blank' && (
                 isMobile ? (
                   <div className={`w-full h-full flex items-center justify-center text-[clamp(2vw,14vw,80px)] font-rubik
-                    ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default text-green-700 text-bold' : ''}
-                    ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : ''}`}>
+                    ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default text-highlight-300 text-bold' : ''}
+                    ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-300' : ''}`}>
                     {cell}
                   </div>
                 ) : (
@@ -98,8 +98,8 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
                     onChange={onChange}
                     onKeyDown={onKeyDown}
                     className={`w-full h-full text-center text-[clamp(2vw,14vw,80px)] outline-none bg-transparent font-rubik
-                      ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default text-green-700 text-bold' : ''}
-                      ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-500' : ''}`}
+                      ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default text-highlight-300 text-bold' : ''}
+                      ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-300' : ''}`}
                     maxLength={1}
                     dir="rtl"
                     lang="he"
