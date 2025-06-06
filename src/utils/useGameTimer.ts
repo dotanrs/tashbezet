@@ -17,7 +17,7 @@ export function useGameTimer(paused: boolean) {
 
   const formattedGameTime = formatTime(secondsElapsed);
 
-  return { secondsElapsed, formattedGameTime, resetTimer: () => setSecondsElapsed(0) };
+  return { secondsElapsed, formattedGameTime, resetTimer: (seconds: number) => setSecondsElapsed(seconds) };
 }
 
 function formatTime(totalSeconds: number): string {

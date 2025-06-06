@@ -52,7 +52,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const [pageReady, setPageReady] = useState(false);
     const [isFirstClick, setIsFirstClick] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
-    const { formattedGameTime, resetTimer } = useGameTimer(isPaused);
+    const { secondsElapsed, formattedGameTime, resetTimer } = useGameTimer(isPaused);
   
   
     // Create refs for all cells
@@ -96,14 +96,14 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       const getUpdatedGrid = () => {
         const savedState = loadPuzzleState(currentPuzzleId);
         if (savedState && viewablePuzzles[savedState.puzzleId]) {
-          resetTimer(); // TODO: load previous time
+          resetTimer(savedState.timerSeconds || 0); // TODO: load previous time
           setCurrentConfig(viewablePuzzles[savedState.puzzleId]);
           const newGrid = mergeStateWithPuzzle(currentPuzzleId, savedState);
           setUserGrid(newGrid);
           setCellStatus(savedState.cellStatus);
           return newGrid;
         } else {
-          resetTimer();
+          resetTimer(0);
           const initialGrid = currentConfig.grid.map(row => 
             row.map(cell => cell === 'blank' ? 'blank' : '')
           );
@@ -159,7 +159,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       // Empty timeout to make sure if no other actions happen, the state will be deleted
       // (the useEffect should complete before this)
       setTimeout(() => clearPuzzleState(currentPuzzleId), 0);
-      resetTimer();
+      resetTimer(0);
     };
   
     // Add handleStartGame
@@ -604,8 +604,9 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         cellStatus: cellStatus.map(row => [...row]),
         isComplete: isDone,
         puzzleId: currentPuzzleId,
+        timerSeconds: secondsElapsed,
       });
-    }, [isDone, cellStatus, userGrid, currentPuzzleId, gameStarted])
+    }, [isDone, cellStatus, userGrid, currentPuzzleId, gameStarted, secondsElapsed])
 
     const backgroundColorUi = 'bg-background-100';
 
