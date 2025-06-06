@@ -2,13 +2,13 @@ import React from 'react';
 import { PuzzleId } from '../crosswords';
 import { loadPuzzleState } from '../utils/storageUtils';
 import { puzzles } from '../crosswords';
+import { HOST_NAME } from '../utils/crosswordNavigation';
 
 interface PreviousPuzzlesProps {
   currentPuzzleId: PuzzleId | null;
-  onPuzzleChange: (puzzleId: PuzzleId) => void;
 }
 
-const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPuzzleChange }) => {
+const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId }) => {
   const puzzleIds = Object.keys(puzzles) as PuzzleId[];
 
   const getPuzzleStatus = (puzzleId: PuzzleId) => {
@@ -37,23 +37,24 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, onPu
       {puzzleIds.map((puzzleId) => {
         const status = getPuzzleStatus(puzzleId);
         return (
-          <button
-            key={puzzleId}
-            onClick={() => onPuzzleChange(puzzleId)}
-            style={{ direction: 'ltr' }}
-            className={`px-4 py-2 rounded flex items-center gap-2 justify-end border-[1px] border-gray-600 ${
-              currentPuzzleId === puzzleId
-                ? 'bg-highlight-200 cursor-default'
-                : 'bg-white hover:bg-background-100'
-            } ${status === '✓' && 'text-green-600'}`}
-          >
-            {puzzles[puzzleId].name}
-            {status && (
-              <span className={status === '✓' ? 'text-green-600' : 'text-blue-600'}>
-                {status}
-              </span>
-            )}
-          </button>
+          <a href={`${HOST_NAME}?puzzleId=${puzzleId}`}>
+            <button
+              key={puzzleId}
+              style={{ direction: 'ltr' }}
+              className={`px-4 py-2 w-full rounded flex items-center gap-2 justify-end border-[1px] border-gray-600 ${
+                currentPuzzleId === puzzleId
+                  ? 'bg-highlight-200 cursor-default'
+                  : 'bg-white hover:bg-background-100'
+              } ${status === '✓' && 'text-green-600'}`}
+            >
+              {puzzles[puzzleId].name}
+              {status && (
+                <span className={status === '✓' ? 'text-green-600' : 'text-blue-600'}>
+                  {status}
+                </span>
+              )}
+            </button>
+          </a>
         );
       })}
       </div>

@@ -1,5 +1,7 @@
 import { Grid, Direction, CellStatusGrid } from '../types/crossword';
 
+export const HOST_NAME = process.env.REACT_APP_HOST_NAME ? process.env.REACT_APP_HOST_NAME : 'https://dotanrs.github.io/tashbezet';
+
 export const findNextDirectCellV2 = (
   grid: Grid,
   cellStatus: CellStatusGrid,
@@ -41,7 +43,7 @@ export const findNextDirectCellV2 = (
   }
 
   step();
-  while (grid[nextRow][nextCol] === 'blank' || cellStatus[nextRow][nextCol] == true) {
+  while (grid[nextRow][nextCol] === 'blank' || cellStatus[nextRow][nextCol] === true) {
     step();
   }
 
