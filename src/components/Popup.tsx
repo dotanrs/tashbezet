@@ -232,7 +232,7 @@ const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Puz
                 <Bird className='mx-auto z-1 mt-0 w-[80px] h-[80px] text-gold text-background-300' strokeWidth={'2px'} />
                 <img className='relative top-[-22px] left-[30px] mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
                 <div className='text-sm text-gray-600'>התשבצת השבועי:</div><div className='text-sm text-black mb-6'>יום חמישי {currentConfig.name}</div>
-                <div className='text-base text-background-300 mb-2'>המשחק נעצר ({formattedGameTime})</div>
+                {iStarted && <div className='text-base text-background-300 mb-2'>המשחק נעצר ({formattedGameTime})</div>}
                 <button
                     onClick={onClose}
                     className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
