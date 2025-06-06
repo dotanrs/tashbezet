@@ -7,6 +7,7 @@ import { TashbezetTitle } from '../utils/logo';
 import { CountdownTimer } from '../utils/countdown';
 import useIsMobile from '../hooks/useIsMobile';
 import { formatAsText, formatTime } from '../utils/useGameTimer';
+import { HOST_NAME } from '../utils/crosswordNavigation';
 
 interface ConfettiProps {
     showConfetti: boolean;
@@ -53,7 +54,7 @@ const getShareMessage = (currentConfig: CrosswordConfig, puzzleId: string, secon
     const challenge = secondsElapsed ? `ב-${formatAsText(secondsElapsed)}, רוצה לנסות לעקוף אותי?` : 'רוצה לנסות גם?';
         return `כרגע פתרתי את ${getPuzzleName(currentConfig)} ${challenge}
 ${drawCrossword(currentConfig)}
-https://dotanrs.github.io/tashbezet/?puzzleId=${puzzleId}
+${HOST_NAME}?puzzleId=${puzzleId}
 `
 }
 
@@ -172,7 +173,7 @@ export const WelcomeNonLatestPopup: React.FC<GamePopupProps> = ({ currentConfig,
 }
 
 export const SharePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onClose }) => {
-    const shareContent = `https://dotanrs.github.io/tashbezet/?puzzleId=${puzzleId}`
+    const shareContent = `${HOST_NAME}?puzzleId=${puzzleId}`
     return <Popup 
         shareContent={shareContent}
         message={'משתפים עם מי שאוהבים'}
@@ -192,7 +193,7 @@ const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Pu
          </div>
          <div className='text-3xl text-background-300 font-bold mb-1'>כל הכבוד!</div>
          <div className='text-base'>פתרת את התשבצת השבועי</div>
-         {secondsElapsed && (<div className='text-l'>ב-<span className='font-bold'>{formatTime(secondsElapsed)}</span></div>)}
+         {(!!secondsElapsed) && (<div className='text-l'>ב-<span className='font-bold'>{formatTime(secondsElapsed)}</span></div>)}
          {ShareLink('לאתגר חברים', 'text-base text-background-300 mt-4 font-bold', getShareMessage(currentConfig, `${currentPuzzleId}`, secondsElapsed))}
         <div className='text-sm mt-4 text-black mb-6'>
             <div className='text-gray-500'>תשבץ חדש בעוד:</div>

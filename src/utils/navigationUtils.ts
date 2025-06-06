@@ -1,17 +1,5 @@
 import { Grid, Direction, CellStatusGrid } from '../types/crossword';
 
-// Helper function to check if there are any empty cells in the grid
-const hasEmptyCells = (grid: Grid): boolean => {
-  for (let row = 0; row < 5; row++) {
-    for (let col = 0; col < 5; col++) {
-      if (grid[row][col] !== 'blank' && grid[row][col] === '') {
-        return true;
-      }
-    }
-  }
-  return false;
-};
-
 // Helper function to find the next cell in a specific row
 const findCellInRow = (grid: Grid, cellStatus: CellStatusGrid, row: number, startCol: number = 0, requireEmpty: boolean): { row: number, col: number } | null => {
   for (let col = startCol; col < 5; col++) {

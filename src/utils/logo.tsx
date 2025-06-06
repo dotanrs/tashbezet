@@ -1,5 +1,6 @@
 import { PuzzleId } from "../crosswords";
 import { CrosswordConfig } from "../types/crossword";
+import { HOST_NAME } from "./crosswordNavigation";
 
 interface TitleProps {
     currentConfig: CrosswordConfig;
@@ -60,7 +61,7 @@ export const TashbezetTitle: React.FC<TitleProps> = ({
             className={`flex items-center justify-center ${size} m-0 border-y-[1px] mr-[-0.5px] px-2 overflow-hidden truncate text-sm
                     border-r-[1px] ${!showBottomBorder && 'border-b-0'} border-gray-400 bg-white`}
           >
-            <a href={`https://dotanrs.github.io/tashbezet?puzzleId=${currentPuzzleId}`} title={`תשבצת ${currentConfig.name}`}>
+            <a href={`${HOST_NAME}?puzzleId=${currentPuzzleId}`} title={`תשבצת ${currentConfig.name}`}>
             <span className={'text-sm text-gray-500'}>
               {currentConfig.name}
             </span>

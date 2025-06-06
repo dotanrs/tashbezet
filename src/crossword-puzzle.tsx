@@ -106,7 +106,6 @@ const CrosswordPuzzle = () => {
           {previousPuzzlesShown && (
             <PreviousPuzzles
               currentPuzzleId={currentPuzzleId}
-              onPuzzleChange={handlePuzzleChange}
             />
           )}
 
