@@ -660,10 +660,10 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
               puzzleDoneMessage={puzzleDoneMessage}
               secondsElapsed={secondsElapsed}
           />}
-        {(!puzzleDoneMessage && showSharePopup) && (
+      </>)}
+      {showSharePopup && (
           <SharePopup currentConfig={currentConfig} puzzleId={currentPuzzleId} onClose={() => setShowSharePopup(false)} />
         )}
-      </>)}
 
       {/* Buttons section */}
       <div id="sidebar-container" className='flex flex-row place-content-between mt-4'>
