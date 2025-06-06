@@ -6,6 +6,7 @@ interface SavedPuzzleState {
   userGrid: Grid;
   cellStatus: CellStatusGrid;
   isComplete: boolean;
+  timerSeconds: number;
 }
 
 const STORAGE_KEY = 'crossword_puzzle_state_';
