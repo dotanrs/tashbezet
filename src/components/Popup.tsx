@@ -146,7 +146,7 @@ export const WelcomeNonLatestPopup: React.FC<GamePopupProps> = ({ currentConfig,
             confetti={confetti}
             onClose={onClose}
             Icon={Trophy}
-            shareLinkText={`שיתוף (תשבצת ${currentConfig.name})`}
+            shareLinkText={`שיתוף`}
         />
     }
     if (secondsElapsed > 0) {
