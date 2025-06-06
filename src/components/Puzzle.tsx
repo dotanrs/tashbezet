@@ -11,7 +11,7 @@ import useIsMobile from '../hooks/useIsMobile';
 import { checkPuzzle, createEmptyCellStatus, createEmptyGrid } from '../utils/puzzleUtils';
 import HebrewKeyboard from './HebrewKeyboard';
 import { CircleHelp, ArrowRight, ArrowLeft, Pause } from 'lucide-react';
-import { AllPuzzlesDonePopup, SharePopup, PuzzleDonePopup, WelcomePopup } from './Popup';
+import { SharePopup, PuzzleDonePopup, WelcomePopup } from './Popup';
 import { useGameTimer } from '../utils/useGameTimer';
 
 interface PuzzlesProps {
@@ -86,8 +86,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         return getNewGrid(puzzleId);
       }
     }
-  
-    const iStarted = !!loadPuzzleState(currentPuzzleId);
 
     // Modify useEffect to only run when a puzzle is selected
     useEffect(() => {
@@ -440,6 +438,8 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         if (allowConfetti) {
           setShowConfetti(true);
         }
+      } else {
+        setIsDone(false);
       }
       setPageReady(true);
     };
@@ -629,6 +629,14 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     setGameStarted(false);
   }
 
+  const resumeGame = () => {
+    if (!message) {
+      setIsPaused(false);
+    }
+    setMessage(null);
+    setGameStarted(true);
+  }
+
   const useSmallScreenAdjustments = windowSize.width < 385;
   const useVerySmallScreenAdjustments = windowSize.width < 320;
   const sideBarSpacing = useSmallScreenAdjustments ? 'px-0 gap-1' : 'px-2 gap-2'
@@ -652,41 +660,26 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         />
       </div>
       {/* Status message */}
-      {pageReady && (<>
-        {message && (
-          (currentConfig.name === getLatestPuzzleName()) ? <WelcomePopup
-              onClose={() => {setGameStarted(true); setMessage(null)}}
+      {(pageReady && (!!message || !gameStarted)) && (<>
+        {(currentConfig.name === getLatestPuzzleName()) ? <WelcomePopup
+            onClose={resumeGame}
+            currentConfig={currentConfig}
+            puzzleId={currentPuzzleId}
+            isAlreadySolved={!!message}
+            confetti={{showConfetti, windowSize}}
+            iStarted={gameStarted}
+            formattedGameTime={formattedGameTime}
+        /> :
+          <PuzzleDonePopup
               currentConfig={currentConfig}
               puzzleId={currentPuzzleId}
-              isAlreadySolved={true}
               confetti={{showConfetti, windowSize}}
-              iStarted={true}
+              onClose={resumeGame}
+              isAlreadySolved={!!message}
               formattedGameTime={formattedGameTime}
-          /> :
-            (message === PuzzleDoneMessage.ALL_DONE) ? (<AllPuzzlesDonePopup
-                currentConfig={currentConfig}
-                puzzleId={currentPuzzleId}
-                confetti={{showConfetti, windowSize}}
-                onClose={() => setMessage(null)}
-            />) : <PuzzleDonePopup
-                currentConfig={currentConfig}
-                puzzleId={currentPuzzleId}
-                confetti={{showConfetti, windowSize}}
-                onClose={() => setMessage(null)}
-            />)
-        }
+          />}
         {(!message && showSharePopup) && (
           <SharePopup currentConfig={currentConfig} puzzleId={currentPuzzleId} onClose={() => setShowSharePopup(false)} />
-        )}
-        {(!message && !gameStarted) && (
-          <WelcomePopup
-              onClose={() => {setGameStarted(true); setMessage(null)}}
-              currentConfig={currentConfig}
-              puzzleId={currentPuzzleId}
-              isAlreadySolved={false}
-              iStarted={iStarted}
-              formattedGameTime={formattedGameTime}
-          />
         )}
       </>)}
 

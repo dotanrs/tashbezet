@@ -1,4 +1,4 @@
-import { HandHeart, Share2Icon, Trophy, LucideProps, X, Bird } from 'lucide-react';
+import { HandHeart, Share2Icon, Trophy, LucideProps, X, Bird, LampDesk, Hourglass } from 'lucide-react';
 import React, { useState } from 'react';
 import { CrosswordConfig } from '../types/crossword';
 import ReactConfetti from 'react-confetti';
@@ -22,6 +22,11 @@ interface PopupProps extends CommonPopupProps {
     puzzleId: string;
 }
 
+interface GamePopupProps extends PopupProps {
+    isAlreadySolved: boolean;
+    formattedGameTime: string;
+}
+
 interface BasePopupProps extends CommonPopupProps {
   message: string[];
   explanation?: string[];
@@ -31,6 +36,7 @@ interface BasePopupProps extends CommonPopupProps {
   Icon: React.ComponentType<LucideProps>;
   ContentOverride?: React.ComponentType<any>;
   showCloseButton?: boolean;
+  buttonText?: string;
 }
 
 const getPuzzleName = (currentConfig: CrosswordConfig) => {
@@ -82,6 +88,7 @@ const Popup: React.FC<BasePopupProps> = ({
     ContentOverride = null,
     showCloseButton = true,
     shareLinkText = 'שיתוף',
+    buttonText = null,
 }) => {
     return (
     <div id='popup-container' className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-gray-500/50 pt-[8vh] inset-0 overflow-y-auto' onClick={onClose}>
@@ -114,34 +121,50 @@ const Popup: React.FC<BasePopupProps> = ({
                         {explanation.map((text: string, index: number) => <div key={index} className="relative">{text}</div>)}
                     </div>
                 )}
-                {ShareLink(shareLinkText, 'text-sm text-gray-700 mt-4', shareContent)}
+                {shareContent && ShareLink(shareLinkText, 'text-sm text-gray-700 mt-4', shareContent)}
+                {buttonText && <button
+                    onClick={onClose}
+                    className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg mt-4"
+                    style={{ direction: 'rtl' }}
+                    >
+                    <span className="relative whitespace-pre-wrap">{buttonText}</span>
+                </button>}
             </>)
             }
         </div>
     </div>)
 }
 
-export const PuzzleDonePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, confetti, onClose }) => {
-    return <Popup 
-        shareContent={getShareMessage(currentConfig, `${puzzleId}`)}
-        message={['כל הכבוד, פתרת את זה!']}
-        explanation={['תזכורת: כל יום חמישי תשבץ חדש 🙂']}
-        addGlaze={true}
-        confetti={confetti}
+export const PuzzleDonePopup: React.FC<GamePopupProps> = ({ currentConfig, puzzleId, confetti, onClose, isAlreadySolved, formattedGameTime }) => {
+    if (isAlreadySolved) {
+        return <Popup
+            shareContent={getShareMessage(currentConfig, `${puzzleId}`)}
+            message={['כל הכבוד, פתרת את זה!']}
+            explanation={['תזכורת: כל יום חמישי תשבץ חדש 🙂']}
+            addGlaze={true}
+            confetti={confetti}
+            onClose={onClose}
+            Icon={Trophy}
+        />
+    }
+    if (formattedGameTime !== '00:00') {
+        return <Popup
+            shareContent={''}
+            message={['המשחק נעצר']}
+            explanation={[formattedGameTime]}
+            buttonText={'שנמשיך?'}
+            addGlaze={false}
+            onClose={onClose}
+            Icon={Hourglass}
+        />
+    }
+    return <Popup
+        shareContent={''}
+        message={[`תשבצת ${currentConfig.name}`]}
+        buttonText={'שנתחיל?'}
+        addGlaze={false}
         onClose={onClose}
-        Icon={Trophy}
-    />
-}
-
-export const AllPuzzlesDonePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, confetti, onClose }) => {
-    return <Popup 
-        shareContent={getShareMessage(currentConfig, `${puzzleId}`)}
-        message={['פתרת את כל התשבצים!']}
-        explanation={['נתראה בתשבץ הבא ביום חמישי ☺️']}
-        addGlaze={true}
-        confetti={confetti}
-        onClose={onClose}
-        Icon={Trophy}
+        Icon={LampDesk}
     />
 }
 
@@ -234,11 +257,9 @@ const welcomeContent = (currentConfig:CrosswordConfig, currentPuzzleId: PuzzleId
     )
 }
 
-interface WelcomePopupProps extends PopupProps {
-    isAlreadySolved: boolean;
+interface WelcomePopupProps extends GamePopupProps {
     confetti?: ConfettiProps;
     iStarted: boolean;
-    formattedGameTime: string;
 }
 
 export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, isAlreadySolved, confetti = undefined, iStarted, formattedGameTime }) => {
