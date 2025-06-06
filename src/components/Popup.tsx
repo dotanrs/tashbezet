@@ -187,7 +187,7 @@ const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Puz
             style={{ direction: 'rtl' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
               <div className='grow'></div>
               <div>
-                <div className='w-full mt-4 flex font-rubik'>
+                <div className='w-full flex font-rubik'>
                     <div className={`$flex flex-row items-center justify-center m-auto mb-4`}>
                     <div className={`select-none border-black`} style={{ direction: 'rtl' }}>
                         {<TashbezetTitle
