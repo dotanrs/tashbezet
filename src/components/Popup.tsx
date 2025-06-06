@@ -182,7 +182,7 @@ const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Pu
     </>
 }
 
-const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, isMobile: boolean, iStarted: boolean) => {
+const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, isMobile: boolean, iStarted: boolean, formattedGameTime: string) => {
     return (
         <div id='popup-container' className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-background-300 pt-[8vh] inset-0 overflow-y-auto'>
         <div className={`p-8 pb-6 w-auto sm:max-w-[400px] sm:h-auto ${isMobile && 'min-h-[90%]'} text-center mb-8 mx-auto sm:rounded-xl text-xl
@@ -209,6 +209,7 @@ const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Puz
                 <Bird className='mx-auto z-1 mt-0 w-[80px] h-[80px] text-gold text-background-300' strokeWidth={'2px'} />
                 <img className='relative top-[-22px] left-[30px] mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
                 <div className='text-sm text-gray-600'>התשבצת השבועי:</div><div className='text-sm text-black mb-6'>יום חמישי {currentConfig.name}</div>
+                <div className='text-base text-background-300 mb-2'>המשחק נעצר ({formattedGameTime})</div>
                 <button
                     onClick={onClose}
                     className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
@@ -225,10 +226,10 @@ const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Puz
     </div>)
 }
 
-const welcomeContent = (currentConfig:CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, isMobile: boolean, iStarted: boolean) => {
+const welcomeContent = (currentConfig:CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, isMobile: boolean, iStarted: boolean, formattedGameTime: string) => {
     return (
         <div className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-gray-500/50 pt-[8vh] inset-0 overflow-y-auto'>
-            {welcomeDescription(currentConfig, currentPuzzleId, onClose, isMobile, iStarted)}
+            {welcomeDescription(currentConfig, currentPuzzleId, onClose, isMobile, iStarted, formattedGameTime)}
         </div>
     )
 }
@@ -243,7 +244,7 @@ interface WelcomePopupProps extends PopupProps {
 export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, isAlreadySolved, confetti = undefined, iStarted, formattedGameTime }) => {
     const isMobile = useIsMobile();
     if (!isAlreadySolved) {
-        return welcomeContent(currentConfig, puzzleId, onClose, isMobile, iStarted);
+        return welcomeContent(currentConfig, puzzleId, onClose, isMobile, iStarted, formattedGameTime);
     }
     return <Popup
         shareContent={''} // No effect
