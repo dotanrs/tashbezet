@@ -1,4 +1,4 @@
-import { HandHeart, Share2Icon, Trophy, LucideProps, X, Bird, LampDesk, Hourglass } from 'lucide-react';
+import { HandHeart, Share2Icon, Trophy, LucideProps, X, Bird, LampDesk, Hourglass, Home } from 'lucide-react';
 import React, { useState } from 'react';
 import { CrosswordConfig } from '../types/crossword';
 import ReactConfetti from 'react-confetti';
@@ -39,6 +39,7 @@ interface BasePopupProps extends CommonPopupProps {
   ContentOverride?: React.ComponentType<any>;
   showCloseButton?: boolean;
   buttonText?: string;
+  showHomeLink?: boolean;
 }
 
 const getPuzzleName = (currentConfig: CrosswordConfig) => {
@@ -91,6 +92,7 @@ const Popup: React.FC<BasePopupProps> = ({
     showCloseButton = true,
     shareLinkText = 'שיתוף',
     buttonText = null,
+    showHomeLink = false,
 }) => {
     return (
     <div id='popup-container' className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-gray-500/50 pt-[8vh] inset-0 overflow-y-auto' onClick={onClose}>
@@ -131,6 +133,12 @@ const Popup: React.FC<BasePopupProps> = ({
                     >
                     <span className="relative whitespace-pre-wrap">{buttonText}</span>
                 </button>}
+                {showHomeLink && <a href={HOST_NAME} title='לעמוד הבית'>
+                    <div className='text-sm mt-6 mb-[-4px] text-gray-500'>
+                    <Home className='inline ml-1 mb-1' width={12} />
+                    לעמוד הבית
+                    </div>
+                </a>}
             </>)
             }
         </div>
@@ -148,6 +156,7 @@ export const WelcomeNonLatestPopup: React.FC<GamePopupProps> = ({ currentConfig,
             onClose={onClose}
             Icon={Trophy}
             shareLinkText={`שיתוף`}
+            showHomeLink={true}
         />
     }
     if (secondsElapsed > 0) {
@@ -169,6 +178,7 @@ export const WelcomeNonLatestPopup: React.FC<GamePopupProps> = ({ currentConfig,
         addGlaze={false}
         onClose={onClose}
         Icon={LampDesk}
+        showHomeLink={true}
     />
 }
 
