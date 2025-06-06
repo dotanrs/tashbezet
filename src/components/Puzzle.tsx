@@ -596,7 +596,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         puzzleId: currentPuzzleId,
         timerSeconds: secondsElapsed,
       });
-    }, [isDone, cellStatus, userGrid, currentPuzzleId, gameStarted, secondsElapsed])
+    }, [isDone, cellStatus, userGrid, currentPuzzleId, gameStarted, secondsElapsed, didAtLeastOneMove])
 
     const backgroundColorUi = 'bg-background-100';
 
