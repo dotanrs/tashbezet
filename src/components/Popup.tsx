@@ -211,8 +211,8 @@ const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Puz
                     className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
                     style={{ direction: 'rtl' }}
                     >
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-                        <div className="absolute inset-0 translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                    <div className={`absolute inset-0 opacity-0 ${isMobile ? 'opacity-100' : 'group-hover:opacity-100'}`}>
+                        <div className={`absolute inset-0 translate-x-full ${isMobile ? 'animate-shimmer' : 'group-hover:animate-shimmer'} bg-gradient-to-r from-transparent via-white/30 to-transparent`} />
                     </div>
                     <span className="relative whitespace-pre-wrap">להתחיל</span>
                 </button>
