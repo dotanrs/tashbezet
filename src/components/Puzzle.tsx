@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { getLatestPuzzleName, PuzzleId, viewablePuzzles } from '../crosswords';
 import { clearPuzzleState, loadPuzzleState, savePuzzleState } from '../utils/storageUtils';
-import { puzzles } from '../crosswords';
 import CrosswordGrid from './CrosswordGrid';
 import { CellStatusGrid, CrosswordConfig, Direction, Grid, SavedPuzzleState, Selected } from '../types/crossword';
 import Sidebar from './Sidebar';
@@ -24,11 +23,6 @@ interface PuzzlesProps {
   setGameStarted: (val: boolean) => void;
 }
 
-enum PuzzleDoneMessage {
-    THIS_DONE = "done",
-    ALL_DONE = "all_done",
-}
-
 const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCurrentConfig, windowSize, hidden, gameStarted, setGameStarted }) => {
     const isMobile = useIsMobile();
     const cluesKeyboardRef = useRef<HTMLDivElement>(null);
@@ -42,7 +36,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     // Track selected cell
     const [selected, setSelected] = useState<Selected>(null);
     // Status message
-    const [message, setMessage] = useState<PuzzleDoneMessage | null>(null);
+    const [puzzleDoneMessage, setPuzzleDoneMessage] = useState(false);
     // Track cell validation status
     const [cellStatus, setCellStatus] = useState<CellStatusGrid>(createEmptyCellStatus());
     // Track direction
@@ -413,15 +407,8 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const resetCellStatus = () => {
       setIsDone(false);
       setCellStatus(createEmptyCellStatus());
-      setMessage(null);
+      setPuzzleDoneMessage(false);
     };
-  
-    const allPuzzlesSolved = () => {
-      return Object.keys(puzzles).every(puzzleId => {
-        const savedState = loadPuzzleState(puzzleId);
-        return savedState?.isComplete;
-      });
-    }
   
     const checkComplete = (grid: Grid, puzzleId: PuzzleId, allowConfetti: boolean = false) => {  
       const result = checkPuzzle(grid, currentConfig);
@@ -429,11 +416,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       if (result.isCorrect) {
         setIsDone(true);
         setCellStatus(result.newCellStatus);
-        if (allowConfetti && allPuzzlesSolved()) {
-          setMessage(PuzzleDoneMessage.ALL_DONE);
-        } else {
-          setMessage(PuzzleDoneMessage.THIS_DONE);
-        }
+        setPuzzleDoneMessage(true);
         if (allowConfetti) {
           setShowConfetti(true);
         }
@@ -629,10 +612,10 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   }
 
   const resumeGame = () => {
-    if (!message) {
+    if (!puzzleDoneMessage) {
       setIsPaused(false);
     }
-    setMessage(null);
+    setPuzzleDoneMessage(false);
     setGameStarted(true);
   }
 
@@ -659,12 +642,12 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         />
       </div>
       {/* Status message */}
-      {(pageReady && (!!message || !gameStarted)) && (<>
+      {(pageReady && (puzzleDoneMessage || !gameStarted)) && (<>
         {(currentConfig.name === getLatestPuzzleName()) ? <WelcomePopup
             onClose={resumeGame}
             currentConfig={currentConfig}
             puzzleId={currentPuzzleId}
-            isAlreadySolved={!!message}
+            puzzleDoneMessage={puzzleDoneMessage}
             confetti={{showConfetti, windowSize}}
             iStarted={gameAlreadyStarted}
             secondsElapsed={secondsElapsed}
@@ -674,10 +657,10 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
               puzzleId={currentPuzzleId}
               confetti={{showConfetti, windowSize}}
               onClose={resumeGame}
-              isAlreadySolved={!!message}
+              puzzleDoneMessage={puzzleDoneMessage}
               secondsElapsed={secondsElapsed}
           />}
-        {(!message && showSharePopup) && (
+        {(!puzzleDoneMessage && showSharePopup) && (
           <SharePopup currentConfig={currentConfig} puzzleId={currentPuzzleId} onClose={() => setShowSharePopup(false)} />
         )}
       </>)}

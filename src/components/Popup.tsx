@@ -24,7 +24,7 @@ interface PopupProps extends CommonPopupProps {
 }
 
 interface GamePopupProps extends PopupProps {
-    isAlreadySolved: boolean;
+    puzzleDoneMessage: boolean;
     secondsElapsed: number;
 }
 
@@ -136,8 +136,8 @@ const Popup: React.FC<BasePopupProps> = ({
     </div>)
 }
 
-export const PuzzleDonePopup: React.FC<GamePopupProps> = ({ currentConfig, puzzleId, confetti, onClose, isAlreadySolved, secondsElapsed }) => {
-    if (isAlreadySolved) {
+export const PuzzleDonePopup: React.FC<GamePopupProps> = ({ currentConfig, puzzleId, confetti, onClose, puzzleDoneMessage, secondsElapsed }) => {
+    if (puzzleDoneMessage) {
         return <Popup
             shareContent={getShareMessage(currentConfig, `${puzzleId}`)}
             message={'כל הכבוד, פתרת את זה!'}
@@ -146,6 +146,7 @@ export const PuzzleDonePopup: React.FC<GamePopupProps> = ({ currentConfig, puzzl
             confetti={confetti}
             onClose={onClose}
             Icon={Trophy}
+            shareLinkText={`שיתוף (תשבצת ${currentConfig.name})`}
         />
     }
     if (secondsElapsed > 0) {
@@ -264,9 +265,9 @@ interface WelcomePopupProps extends GamePopupProps {
     iStarted: boolean;
 }
 
-export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, isAlreadySolved, confetti = undefined, iStarted, secondsElapsed }) => {
+export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, puzzleDoneMessage, confetti = undefined, iStarted, secondsElapsed }) => {
     const isMobile = useIsMobile();
-    if (!isAlreadySolved) {
+    if (!puzzleDoneMessage) {
         return welcomeContent(currentConfig, puzzleId, onClose, isMobile, iStarted, secondsElapsed);
     }
     return <Popup
