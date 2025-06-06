@@ -10,6 +10,8 @@ interface SidebarProps {
   hasUntestedCells: boolean;
   hasAvailableHints: boolean;
   baseBgColor: string;
+  showShareButton: boolean;
+  showHintButton: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -20,15 +22,17 @@ const Sidebar: React.FC<SidebarProps> = ({
   hasAvailableHints,
   baseBgColor,
   openSharePopup,
+  showShareButton,
+  showHintButton,
 }) => {
   return (
       <>
-      <Button
+      {showShareButton && <Button
         onClick={openSharePopup}
         Icon={Share2}
         text=""
         baseBgColor={baseBgColor}
-      />
+      />}
       <Button
         onClick={onMarkPuzzle}
         disabled={!hasUntestedCells}
@@ -36,14 +40,14 @@ const Sidebar: React.FC<SidebarProps> = ({
         text="בדיקה"
         baseBgColor={baseBgColor}
       />
-      <Button
+      {showHintButton && <Button
         onClick={onHint}
         disabled={!hasAvailableHints}
         Icon="🤔"
         text="תן אות"
         hoverColor="hover:bg-yellow-100"
         baseBgColor={baseBgColor}
-      />
+      />}
       <Button
         onClick={onReset}
         Icon="🧹"
