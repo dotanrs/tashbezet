@@ -10,7 +10,7 @@ import useIsMobile from '../hooks/useIsMobile';
 import { checkPuzzle, createEmptyCellStatus, createEmptyGrid } from '../utils/puzzleUtils';
 import HebrewKeyboard from './HebrewKeyboard';
 import { CircleHelp, ArrowRight, ArrowLeft, Pause } from 'lucide-react';
-import { SharePopup, PuzzleDonePopup, WelcomePopup } from './Popup';
+import { SharePopup, WelcomeNonLatestPopup, WelcomePopup } from './Popup';
 import { useGameTimer } from '../utils/useGameTimer';
 
 interface PuzzlesProps {
@@ -652,7 +652,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
             iStarted={gameAlreadyStarted}
             secondsElapsed={secondsElapsed}
         /> :
-          <PuzzleDonePopup
+          <WelcomeNonLatestPopup
               currentConfig={currentConfig}
               puzzleId={currentPuzzleId}
               confetti={{showConfetti, windowSize}}

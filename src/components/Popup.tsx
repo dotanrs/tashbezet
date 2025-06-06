@@ -136,7 +136,7 @@ const Popup: React.FC<BasePopupProps> = ({
     </div>)
 }
 
-export const PuzzleDonePopup: React.FC<GamePopupProps> = ({ currentConfig, puzzleId, confetti, onClose, puzzleDoneMessage, secondsElapsed }) => {
+export const WelcomeNonLatestPopup: React.FC<GamePopupProps> = ({ currentConfig, puzzleId, confetti, onClose, puzzleDoneMessage, secondsElapsed }) => {
     if (puzzleDoneMessage) {
         return <Popup
             shareContent={getShareMessage(currentConfig, `${puzzleId}`)}
