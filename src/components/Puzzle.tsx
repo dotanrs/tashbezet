@@ -10,7 +10,7 @@ import { findNextDefinition, handleArrowNavigation } from '../utils/navigationUt
 import useIsMobile from '../hooks/useIsMobile';
 import { checkPuzzle, createEmptyCellStatus, createEmptyGrid } from '../utils/puzzleUtils';
 import HebrewKeyboard from './HebrewKeyboard';
-import { CircleHelp, ArrowRight, ArrowLeft } from 'lucide-react';
+import { CircleHelp, ArrowRight, ArrowLeft, Pause } from 'lucide-react';
 import { AllPuzzlesDonePopup, SharePopup, PuzzleDonePopup, WelcomePopup } from './Popup';
 import { useGameTimer } from '../utils/useGameTimer';
 
@@ -624,8 +624,13 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       setHintsShown(false);
     }, [definitionName]);
 
-  const useSmallScreenAdjustments = windowSize.width < 370;
-  const useVerySmallScreenAdjustments = windowSize.width < 300;
+
+  const pauseGame = () => {
+    setGameStarted(false);
+  }
+
+  const useSmallScreenAdjustments = windowSize.width < 385;
+  const useVerySmallScreenAdjustments = windowSize.width < 320;
   const sideBarSpacing = useSmallScreenAdjustments ? 'px-0 gap-1' : 'px-2 gap-2'
 
 
@@ -680,7 +685,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
               puzzleId={currentPuzzleId}
               isAlreadySolved={false}
               iStarted={iStarted}
-              formattedGameTime={'0'}
+              formattedGameTime={formattedGameTime}
           />
         )}
       </>)}
@@ -700,7 +705,10 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
             showHintButton={!useVerySmallScreenAdjustments}
           />
         </div>
-        <div className='text-right mt-1 font-[courier]'>{formattedGameTime}</div>
+        <div className='text-right mt-1 font-[courier]'>
+          <Pause onClick={() => pauseGame()} className='inline text-gray-600 mr-2' width={'16px'} strokeWidth={1} />
+          {formattedGameTime}
+        </div>
       </div>
 
       {/* Clues display */}
