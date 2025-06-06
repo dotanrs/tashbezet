@@ -106,7 +106,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         }
       }
       const newGrid = getUpdatedGrid();
-      resetCellStatus();
   
       const firstCell = placeCursor(newGrid);
       if (firstCell) {
@@ -420,12 +419,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const checkComplete = (grid: Grid, puzzleId: PuzzleId, allowConfetti: boolean = false) => {  
       const result = checkPuzzle(grid, currentConfig);
       setShowConfetti(false);
-      savePuzzleState(puzzleId, {
-        userGrid: grid,
-        cellStatus: cellStatus,
-        isComplete: result.isCorrect,
-        puzzleId,
-      });
       if (result.isCorrect) {
         setIsDone(true);
         setCellStatus(result.newCellStatus);
@@ -589,6 +582,18 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         document.body.classList.remove('lg:landscape:overflow-auto', 'landscape:overflow-hidden', 'portrait:overflow-auto');
       };
     }, []);
+
+    useEffect(() => {
+      if (!gameStarted) {
+        return;
+      }
+      savePuzzleState(currentPuzzleId, {
+        userGrid: userGrid.map(row => [...row]),
+        cellStatus: cellStatus.map(row => [...row]),
+        isComplete: isDone,
+        puzzleId: currentPuzzleId,
+      });
+    }, [isDone, cellStatus, userGrid, currentPuzzleId, gameStarted])
 
     const backgroundColorUi = 'bg-background-100';
 
