@@ -54,7 +54,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const [isPaused, setIsPaused] = useState(false);
     const { secondsElapsed, formattedGameTime, resetTimer } = useGameTimer(isPaused);
   
-  
     // Create refs for all cells
     const cellRefs = useRef<(HTMLInputElement | null)[][]>(Array(5).fill(null).map(() => Array(5).fill(null)));
 
@@ -640,7 +639,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   const useSmallScreenAdjustments = windowSize.width < 385;
   const useVerySmallScreenAdjustments = windowSize.width < 320;
   const sideBarSpacing = useSmallScreenAdjustments ? 'px-0 gap-1' : 'px-2 gap-2'
-
+  const gameAlreadyStarted = formattedGameTime !== '00:00';
 
   return currentConfig && <>
   <div id="whole-crossword" className={`sm:w-full w-[100%] sm:pt-10 pt-[35px] max-w-[500px] ${hidden && 'hidden'}`}>
@@ -667,7 +666,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
             puzzleId={currentPuzzleId}
             isAlreadySolved={!!message}
             confetti={{showConfetti, windowSize}}
-            iStarted={gameStarted}
+            iStarted={gameAlreadyStarted}
             formattedGameTime={formattedGameTime}
         /> :
           <PuzzleDonePopup
