@@ -689,7 +689,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
           />
         </div>
         <div className='text-right mt-1 font-[courier]'>
-          <Pause onClick={() => pauseGame()} className='inline text-gray-600 mr-2' width={'16px'} strokeWidth={1} />
+          {(!isDone) && <Pause onClick={() => pauseGame()} className='inline text-gray-600 mr-2' width={'16px'} strokeWidth={1} />}
           {formattedGameTime}
         </div>
       </div>
