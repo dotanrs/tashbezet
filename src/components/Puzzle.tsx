@@ -81,6 +81,11 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       }
     }
 
+    const stateWithNullTimer = (() => {
+      const puzzleState = loadPuzzleState(currentPuzzleId);
+      return puzzleState && puzzleState.timerSeconds === undefined && puzzleState.isComplete;
+    })();
+
     // Modify useEffect to only run when a puzzle is selected
     useEffect(() => {
       if (!currentPuzzleId) return;
@@ -688,10 +693,10 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
             showHintButton={!useVerySmallScreenAdjustments}
           />
         </div>
-        <div className='text-right mt-1 font-[courier]'>
+        {!stateWithNullTimer && <div className='text-right mt-1 font-[courier]'>
           {(!isDone) && <Pause onClick={() => pauseGame()} className='inline text-gray-600 mr-2' width={'16px'} strokeWidth={1} />}
           {formattedGameTime}
-        </div>
+        </div>}
       </div>
 
       {/* Clues display */}
