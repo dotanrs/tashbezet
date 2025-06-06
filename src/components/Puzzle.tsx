@@ -84,6 +84,8 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       }
     }
   
+    const iStarted = !!loadPuzzleState(currentPuzzleId);
+
     // Modify useEffect to only run when a puzzle is selected
     useEffect(() => {
       if (!currentPuzzleId) return;
@@ -637,6 +639,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
               puzzleId={currentPuzzleId}
               isAlreadySolved={true}
               confetti={{showConfetti, windowSize}}
+              iStarted={true}
           /> :
             (message === PuzzleDoneMessage.ALL_DONE) ? (<AllPuzzlesDonePopup
                 currentConfig={currentConfig}
@@ -659,6 +662,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
               currentConfig={currentConfig}
               puzzleId={currentPuzzleId}
               isAlreadySolved={false}
+              iStarted={iStarted}
           />
         )}
       </>)}

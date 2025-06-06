@@ -179,7 +179,7 @@ const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Pu
     </>
 }
 
-const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, isMobile: boolean) => {
+const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, isMobile: boolean, iStarted: boolean) => {
     return (
         <div id='popup-container' className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-background-300 pt-[8vh] inset-0 overflow-y-auto'>
         <div className={`p-8 pb-6 w-auto sm:max-w-[400px] sm:h-auto ${isMobile && 'min-h-[90%]'} text-center mb-8 mx-auto sm:rounded-xl text-xl
@@ -214,7 +214,7 @@ const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Puz
                     <div className={`absolute inset-0 opacity-0 ${isMobile ? 'opacity-100' : 'group-hover:opacity-100'}`}>
                         <div className={`absolute inset-0 translate-x-full ${isMobile ? 'animate-shimmer' : 'group-hover:animate-shimmer'} bg-gradient-to-r from-transparent via-white/30 to-transparent`} />
                     </div>
-                    <span className="relative whitespace-pre-wrap">להתחיל</span>
+                    <span className="relative whitespace-pre-wrap">{iStarted ? 'לחזור לתשבץ' : 'להתחיל'}</span>
                 </button>
             </div>
             <div className='grow'></div>
@@ -222,10 +222,10 @@ const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Puz
     </div>)
 }
 
-const welcomeContent = (currentConfig:CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, isMobile: boolean) => {
+const welcomeContent = (currentConfig:CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, isMobile: boolean, iStarted: boolean) => {
     return (
         <div className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-gray-500/50 pt-[8vh] inset-0 overflow-y-auto'>
-            {welcomeDescription(currentConfig, currentPuzzleId, onClose, isMobile)}
+            {welcomeDescription(currentConfig, currentPuzzleId, onClose, isMobile, iStarted)}
         </div>
     )
 }
@@ -233,12 +233,13 @@ const welcomeContent = (currentConfig:CrosswordConfig, currentPuzzleId: PuzzleId
 interface WelcomePopupProps extends PopupProps {
     isAlreadySolved: boolean;
     confetti?: ConfettiProps;
+    iStarted: boolean;
 }
 
-export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, isAlreadySolved, confetti = undefined }) => {
+export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, isAlreadySolved, confetti = undefined, iStarted }) => {
     const isMobile = useIsMobile();
     if (!isAlreadySolved) {
-        return welcomeContent(currentConfig, puzzleId, onClose, isMobile);
+        return welcomeContent(currentConfig, puzzleId, onClose, isMobile, iStarted);
     }
     return <Popup
         shareContent={''} // No effect
