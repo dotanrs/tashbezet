@@ -148,10 +148,12 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       if (currentPuzzleId === null) {
         return;
       }
-      clearPuzzleState(currentPuzzleId);
       const newGrid = getNewGrid(currentPuzzleId);
       setUserGrid(newGrid);
       resetCellStatus();
+      // Empty timeout to make sure if no other actions happen, the state will be deleted
+      // (the useEffect should complete before this)
+      setTimeout(() => clearPuzzleState(currentPuzzleId), 0);
     };
   
     // Add handleStartGame
