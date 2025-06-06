@@ -153,8 +153,8 @@ export const WelcomeNonLatestPopup: React.FC<GamePopupProps> = ({ currentConfig,
     if (secondsElapsed > 0) {
         return <Popup
             shareContent={''}
-            message={'המשחק נעצר'}
-            explanation={[formatTime(secondsElapsed)]}
+            message={`תשבצת ${currentConfig.name}`}
+            explanation={[`המשחק נעצר: ${formatTime(secondsElapsed)}`]}
             buttonText={'שנמשיך?'}
             addGlaze={false}
             onClose={onClose}
@@ -163,8 +163,8 @@ export const WelcomeNonLatestPopup: React.FC<GamePopupProps> = ({ currentConfig,
     }
     return <Popup
         shareContent={''}
-        message={`ארכיון תשבצת`}
-        explanation={[currentConfig.name]}
+        message={`תשבצת ${currentConfig.name}`}
+        explanation={['תשבץ מהארכיון!']}
         buttonText={'שנתחיל?'}
         addGlaze={false}
         onClose={onClose}
