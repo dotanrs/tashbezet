@@ -42,8 +42,9 @@ const drawCrossword = (currentConfig: CrosswordConfig) => {
     return currentConfig.grid.map(row => row.map(cell => cell === 'blank' ? '◼️' : '◻️').reverse().join('')).join('\n')
 }
 
-const getShareMessage = (currentConfig: CrosswordConfig, puzzleId: string) => {
-        return `כרגע פתרתי את ${getPuzzleName(currentConfig)}, בא לך לנסות גם?
+const getShareMessage = (currentConfig: CrosswordConfig, puzzleId: string, formattedGameTime?: string) => {
+    const challenge = formattedGameTime ? `ב-${formattedGameTime}, רוצה לנסות לעקוף אותי?` : 'רוצה לנסות גם?';
+        return `כרגע פתרתי את ${getPuzzleName(currentConfig)} ${challenge}
 ${drawCrossword(currentConfig)}
 https://dotanrs.github.io/tashbezet/?puzzleId=${puzzleId}
 `
@@ -94,7 +95,7 @@ const Popup: React.FC<BasePopupProps> = ({
             colors={['#d1f7eb', '#98e0db', '#dbfcfa', '#2ea199', '#f2fcfb']}
             />
         )}
-        <div className={`p-8 pb-6 w-auto max-w-[400px] text-center mb-8 mx-auto rounded-xl text-xl bg-background-10 text-gray-700 relative shadow-xl overflow-hidden`}
+        <div className={`p-8 pb-6 w-auto max-w-[400px] text-center mb-8 mx-auto sm:rounded-xl text-xl bg-background-10 text-gray-700 relative shadow-xl overflow-hidden`}
             style={{ direction: 'rtl' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
             {showCloseButton && <div className='text-sm flex flex-end flex-col' style={{direction: 'ltr'}}><X onClick={onClose} className='cursor-pointer' /></div>}
             
@@ -156,15 +157,17 @@ export const SharePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onCl
     />
 }
 
-const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void) => {
+const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, formattedGameTime?: string) => {
     return <>
          <div className='relative'>
             <img className='relative top-[12px] mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
             <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
             <Trophy className='mx-auto mt-0 w-[150px] h-[150px] text-gold text-background-300' strokeWidth={'2px'} />
          </div>
-         <div className='text-xl'>פתרת את התשבצת השבועי!</div>
-         {ShareLink('שיתוף', 'text-base text-gray-700 mt-4 font-bold', getShareMessage(currentConfig, `${currentPuzzleId}`))}
+         <div className='text-3xl text-background-300 font-bold mb-1'>כל הכבוד!</div>
+         <div className='text-base'>פתרת את התשבצת השבועי</div>
+         {formattedGameTime && (<div className='text-l'>ב-<span className='font-bold'>{formattedGameTime}</span></div>)}
+         {ShareLink('לאתגר חברים', 'text-base text-background-300 mt-4 font-bold', getShareMessage(currentConfig, `${currentPuzzleId}`, formattedGameTime))}
         <div className='text-sm mt-4 text-black mb-6'>
             <div className='text-gray-500'>תשבץ חדש בעוד:</div>
             <CountdownTimer />
@@ -234,9 +237,10 @@ interface WelcomePopupProps extends PopupProps {
     isAlreadySolved: boolean;
     confetti?: ConfettiProps;
     iStarted: boolean;
+    formattedGameTime: string;
 }
 
-export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, isAlreadySolved, confetti = undefined, iStarted }) => {
+export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, isAlreadySolved, confetti = undefined, iStarted, formattedGameTime }) => {
     const isMobile = useIsMobile();
     if (!isAlreadySolved) {
         return welcomeContent(currentConfig, puzzleId, onClose, isMobile, iStarted);
@@ -247,7 +251,7 @@ export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzle
         explanation={[]} // No effect
         onClose={onClose}
         Icon={HandHeart} // No effect
-        ContentOverride={() => wellDoneDescription(currentConfig, puzzleId, onClose)}
+        ContentOverride={() => wellDoneDescription(currentConfig, puzzleId, onClose, formattedGameTime)}
         showCloseButton={false}
         confetti={confetti}
     />

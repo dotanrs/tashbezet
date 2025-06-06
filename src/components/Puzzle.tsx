@@ -12,6 +12,7 @@ import { checkPuzzle, createEmptyCellStatus, createEmptyGrid } from '../utils/pu
 import HebrewKeyboard from './HebrewKeyboard';
 import { CircleHelp, ArrowRight, ArrowLeft } from 'lucide-react';
 import { AllPuzzlesDonePopup, SharePopup, PuzzleDonePopup, WelcomePopup } from './Popup';
+import { useGameTimer } from '../utils/useGameTimer';
 
 interface PuzzlesProps {
   currentConfig: CrosswordConfig;
@@ -50,6 +51,8 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const [showSharePopup, setShowSharePopup] = useState(false);
     const [pageReady, setPageReady] = useState(false);
     const [isFirstClick, setIsFirstClick] = useState(false);
+    const [isPaused, setIsPaused] = useState(false);
+    const { formattedGameTime, resetTimer } = useGameTimer(isPaused);
   
   
     // Create refs for all cells
@@ -93,12 +96,14 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       const getUpdatedGrid = () => {
         const savedState = loadPuzzleState(currentPuzzleId);
         if (savedState && viewablePuzzles[savedState.puzzleId]) {
+          resetTimer(); // TODO: load previous time
           setCurrentConfig(viewablePuzzles[savedState.puzzleId]);
           const newGrid = mergeStateWithPuzzle(currentPuzzleId, savedState);
           setUserGrid(newGrid);
           setCellStatus(savedState.cellStatus);
           return newGrid;
         } else {
+          resetTimer();
           const initialGrid = currentConfig.grid.map(row => 
             row.map(cell => cell === 'blank' ? 'blank' : '')
           );
@@ -154,6 +159,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       // Empty timeout to make sure if no other actions happen, the state will be deleted
       // (the useEffect should complete before this)
       setTimeout(() => clearPuzzleState(currentPuzzleId), 0);
+      resetTimer();
     };
   
     // Add handleStartGame
@@ -589,8 +595,10 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
     useEffect(() => {
       if (!gameStarted) {
+        setIsPaused(true);
         return;
       }
+      setIsPaused(isDone);
       savePuzzleState(currentPuzzleId, {
         userGrid: userGrid.map(row => [...row]),
         cellStatus: cellStatus.map(row => [...row]),
@@ -614,6 +622,11 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     useEffect(() => {
       setHintsShown(false);
     }, [definitionName]);
+
+  const useSmallScreenAdjustments = windowSize.width < 370;
+  const useVerySmallScreenAdjustments = windowSize.width < 300;
+  const sideBarSpacing = useSmallScreenAdjustments ? 'px-0 gap-1' : 'px-2 gap-2'
+
 
   return currentConfig && <>
   <div id="whole-crossword" className={`sm:w-full w-[100%] sm:pt-10 pt-[35px] max-w-[500px] ${hidden && 'hidden'}`}>
@@ -642,6 +655,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
               isAlreadySolved={true}
               confetti={{showConfetti, windowSize}}
               iStarted={true}
+              formattedGameTime={formattedGameTime}
           /> :
             (message === PuzzleDoneMessage.ALL_DONE) ? (<AllPuzzlesDonePopup
                 currentConfig={currentConfig}
@@ -665,21 +679,27 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
               puzzleId={currentPuzzleId}
               isAlreadySolved={false}
               iStarted={iStarted}
+              formattedGameTime={'0'}
           />
         )}
       </>)}
 
       {/* Buttons section */}
-      <div id="sidebar-container" className={`text-center flex mt-4 flex-row gap-2 text-[13px] w-[100px] px-2 pb-4`}>
-        <Sidebar
-          onMarkPuzzle={markPuzzle}
-          onHint={handleHint}
-          onReset={handlePuzzleReset}
-          hasUntestedCells={hasUntestedCells()}
-          hasAvailableHints={hasAvailableHints()}
-          openSharePopup={() => setShowSharePopup(true)}
-          baseBgColor={backgroundColorUi}
-        />
+      <div id="sidebar-container" className='flex flex-row place-content-between mt-4'>
+        <div className={`text-center flex flex-row text-[13px] w-[100px] ${sideBarSpacing} pb-4`}>
+          <Sidebar
+            onMarkPuzzle={markPuzzle}
+            onHint={handleHint}
+            onReset={handlePuzzleReset}
+            hasUntestedCells={hasUntestedCells()}
+            hasAvailableHints={hasAvailableHints()}
+            openSharePopup={() => setShowSharePopup(true)}
+            baseBgColor={backgroundColorUi}
+            showShareButton={!useSmallScreenAdjustments}
+            showHintButton={!useVerySmallScreenAdjustments}
+          />
+        </div>
+        <div className='text-right mt-1 font-[courier]'>{formattedGameTime}</div>
       </div>
 
       {/* Clues display */}
