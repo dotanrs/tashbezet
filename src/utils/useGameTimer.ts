@@ -20,10 +20,20 @@ export function useGameTimer(paused: boolean) {
   return { secondsElapsed, formattedGameTime, resetTimer: (seconds: number) => setSecondsElapsed(seconds) };
 }
 
-function formatTime(totalSeconds: number): string {
+export function formatTime(totalSeconds: number): string {
   const minutes = Math.floor(totalSeconds / 60)
     .toString()
     .padStart(2, "0");
   const seconds = (totalSeconds % 60).toString().padStart(2, "0");
   return `${minutes}:${seconds}`;
+}
+
+export function formatAsText(totalSeconds: number): string {
+    if (totalSeconds < 60) {
+        return `${totalSeconds} שניות`;
+    }
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const minutesText = minutes === 1 ? 'דקה' : `${minutes} דקות`;
+    return `${minutesText} ו-${seconds} שניות`;
 }

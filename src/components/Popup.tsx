@@ -6,6 +6,7 @@ import { getLatestPuzzleName, PuzzleId } from '../crosswords';
 import { TashbezetTitle } from '../utils/logo';
 import { CountdownTimer } from '../utils/countdown';
 import useIsMobile from '../hooks/useIsMobile';
+import { formatAsText, formatTime } from '../utils/useGameTimer';
 
 interface ConfettiProps {
     showConfetti: boolean;
@@ -24,7 +25,7 @@ interface PopupProps extends CommonPopupProps {
 
 interface GamePopupProps extends PopupProps {
     isAlreadySolved: boolean;
-    formattedGameTime: string;
+    secondsElapsed: number;
 }
 
 interface BasePopupProps extends CommonPopupProps {
@@ -48,8 +49,8 @@ const drawCrossword = (currentConfig: CrosswordConfig) => {
     return currentConfig.grid.map(row => row.map(cell => cell === 'blank' ? '◼️' : '◻️').reverse().join('')).join('\n')
 }
 
-const getShareMessage = (currentConfig: CrosswordConfig, puzzleId: string, formattedGameTime?: string) => {
-    const challenge = formattedGameTime ? `ב-${formattedGameTime}, רוצה לנסות לעקוף אותי?` : 'רוצה לנסות גם?';
+const getShareMessage = (currentConfig: CrosswordConfig, puzzleId: string, secondsElapsed?: number) => {
+    const challenge = secondsElapsed ? `ב-${formatAsText(secondsElapsed)}, רוצה לנסות לעקוף אותי?` : 'רוצה לנסות גם?';
         return `כרגע פתרתי את ${getPuzzleName(currentConfig)} ${challenge}
 ${drawCrossword(currentConfig)}
 https://dotanrs.github.io/tashbezet/?puzzleId=${puzzleId}
@@ -135,7 +136,7 @@ const Popup: React.FC<BasePopupProps> = ({
     </div>)
 }
 
-export const PuzzleDonePopup: React.FC<GamePopupProps> = ({ currentConfig, puzzleId, confetti, onClose, isAlreadySolved, formattedGameTime }) => {
+export const PuzzleDonePopup: React.FC<GamePopupProps> = ({ currentConfig, puzzleId, confetti, onClose, isAlreadySolved, secondsElapsed }) => {
     if (isAlreadySolved) {
         return <Popup
             shareContent={getShareMessage(currentConfig, `${puzzleId}`)}
@@ -147,11 +148,11 @@ export const PuzzleDonePopup: React.FC<GamePopupProps> = ({ currentConfig, puzzl
             Icon={Trophy}
         />
     }
-    if (formattedGameTime !== '00:00') {
+    if (secondsElapsed > 0) {
         return <Popup
             shareContent={''}
             message={['המשחק נעצר']}
-            explanation={[formattedGameTime]}
+            explanation={[formatTime(secondsElapsed)]}
             buttonText={'שנמשיך?'}
             addGlaze={false}
             onClose={onClose}
@@ -180,7 +181,7 @@ export const SharePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onCl
     />
 }
 
-const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, formattedGameTime?: string) => {
+const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, secondsElapsed: number) => {
     return <>
          <div className='relative'>
             <img className='relative top-[12px] mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
@@ -189,8 +190,8 @@ const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Pu
          </div>
          <div className='text-3xl text-background-300 font-bold mb-1'>כל הכבוד!</div>
          <div className='text-base'>פתרת את התשבצת השבועי</div>
-         {formattedGameTime && (<div className='text-l'>ב-<span className='font-bold'>{formattedGameTime}</span></div>)}
-         {ShareLink('לאתגר חברים', 'text-base text-background-300 mt-4 font-bold', getShareMessage(currentConfig, `${currentPuzzleId}`, formattedGameTime))}
+         {secondsElapsed && (<div className='text-l'>ב-<span className='font-bold'>{formatTime(secondsElapsed)}</span></div>)}
+         {ShareLink('לאתגר חברים', 'text-base text-background-300 mt-4 font-bold', getShareMessage(currentConfig, `${currentPuzzleId}`, secondsElapsed))}
         <div className='text-sm mt-4 text-black mb-6'>
             <div className='text-gray-500'>תשבץ חדש בעוד:</div>
             <CountdownTimer />
@@ -205,7 +206,7 @@ const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Pu
     </>
 }
 
-const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, isMobile: boolean, iStarted: boolean, formattedGameTime: string) => {
+const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, isMobile: boolean, iStarted: boolean, secondsElapsed: number) => {
     return (
         <div id='popup-container' className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-background-300 pt-[8vh] inset-0 overflow-y-auto'>
         <div className={`p-8 pb-6 w-auto sm:max-w-[400px] sm:h-auto ${isMobile && 'min-h-[90%]'} text-center mb-8 mx-auto sm:rounded-xl text-xl
@@ -232,7 +233,7 @@ const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Puz
                 <Bird className='mx-auto z-1 mt-0 w-[80px] h-[80px] text-gold text-background-300' strokeWidth={'2px'} />
                 <img className='relative top-[-22px] left-[30px] mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
                 <div className='text-sm text-gray-600'>התשבצת השבועי:</div><div className='text-sm text-black mb-6'>יום חמישי {currentConfig.name}</div>
-                {iStarted && <div className='text-base text-background-300 mb-2'>המשחק נעצר ({formattedGameTime})</div>}
+                {iStarted && <div className='text-base text-background-300 mb-2'>המשחק נעצר ({formatTime(secondsElapsed)})</div>}
                 <button
                     onClick={onClose}
                     className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden group hover:shadow-lg"
@@ -249,10 +250,10 @@ const welcomeDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Puz
     </div>)
 }
 
-const welcomeContent = (currentConfig:CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, isMobile: boolean, iStarted: boolean, formattedGameTime: string) => {
+const welcomeContent = (currentConfig:CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, isMobile: boolean, iStarted: boolean, secondsElapsed: number) => {
     return (
         <div className='fixed z-40 w-[100%] h-[100%] top-0 left-0 bg-gray-500/50 pt-[8vh] inset-0 overflow-y-auto'>
-            {welcomeDescription(currentConfig, currentPuzzleId, onClose, isMobile, iStarted, formattedGameTime)}
+            {welcomeDescription(currentConfig, currentPuzzleId, onClose, isMobile, iStarted, secondsElapsed)}
         </div>
     )
 }
@@ -262,10 +263,10 @@ interface WelcomePopupProps extends GamePopupProps {
     iStarted: boolean;
 }
 
-export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, isAlreadySolved, confetti = undefined, iStarted, formattedGameTime }) => {
+export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzleId, onClose, isAlreadySolved, confetti = undefined, iStarted, secondsElapsed }) => {
     const isMobile = useIsMobile();
     if (!isAlreadySolved) {
-        return welcomeContent(currentConfig, puzzleId, onClose, isMobile, iStarted, formattedGameTime);
+        return welcomeContent(currentConfig, puzzleId, onClose, isMobile, iStarted, secondsElapsed);
     }
     return <Popup
         shareContent={''} // No effect
@@ -273,7 +274,7 @@ export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzle
         explanation={[]} // No effect
         onClose={onClose}
         Icon={HandHeart} // No effect
-        ContentOverride={() => wellDoneDescription(currentConfig, puzzleId, onClose, formattedGameTime)}
+        ContentOverride={() => wellDoneDescription(currentConfig, puzzleId, onClose, secondsElapsed)}
         showCloseButton={false}
         confetti={confetti}
     />
