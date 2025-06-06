@@ -29,7 +29,7 @@ interface GamePopupProps extends PopupProps {
 }
 
 interface BasePopupProps extends CommonPopupProps {
-  message: string[];
+  message?: string;
   explanation?: string[];
   shareContent: string;
   shareLinkText?: string;
@@ -79,7 +79,7 @@ const ShareLink = (shareLinkText: string, shareLinkDesign: string, shareContent:
 }
 
 const Popup: React.FC<BasePopupProps> = ({
-    message,
+    message = null,
     explanation = [],
     shareContent,
     addGlaze = false,
@@ -113,9 +113,9 @@ const Popup: React.FC<BasePopupProps> = ({
                 {/* Default popup content */}
                 <div className='relative'>
                 {addGlaze && <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />}
-                <Icon className='w-[150px] h-[150px] mx-auto mb-6 max-w-[80%] text-background-300' />
+                <Icon className='w-[150px] h-[150px] mx-auto mb-2 max-w-[80%] text-background-300' />
                 </div>
-                {message.map((text: string, index: number) => <div key={index} className="relative">{text}</div>)}
+                {message && <div className="font-bold text-2xl text-background-300">{message}</div>}
 
                 {explanation && (
                     <div className='mt-3 text-sm'>
@@ -140,7 +140,7 @@ export const PuzzleDonePopup: React.FC<GamePopupProps> = ({ currentConfig, puzzl
     if (isAlreadySolved) {
         return <Popup
             shareContent={getShareMessage(currentConfig, `${puzzleId}`)}
-            message={['כל הכבוד, פתרת את זה!']}
+            message={'כל הכבוד, פתרת את זה!'}
             explanation={['תזכורת: כל יום חמישי תשבץ חדש 🙂']}
             addGlaze={true}
             confetti={confetti}
@@ -151,7 +151,7 @@ export const PuzzleDonePopup: React.FC<GamePopupProps> = ({ currentConfig, puzzl
     if (secondsElapsed > 0) {
         return <Popup
             shareContent={''}
-            message={['המשחק נעצר']}
+            message={'המשחק נעצר'}
             explanation={[formatTime(secondsElapsed)]}
             buttonText={'שנמשיך?'}
             addGlaze={false}
@@ -161,7 +161,8 @@ export const PuzzleDonePopup: React.FC<GamePopupProps> = ({ currentConfig, puzzl
     }
     return <Popup
         shareContent={''}
-        message={[`תשבצת ${currentConfig.name}`]}
+        message={`ארכיון תשבצת`}
+        explanation={[currentConfig.name]}
         buttonText={'שנתחיל?'}
         addGlaze={false}
         onClose={onClose}
@@ -173,7 +174,7 @@ export const SharePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onCl
     const shareContent = `https://dotanrs.github.io/tashbezet/?puzzleId=${puzzleId}`
     return <Popup 
         shareContent={shareContent}
-        message={['משתפים עם מי שאוהבים']}
+        message={'משתפים עם מי שאוהבים'}
         explanation={['(או עם מי שיכולים לעזור בהגדרות קשות)']}
         onClose={onClose}
         Icon={HandHeart}
@@ -269,8 +270,7 @@ export const WelcomePopup: React.FC<WelcomePopupProps> = ({currentConfig, puzzle
         return welcomeContent(currentConfig, puzzleId, onClose, isMobile, iStarted, secondsElapsed);
     }
     return <Popup
-        shareContent={''} // No effect
-        message={[]} // No effect
+        shareContent={''} // No effect} // No effect
         explanation={[]} // No effect
         onClose={onClose}
         Icon={HandHeart} // No effect
