@@ -22,7 +22,7 @@ const CrosswordPuzzle = () => {
     const finalPuzzleId = puzzleId in puzzles ? puzzleId : PUZZLE_ID_404;
     setCurrentPuzzleId(finalPuzzleId);
     setCurrentConfig(viewablePuzzles[finalPuzzleId]);
-    setGameStarted(true);
+    setGameStarted(false);
     setPreviousPuzzlesShown(false);
     if (!keepUrl) {
       window.history.replaceState({}, document.title, window.location.pathname);
