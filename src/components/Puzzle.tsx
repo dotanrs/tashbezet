@@ -46,6 +46,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     const [pageReady, setPageReady] = useState(false);
     const [isFirstClick, setIsFirstClick] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
+    const [didAtLeastOneMove, setDidAtLeastOneMove] = useState(false);
     const { secondsElapsed, formattedGameTime, resetTimer } = useGameTimer(isPaused);
   
     // Create refs for all cells
@@ -83,6 +84,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     // Modify useEffect to only run when a puzzle is selected
     useEffect(() => {
       if (!currentPuzzleId) return;
+      setDidAtLeastOneMove(false);
   
       const getUpdatedGrid = () => {
         const savedState = loadPuzzleState(currentPuzzleId);
@@ -290,6 +292,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     // Shared function for handling letter input
     const handleLetterInput = (letter: string) => {
       if (!selected) return;
+      setDidAtLeastOneMove(true);
       
       const row = selected.row;
       const col = selected.col;
@@ -331,6 +334,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (!selected) return;
+      setDidAtLeastOneMove(true);
   
       const row = selected.row;
       const col = selected.col;
@@ -469,6 +473,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     // Replace reveal functionality with hint
     const handleHint = () => {
       if (!currentConfig) return;
+      setDidAtLeastOneMove(true);
   
       // Get all unsolved cells (not blank, not correct)
       const unsolvedCells: Array<{ row: number; col: number }> = [];
@@ -581,6 +586,9 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         return;
       }
       setIsPaused(isDone);
+      if (!didAtLeastOneMove) {
+        return;
+      }
       savePuzzleState(currentPuzzleId, {
         userGrid: userGrid.map(row => [...row]),
         cellStatus: cellStatus.map(row => [...row]),
