@@ -99,7 +99,7 @@ const CrosswordPuzzle = () => {
       <div className='pt-4'>אפשר לסובב את המכשיר למצב אנכי?</div>
     </div>}
     <div id="crossword-container"
-      className={`w-full absolute h-full right-0 left-0 m-x-0 flex flex-col items-center pt-0 mx-auto ${previousPuzzlesShown && 'bg-background-0'}`}>
+      className={`w-full overflow-auto absolute h-full right-0 left-0 m-x-0 flex flex-col items-center pt-0 mx-auto ${previousPuzzlesShown && 'bg-background-0'}`}>
       <GameTitle />
       <div className={`${pageWidth} w-[100%]`}>
         <>
