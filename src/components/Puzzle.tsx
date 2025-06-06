@@ -667,7 +667,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
             isAlreadySolved={!!message}
             confetti={{showConfetti, windowSize}}
             iStarted={gameAlreadyStarted}
-            formattedGameTime={formattedGameTime}
+            secondsElapsed={secondsElapsed}
         /> :
           <PuzzleDonePopup
               currentConfig={currentConfig}
@@ -675,7 +675,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
               confetti={{showConfetti, windowSize}}
               onClose={resumeGame}
               isAlreadySolved={!!message}
-              formattedGameTime={formattedGameTime}
+              secondsElapsed={secondsElapsed}
           />}
         {(!message && showSharePopup) && (
           <SharePopup currentConfig={currentConfig} puzzleId={currentPuzzleId} onClose={() => setShowSharePopup(false)} />
