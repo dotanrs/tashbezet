@@ -138,8 +138,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       }
     }, [isMobile]);
   
-    // Modify handlePuzzleChange
-  
     const handlePuzzleReset = () => {
       if (currentPuzzleId === null) {
         return;
@@ -412,6 +410,8 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   
     const checkComplete = (grid: Grid, puzzleId: PuzzleId, allowConfetti: boolean = false) => {  
       const result = checkPuzzle(grid, currentConfig);
+      // Resetting the message because there can be leftovers from previous puzzle
+      setPuzzleDoneMessage(false);
       setShowConfetti(false);
       if (result.isCorrect) {
         setIsDone(true);
