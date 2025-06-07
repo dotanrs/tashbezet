@@ -21,14 +21,6 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId }) =>
   return (
     <div className="mt-20 w-full px-8" style={{fontFamily: "'Rubik', sans-serif"}}>
       <h1 className='text-xl text-gray-700 text-center mb-8'>תשבצת <img className={'inline w-7 mx-2'} src="https://dotanrs.github.io/tashbezet/favicon.ico" alt='icon' /> תשבץ קטן אחד בשבוע</h1>
-      <div className='mb-4 mx-auto w-auto text-center block'>
-        <a href={HOST_NAME} title='לעמוד הבית'>
-          <div className='mx-auto text-gray-600'>
-            לעמוד הבית
-            <Home className='inline ml-2' width={16} />
-          </div>
-        </a>
-      </div>
       <div className="mt-8 mb-6 flex gap-3 text-[13px] justify-center">
         <div className="flex items-center gap-10">
           <a href="https://www.linkedin.com/in/dotanreis/" className="underline">
@@ -36,6 +28,14 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId }) =>
           </a>
         </div>
         <div className="items-center gap-10">פותח על ידי דותן רייס ✍</div>
+      </div>
+      <div className='mb-4 mx-auto w-auto text-center block'>
+        <a href={HOST_NAME} title='לעמוד הבית'>
+          <div className='mx-auto text-gray-600'>
+            לעמוד הבית
+            <Home className='inline ml-2' width={16} />
+          </div>
+        </a>
       </div>
       <div className="flex flex-row justify-between space-x-5 items-center mb-4">
         <div className="h-[1px] bg-gray-300 flex-auto"></div>
