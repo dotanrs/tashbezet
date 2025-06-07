@@ -27,7 +27,8 @@ const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBacksp
     setTimeout(() => setPressedKey(null), 500);
   };
 
-  const keyClasses = 'aspect-square max-h-10 text-gray-700 w-full flex items-center justify-center rounded border-[0.5px] border-inset border-gray-800 text-lg';
+  const keyShapeClasses = 'aspect-square max-h-10 w-full flex items-center justify-center '
+  const keyClasses = `${keyShapeClasses} text-gray-700 rounded border-[0.5px] border-inset border-gray-800 text-lg`;
 
   return (
     <div className="w-full bg-gray-100 p-2 border-[0.5px] border-t-0 border-gray-800 max-w-[100%]">
@@ -38,6 +39,8 @@ const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBacksp
           }}>
             {rowIndex === 0 && (
               <>
+                {/* placeholder for empty cell */}
+                <div className={keyShapeClasses}></div>
                 {row.map((letter) => (
                   <button
                     key={letter}
@@ -49,7 +52,7 @@ const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBacksp
                 ))}
                 <button
                   onClick={handleBackspace}
-                  className={`${keyClasses} bg-gray-200 col-span-2 ${pressedKey === 'backspace' ? 'animate-keypress' : ''}`}
+                  className={`${keyClasses} bg-gray-200 ${pressedKey === 'backspace' ? 'animate-keypress' : ''}`}
                 >
                   ⌫
                 </button>

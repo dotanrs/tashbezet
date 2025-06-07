@@ -30,7 +30,7 @@ export const TashbezetTitle: React.FC<TitleProps> = ({
           {Array.from(word).map((letter, index) => (
           <div
             key={index}
-            className={`${width} aspect-square flex items-center justify-center ${size} font-bold m-0 border-y-[1px] border-r-[1px] ${!showBottomBorder && 'border-b-0'} border-gray-400 bg-white`}
+            className={`${width} max-w-[15vw] min-w-[30px] aspect-square flex items-center justify-center ${size} font-bold m-0 border-y-[1px] border-r-[1px] ${!showBottomBorder && 'border-b-0'} border-gray-400 bg-white`}
             style={{
               fontFamily: "'Rubik', sans-serif",
             }}
