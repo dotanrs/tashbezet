@@ -633,8 +633,8 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     setGameStarted(true);
   }
 
-  const useSmallScreenAdjustments = windowSize.width < 385;
-  const useVerySmallScreenAdjustments = windowSize.width < 320;
+  const useSmallScreenAdjustments = windowSize.width < 388;
+  const useVerySmallScreenAdjustments = windowSize.width < 325;
   const sideBarSpacing = useSmallScreenAdjustments ? 'px-0 gap-1' : 'px-2 gap-2'
   // Will return true if the game started, but will revert to false if no user actions were made
   const gameAlreadyStarted = secondsElapsed === 0;
@@ -695,7 +695,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
             showHintButton={!useVerySmallScreenAdjustments}
           />
         </div>
-        {!stateWithNullTimer && <div className='text-right mt-1 font-[courier]'>
+        {!stateWithNullTimer && <div className='text-right mt-1 font-[courier] mr-2'>
           {(!isDone) && <Pause onClick={() => pauseGame()} className='inline text-gray-600 mr-2' width={'16px'} strokeWidth={1} />}
           {formattedGameTime}
         </div>}
@@ -703,7 +703,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
       {/* Clues display */}
       <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
-        <div className={`min-h-[65px] w-[100%] ${hintsShown ? 'bg-yellow-200/70' : 'bg-highlight-200/80'} border-[0.5px] ${isMobile ? '' : 'rounded-lg mx-2'}`}>
+        <div className={`min-h-[65px] w-[100%] ${hintsShown ? 'bg-yellow-200/70' : 'bg-highlight-200/80'} border-[0.5px] ${isMobile ? '' : 'rounded-lg'}`}>
           <div className="p-2 w-full max-w-[500px] mx-auto direction-rtl text-right flex gap-0 justify-between" style={{ direction: 'rtl' }}>
             <div className="flex-none cursor-pointer select-none text-xl pt-2"
             onClick={() => moveToNextDefinition(true)}>
