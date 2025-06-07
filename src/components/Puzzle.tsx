@@ -644,7 +644,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [pauseGame]);
+  }, [pauseGame, isDone]);
 
   const useSmallScreenAdjustments = windowSize.width < 388;
   const useVerySmallScreenAdjustments = windowSize.width < 325;
