@@ -637,7 +637,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   const useVerySmallScreenAdjustments = windowSize.width < 325;
   const sideBarSpacing = useSmallScreenAdjustments ? 'px-0 gap-1' : 'px-2 gap-2'
   // Will return true if the game started, but will revert to false if no user actions were made
-  const gameAlreadyStarted = secondsElapsed === 0;
+  const gameAlreadyStarted = secondsElapsed > 0;
 
   return currentConfig && <>
   <div id="whole-crossword" className={`sm:w-full w-[100%] sm:pt-10 pt-[35px] max-w-[500px] ${hidden && 'hidden'}`}>
