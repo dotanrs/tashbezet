@@ -152,9 +152,10 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       const newGrid = getNewGrid(currentPuzzleId);
       setUserGrid(newGrid);
       resetCellStatus();
-      // Empty timeout to make sure if no other actions happen, the state will be deleted
-      // (the useEffect should complete before this)
-      setTimeout(() => clearPuzzleState(currentPuzzleId), 0);
+      // Treat this like a new game - state won't be saved until user makes a move.
+      // must be before clearPuzzleState to prevetn race conditions
+      setDidAtLeastOneMove(false);
+      clearPuzzleState(currentPuzzleId);
       resetTimer(0);
     };
   
