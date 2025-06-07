@@ -94,7 +94,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       const getUpdatedGrid = () => {
         const savedState = loadPuzzleState(currentPuzzleId);
         if (savedState && viewablePuzzles[savedState.puzzleId]) {
-          resetTimer(savedState.timerSeconds || 0); // TODO: load previous time
+          resetTimer(savedState.timerSeconds || 0);
           setCurrentConfig(viewablePuzzles[savedState.puzzleId]);
           const newGrid = mergeStateWithPuzzle(currentPuzzleId, savedState);
           setUserGrid(newGrid);
@@ -635,7 +635,8 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   const useSmallScreenAdjustments = windowSize.width < 385;
   const useVerySmallScreenAdjustments = windowSize.width < 320;
   const sideBarSpacing = useSmallScreenAdjustments ? 'px-0 gap-1' : 'px-2 gap-2'
-  const gameAlreadyStarted = formattedGameTime !== '00:00';
+  // Will return true if the game started, but will revert to false if no user actions were made
+  const gameAlreadyStarted = secondsElapsed === 0;
 
   return currentConfig && <>
   <div id="whole-crossword" className={`sm:w-full w-[100%] sm:pt-10 pt-[35px] max-w-[500px] ${hidden && 'hidden'}`}>
