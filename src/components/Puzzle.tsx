@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getLatestPuzzleName, PuzzleId, viewablePuzzles } from '../crosswords';
 import { clearPuzzleState, loadPuzzleState, savePuzzleState } from '../utils/storageUtils';
 import CrosswordGrid from './CrosswordGrid';
@@ -621,9 +621,9 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     }, [definitionName]);
 
 
-  const pauseGame = () => {
+  const pauseGame = useCallback(() => {
     setGameStarted(false);
-  }
+  }, [setGameStarted]);
 
   const resumeGame = () => {
     if (!puzzleDoneMessage) {
@@ -632,6 +632,19 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     setPuzzleDoneMessage(false);
     setGameStarted(true);
   }
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        pauseGame();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [pauseGame]);
 
   const useSmallScreenAdjustments = windowSize.width < 388;
   const useVerySmallScreenAdjustments = windowSize.width < 325;
