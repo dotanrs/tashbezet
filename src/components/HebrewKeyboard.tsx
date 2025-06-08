@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 interface HebrewKeyboardProps {
   onLetterClick: (letter: string) => void;
   onBackspace: () => void;
+  onTabClicked: () => void;
 }
 
-const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBackspace }) => {
+const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBackspace, onTabClicked }) => {
   const [pressedKey, setPressedKey] = useState<string | null>(null);
 
   // Hebrew keyboard layout in three rows
@@ -27,7 +28,13 @@ const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBacksp
     setTimeout(() => setPressedKey(null), 500);
   };
 
-  const keyShapeClasses = 'aspect-square max-h-10 w-full flex items-center justify-center '
+  const handleTab = () => {
+    setPressedKey('tab');
+    onTabClicked();
+    setTimeout(() => setPressedKey(null), 500);
+  };
+
+  const keyShapeClasses = 'aspect-square max-h-11 w-full flex items-center justify-center '
   const keyClasses = `${keyShapeClasses} text-gray-700 rounded border-[0.5px] border-inset border-gray-800 text-lg`;
 
   return (
@@ -39,8 +46,12 @@ const HebrewKeyboard: React.FC<HebrewKeyboardProps> = ({ onLetterClick, onBacksp
           }}>
             {rowIndex === 0 && (
               <>
-                {/* placeholder for empty cell */}
-                <div className={keyShapeClasses}></div>
+                <button
+                  onClick={handleTab}
+                  className={`${keyClasses} bg-gray-200 ${pressedKey === 'tab' ? 'animate-keypress' : ''}`}
+                >
+                  tab
+                </button>
                 {row.map((letter) => (
                   <button
                     key={letter}
