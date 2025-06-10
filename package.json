@@ -9,6 +9,7 @@
     "@types/react-dom": "^18.2.0",
     "gh-pages": "^6.3.0",
     "lucide-react": "^0.511.0",
+    "posthog-js": "^1.249.5",
     "react": "^18.2.0",
     "react-confetti": "^6.4.0",
     "react-dom": "^18.2.0",
