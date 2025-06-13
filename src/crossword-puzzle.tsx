@@ -5,6 +5,7 @@ import PreviousPuzzles from './components/PreviousPuzzles';
 import Puzzle from './components/Puzzle';
 import { Menu, X } from 'lucide-react';
 import { TashbezetTitle } from './utils/logo';
+import posthog from 'posthog-js';
 
 const CrosswordPuzzle = () => {
   const firstPuzzleId = Object.keys(puzzles)[0] as PuzzleId;
@@ -19,6 +20,9 @@ const CrosswordPuzzle = () => {
 
   // Modify handlePuzzleChange
   const handlePuzzleChange = (puzzleId: PuzzleId, keepUrl: boolean = false) => {
+    posthog.capture('puzzle-started', {
+      puzzleId: puzzleId,
+    });
     const finalPuzzleId = puzzleId in puzzles ? puzzleId : PUZZLE_ID_404;
     setCurrentPuzzleId(finalPuzzleId);
     setCurrentConfig(viewablePuzzles[finalPuzzleId]);

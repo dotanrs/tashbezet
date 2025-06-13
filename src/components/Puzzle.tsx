@@ -12,6 +12,7 @@ import HebrewKeyboard from './HebrewKeyboard';
 import { CircleHelp, ArrowRight, ArrowLeft, Pause } from 'lucide-react';
 import { SharePopup, WelcomeNonLatestPopup, WelcomePopup } from './Popup';
 import { useGameTimer } from '../utils/useGameTimer';
+import posthog from 'posthog-js';
 
 interface PuzzlesProps {
   currentConfig: CrosswordConfig;
@@ -424,6 +425,10 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       setPuzzleDoneMessage(false);
       setShowConfetti(false);
       if (result.isCorrect) {
+        posthog.capture('puzzle-done', {
+          puzzleId,
+          isLatest: currentConfig.name === getLatestPuzzleName(),
+        });
         setIsDone(true);
         setCellStatus(result.newCellStatus);
         setPuzzleDoneMessage(true);
