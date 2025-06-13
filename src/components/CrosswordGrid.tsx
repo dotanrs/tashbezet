@@ -85,7 +85,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
             >
               {cell !== 'blank' && (
                 isMobile ? (
-                  <div className={`w-full h-full flex items-center justify-center text-[clamp(2vw,14vw,80px)] font-rubik
+                  <div className={`w-full h-full flex items-center justify-center text-[clamp(2vw,14vw,min(7vh,80px))] font-rubik
                     ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default text-highlight-300 text-bold' : ''}
                     ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-300' : ''}`}>
                     {cell}
@@ -97,7 +97,7 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
                     value={cell}
                     onChange={onChange}
                     onKeyDown={onKeyDown}
-                    className={`w-full h-full text-center text-[clamp(2vw,14vw,80px)] outline-none bg-transparent font-rubik
+                    className={`w-full h-full text-center text-[clamp(2vw,14vw,min(7vh,80px))] outline-none bg-transparent font-rubik
                       ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default text-highlight-300 text-bold' : ''}
                       ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-300' : ''}`}
                     maxLength={1}
