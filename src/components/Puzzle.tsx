@@ -654,9 +654,9 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
 
   return currentConfig && <>
   <div id="whole-crossword" className={`sm:w-full w-[100%] sm:pt-10 pt-[35px] max-w-[500px] ${hidden && 'hidden'}`}>
-    <div id="main-content" style={isMobile ? { minHeight: `calc(100vh - ${bottomPadding}px - 15px)` } : undefined}>
-      <div id="crossword-and-buttons" className={`flex space-x-5 flex-row justify-between items-start mx-auto mt-0 mb-3
-      ${isMobile ? 'max-w-[calc(100vh-370px)]' : 'max-w-[calc(100vh-190px)]'}`}>
+    <div id="main-content" style={isMobile ? { minHeight: `calc(var(--app-height) - ${bottomPadding}px - 15px)` } : undefined}>
+      <div id="crossword-and-buttons" className={`flex space-x-5 flex-row justify-between items-start mx-auto mt-0 mb-3`}
+        style={{maxWidth: isMobile ? 'calc(var(--app-height) - 370px)' : 'calc(100vh-190px)'}}>
         <CrosswordGrid
           userGrid={userGrid}
           cellStatus={cellStatus}

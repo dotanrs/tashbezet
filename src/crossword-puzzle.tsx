@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { CrosswordConfig } from './types/crossword';
 import { puzzles, PuzzleId, viewablePuzzles, PUZZLE_ID_404 } from './crosswords';
 import PreviousPuzzles from './components/PreviousPuzzles';
@@ -29,10 +29,18 @@ const CrosswordPuzzle = () => {
     }
   };
 
-  // Track confetti state
+  const getWindowHeight = () => {
+    return window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  }
+
+  const setAppHeight = useCallback(() => {
+    // Set a variable --app-height to be used on mobile instead of the less accurate 100vh
+    document.documentElement.style.setProperty('--app-height', `${getWindowHeight()}px`);
+  }, [])
+
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
-    height: window.innerHeight,
+    height: getWindowHeight(),
   });
 
   // Add window resize handler
@@ -40,9 +48,11 @@ const CrosswordPuzzle = () => {
     const handleResize = () => {
       setWindowSize({
         width: window.innerWidth,
-        height: window.innerHeight,
+        height: getWindowHeight(),
       });
+      setAppHeight();
     };
+    setAppHeight();
 
     const params = new URLSearchParams(window.location.search);
     const puzzleIdFromParam = params.get("puzzleId");
@@ -52,7 +62,7 @@ const CrosswordPuzzle = () => {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [setAppHeight]);
 
 
   const pageWidth = 'sm:w-[500px] max-w-[500px]'
