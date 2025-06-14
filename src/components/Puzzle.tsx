@@ -681,6 +681,18 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     };
   }, [pauseGame, isDone]);
 
+  const isDefCompleted = (direction: Direction, index: number) => {
+    const indexes = [0,1,2,3,4];
+    const cellCompleted = (row: number, col: number) => {
+      return cellStatus[row][col] === true || currentConfig.grid[row][col] === 'blank';
+    }
+    if (direction === "across") {
+        return indexes.every(cell => cellCompleted(index, cell));
+    } else {
+      return indexes.every(cell => cellCompleted(cell, index));
+    }
+  }
+
   const useSmallScreenAdjustments = windowSize.width < 388;
   const useVerySmallScreenAdjustments = windowSize.width < 325;
   const sideBarSpacing = useSmallScreenAdjustments ? 'px-1 gap-1' : 'px-2 gap-2'
@@ -782,7 +794,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
         </div>
         {isMobile
           ? <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} onTabClicked={() => moveToNextDefinition(false)} />
-          : <AllClues currentConfig={currentConfig} onSelectDef={setDefinition} />
+          : <AllClues currentConfig={currentConfig} onSelectDef={setDefinition} isDefCompleted={isDefCompleted} />
         }
       </div>
 
