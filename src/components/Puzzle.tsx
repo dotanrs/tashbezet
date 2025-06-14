@@ -23,9 +23,10 @@ interface PuzzlesProps {
   gameStarted: boolean;
   setGameStarted: (val: boolean) => void;
   showWideScreen: boolean;
+  scrollTop: () => void;
 }
 
-const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCurrentConfig, windowSize, hidden, gameStarted, showWideScreen, setGameStarted }) => {
+const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scrollTop, setCurrentConfig, windowSize, hidden, gameStarted, showWideScreen, setGameStarted }) => {
     const isMobile = useIsMobile();
     const cluesKeyboardRef = useRef<HTMLDivElement>(null);
     const [bottomPadding, setBottomPadding] = useState(0);
@@ -218,6 +219,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       }
 
       setSelected(nextCell);
+      scrollTop();
     }
 
     const placeCursor = (grid: Grid) => {
