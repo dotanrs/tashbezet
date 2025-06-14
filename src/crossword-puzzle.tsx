@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { CrosswordConfig } from './types/crossword';
 import { puzzles, PuzzleId, viewablePuzzles, PUZZLE_ID_404 } from './crosswords';
 import PreviousPuzzles from './components/PreviousPuzzles';
@@ -8,6 +8,7 @@ import { TashbezetTitle } from './utils/logo';
 import useIsMobile from './hooks/useIsMobile';
 
 const CrosswordPuzzle = () => {
+  const divRef = useRef<HTMLDivElement>(null);
   const firstPuzzleId = Object.keys(puzzles)[0] as PuzzleId;
   const isMobile = useIsMobile();
 
@@ -105,6 +106,12 @@ const CrosswordPuzzle = () => {
 
   const shortWindow = windowSize.height < 520;
 
+  const scrollTop = () => {
+    if (divRef && divRef.current) {
+      divRef.current.scrollTop = 0;
+    }
+  };
+
   return (
     <>
     {shortWindow && <div className="block fixed w-full h-full z-50 text-center p-20 text-gray-700 text-l bg-background-50" style={{ direction: 'rtl' }}>
@@ -112,7 +119,8 @@ const CrosswordPuzzle = () => {
       <div className='pt-4'>אפשר לסובב את המכשיר למצב אנכי?</div>
     </div>}
     <div id="crossword-container"
-      className={`w-full overflow-auto absolute h-full right-0 left-0 m-x-0 flex flex-col items-center pt-0 mx-auto ${previousPuzzlesShown && 'bg-background-0'}`}>
+      className={`w-full overflow-auto absolute h-full right-0 left-0 m-x-0 flex flex-col items-center pt-0 mx-auto ${previousPuzzlesShown && 'bg-background-0'}`}
+      ref={divRef}>
       <GameTitle />
       <div className={`${pageWidth} w-[100%]`}>
         <>
@@ -133,6 +141,7 @@ const CrosswordPuzzle = () => {
               gameStarted={gameStarted}
               setGameStarted={setGameStarted}
               showWideScreen={showWideScreen}
+              scrollTop={scrollTop}
             />
           )}
         </>
