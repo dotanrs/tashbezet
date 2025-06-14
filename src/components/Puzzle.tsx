@@ -802,7 +802,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
       </div>
 
     </div>
-    {showWideScreen && <div className=''>
+    {showWideScreen && <div className='ml-4'>
       <AllClues currentConfig={currentConfig} onSelectDef={setDefinition} isDefCompleted={isDefCompleted} />
     </div>}
   </div>
