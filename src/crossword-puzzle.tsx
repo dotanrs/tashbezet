@@ -119,6 +119,7 @@ const CrosswordPuzzle = () => {
           {previousPuzzlesShown && (
             <PreviousPuzzles
               currentPuzzleId={currentPuzzleId}
+              showWideScreen={showWideScreen}
             />
           )}
 
