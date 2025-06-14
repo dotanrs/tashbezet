@@ -7,9 +7,10 @@ import { Home } from 'lucide-react';
 
 interface PreviousPuzzlesProps {
   currentPuzzleId: PuzzleId | null;
+  showWideScreen: boolean;
 }
 
-const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId }) => {
+const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId, showWideScreen }) => {
   const puzzleIds = Object.keys(puzzles) as PuzzleId[];
 
   const getPuzzleStatus = (puzzleId: PuzzleId) => {
@@ -18,8 +19,9 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId }) =>
     return savedState.isComplete ? '✓' : '•';
   };
 
+  const gridCols = showWideScreen ? 'grid-cols-3' : 'grid-cols-2';
   return (
-    <div className="mt-20 w-full px-8" style={{fontFamily: "'Rubik', sans-serif"}}>
+    <div className="mt-20 w-full px-8 max-w-[700px] mx-auto" style={{fontFamily: "'Rubik', sans-serif"}}>
       <h1 className='text-xl text-gray-700 text-center mb-8'>תשבצת <img className={'inline w-7 mx-2'} src="https://dotanrs.github.io/tashbezet/favicon.ico" alt='icon' /> תשבץ קטן אחד בשבוע</h1>
       <div className="mt-8 mb-6 flex gap-3 text-[13px] justify-center">
         <div className="flex items-center gap-10">
@@ -42,7 +44,7 @@ const PreviousPuzzles: React.FC<PreviousPuzzlesProps> = ({ currentPuzzleId }) =>
         <div className="text-xl w-18 text-center">תשבצים קודמים</div>
         <div className="h-[1px] bg-gray-300 flex-auto"></div>
       </div>
-      <div className="grid grid-cols-2 justify-center gap-2 flex-wrap mb-4" style={{ direction: 'rtl' }}>
+      <div className={`grid ${gridCols} justify-center gap-2 flex-wrap mb-4`} style={{ direction: 'rtl' }}>
       {puzzleIds.map((puzzleId) => {
         const status = getPuzzleStatus(puzzleId);
         return (
