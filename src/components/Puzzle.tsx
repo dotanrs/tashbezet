@@ -12,6 +12,7 @@ import HebrewKeyboard from './HebrewKeyboard';
 import { CircleHelp, ArrowRight, ArrowLeft, Pause } from 'lucide-react';
 import { SharePopup, WelcomeNonLatestPopup, WelcomePopup } from './Popup';
 import { useGameTimer } from '../utils/useGameTimer';
+import { AllClues } from './AllClues';
 
 interface PuzzlesProps {
   currentConfig: CrosswordConfig;
@@ -21,9 +22,10 @@ interface PuzzlesProps {
   hidden: boolean;
   gameStarted: boolean;
   setGameStarted: (val: boolean) => void;
+  showWideScreen: boolean;
 }
 
-const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCurrentConfig, windowSize, hidden, gameStarted, setGameStarted }) => {
+const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCurrentConfig, windowSize, hidden, gameStarted, showWideScreen, setGameStarted }) => {
     const isMobile = useIsMobile();
     const cluesKeyboardRef = useRef<HTMLDivElement>(null);
     const [bottomPadding, setBottomPadding] = useState(0);
@@ -184,6 +186,40 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       }
     };
   
+    const setDefinition = (direction: Direction, index: number) => {
+      setDirection(direction);
+      setIsFirstClick(false);
+
+      let nextCell = (direction === 'across') ? { row: index, col: 0 } : { row: 0, col: index };
+
+      // Check cell status is right
+      let secondaryIndex = 0;
+      let allowCompleted = false;
+      while (
+        (userGrid[nextCell.row][nextCell.col] === 'blank') ||
+        (!allowCompleted && cellStatus[nextCell.row][nextCell.col] === true)
+      ) {
+        nextCell = (direction === 'across') ? { row: index, col: secondaryIndex } : { row: secondaryIndex, col: index };
+        secondaryIndex += 1;
+
+        // if whole def is complete, go to first non-blank cell
+        if (secondaryIndex > 4 && !allowCompleted) {
+          allowCompleted = true;
+          secondaryIndex = 0;
+          nextCell = (direction === 'across') ? { row: index, col: secondaryIndex } : { row: secondaryIndex, col: index };
+          continue;
+        }
+
+        // Whole def is blank - should never happen
+        if (secondaryIndex > 4) {
+          nextCell = (direction === 'across') ? { row: index, col: 0 } : { row: 0, col: index };
+          break;
+        }
+      }
+
+      setSelected(nextCell);
+    }
+
     const placeCursor = (grid: Grid) => {
       // TODO: Not clear why the other methods are so complicated
       for (let row = 0; row < 5; row++) {
@@ -646,6 +682,18 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
     };
   }, [pauseGame, isDone]);
 
+  const isDefCompleted = (direction: Direction, index: number) => {
+    const indexes = [0,1,2,3,4];
+    const cellCompleted = (row: number, col: number) => {
+      return cellStatus[row][col] === true || currentConfig.grid[row][col] === 'blank';
+    }
+    if (direction === "across") {
+        return indexes.every(cell => cellCompleted(index, cell));
+    } else {
+      return indexes.every(cell => cellCompleted(cell, index));
+    }
+  }
+
   const useSmallScreenAdjustments = windowSize.width < 388;
   const useVerySmallScreenAdjustments = windowSize.width < 325;
   const sideBarSpacing = useSmallScreenAdjustments ? 'px-1 gap-1' : 'px-2 gap-2'
@@ -653,8 +701,8 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
   const gameAlreadyStarted = secondsElapsed > 0;
 
   return currentConfig && <>
-  <div id="whole-crossword" className={`sm:w-full w-[100%] sm:pt-10 pt-[35px] max-w-[500px] ${hidden && 'hidden'}`}>
-    <div id="main-content" style={isMobile ? { minHeight: `calc(var(--app-height) - ${bottomPadding}px - 15px)` } : undefined}>
+  <div id="whole-crossword" className={`sm:w-full w-[100%] sm:pt-10 pt-[35px] ${showWideScreen ? 'flex flex-row' : 'max-w-[500px]'} ${hidden && 'hidden'}`}>
+    <div id="main-content" className='max-w-[500px]'  style={isMobile ? { minHeight: `calc(var(--app-height) - ${bottomPadding}px - 15px)` } : undefined}>
       <div id="crossword-and-buttons" className={`flex space-x-5 flex-row justify-between items-start mx-auto mt-0 mb-3`}
         style={{maxWidth: isMobile ? 'calc(var(--app-height) - 350px)' : 'calc(100vh-190px)'}}>
 
@@ -745,10 +793,16 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
             </div>
           </div>
         </div>
-        {isMobile && <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} onTabClicked={() => moveToNextDefinition(false)} />}
+        {isMobile
+          ? <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} onTabClicked={() => moveToNextDefinition(false)} />
+          : (!showWideScreen && <AllClues currentConfig={currentConfig} onSelectDef={setDefinition} isDefCompleted={isDefCompleted} />)
+        }
       </div>
 
     </div>
+    {showWideScreen && <div className=''>
+      <AllClues currentConfig={currentConfig} onSelectDef={setDefinition} isDefCompleted={isDefCompleted} />
+    </div>}
   </div>
   </>;
 };

@@ -5,9 +5,11 @@ import PreviousPuzzles from './components/PreviousPuzzles';
 import Puzzle from './components/Puzzle';
 import { Menu, X } from 'lucide-react';
 import { TashbezetTitle } from './utils/logo';
+import useIsMobile from './hooks/useIsMobile';
 
 const CrosswordPuzzle = () => {
   const firstPuzzleId = Object.keys(puzzles)[0] as PuzzleId;
+  const isMobile = useIsMobile();
 
   // Add new state for game started
   const [gameStarted, setGameStarted] = useState(false);
@@ -65,7 +67,8 @@ const CrosswordPuzzle = () => {
   }, [setAppHeight]);
 
 
-  const pageWidth = 'sm:w-[500px] max-w-[500px]'
+  const showWideScreen = !isMobile && windowSize.width > 1000;
+  const pageWidth = showWideScreen ? 'sm:w-[900px] max-w-[900px]' : 'sm:w-[500px] max-w-[500px]';
   const showPuzzleName = windowSize.width > 350;
 
   const GameTitle = () => {
@@ -128,6 +131,7 @@ const CrosswordPuzzle = () => {
               windowSize={windowSize}
               gameStarted={gameStarted}
               setGameStarted={setGameStarted}
+              showWideScreen={showWideScreen}
             />
           )}
         </>
