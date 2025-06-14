@@ -12,6 +12,7 @@ import HebrewKeyboard from './HebrewKeyboard';
 import { CircleHelp, ArrowRight, ArrowLeft, Pause } from 'lucide-react';
 import { SharePopup, WelcomeNonLatestPopup, WelcomePopup } from './Popup';
 import { useGameTimer } from '../utils/useGameTimer';
+import { AllClues } from './AllClues';
 
 interface PuzzlesProps {
   currentConfig: CrosswordConfig;
@@ -184,6 +185,40 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
       }
     };
   
+    const setDefinition = (direction: Direction, index: number) => {
+      setDirection(direction);
+      setIsFirstClick(false);
+
+      let nextCell = (direction === 'across') ? { row: index, col: 0 } : { row: 0, col: index };
+
+      // Check cell status is right
+      let secondaryIndex = 0;
+      let allowCompleted = false;
+      while (
+        (userGrid[nextCell.row][nextCell.col] === 'blank') ||
+        (!allowCompleted && cellStatus[nextCell.row][nextCell.col] === true)
+      ) {
+        nextCell = (direction === 'across') ? { row: index, col: secondaryIndex } : { row: secondaryIndex, col: index };
+        secondaryIndex += 1;
+
+        // if whole def is complete, go to first non-blank cell
+        if (secondaryIndex > 4 && !allowCompleted) {
+          allowCompleted = true;
+          secondaryIndex = 0;
+          nextCell = (direction === 'across') ? { row: index, col: secondaryIndex } : { row: secondaryIndex, col: index };
+          continue;
+        }
+
+        // Whole def is blank - should never happen
+        if (secondaryIndex > 4) {
+          nextCell = (direction === 'across') ? { row: index, col: 0 } : { row: 0, col: index };
+          break;
+        }
+      }
+
+      setSelected(nextCell);
+    }
+
     const placeCursor = (grid: Grid) => {
       // TODO: Not clear why the other methods are so complicated
       for (let row = 0; row < 5; row++) {
@@ -745,7 +780,10 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, setCur
             </div>
           </div>
         </div>
-        {isMobile && <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} onTabClicked={() => moveToNextDefinition(false)} />}
+        {isMobile
+          ? <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} onTabClicked={() => moveToNextDefinition(false)} />
+          : <AllClues currentConfig={currentConfig} onSelectDef={setDefinition} />
+        }
       </div>
 
     </div>
