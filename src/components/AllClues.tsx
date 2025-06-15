@@ -1,5 +1,6 @@
 import React from 'react';
-import { CrosswordConfig, Direction } from '../types/crossword';
+import { CrosswordConfig, Direction, Selected } from '../types/crossword';
+import { ArrowLeft, ArrowRight, CircleHelp } from 'lucide-react';
 
 interface AllCluesProps {
   currentConfig: CrosswordConfig;
@@ -62,4 +63,54 @@ export const AllClues: React.FC<AllCluesProps> = ({ currentConfig, onSelectDef, 
             <CluesList currentDef={currentDef} clueList={currentConfig.columnClues} direction={'down'} onSelectDef={onSelectDef} isDefCompleted={isDefCompleted} />
         </div>
     )
+}
+
+interface MainClueProps {
+    moveToNextDefinition: (forward: boolean) => void;
+    hintsShown: boolean;
+    isMobile: boolean;
+    selected: Selected;
+    direction: Direction;
+    currentAvailableHint: string;
+    currentConfig: CrosswordConfig;
+    toggleHint: () => void;
+}
+
+export const MainClue: React.FC<MainClueProps> = ({moveToNextDefinition, hintsShown, toggleHint, isMobile, selected, direction, currentAvailableHint, currentConfig}) => {
+    function HintText({defaultText}: {defaultText: string}) {
+        return (
+          (hintsShown && currentAvailableHint) ? (
+            <span className='text-bold'>{currentAvailableHint}</span>
+          ) : <span>{defaultText}</span>
+        )
+      }
+
+    return <div className={`min-h-[65px] w-[100%] ${hintsShown ? 'bg-yellow-200/70' : 'bg-highlight-200/80'} border-[0.5px] ${isMobile ? '' : 'rounded-lg'}`}>
+    <div className="min-h-[65px] p-2 w-full max-w-[500px] mx-auto direction-rtl text-right flex gap-0 justify-between" style={{ direction: 'rtl' }}>
+      <div className="flex-none cursor-pointer select-none text-xl pt-2 pl-3"
+      onClick={() => moveToNextDefinition(true)}>
+      {<ArrowRight />}
+      </div>
+      <div className="flex-1 gap-0">
+      {selected && direction === 'across' && (
+        <div>
+          <span className="text-[12px] ml-2">{selected.row + 1} מאוזן</span> {<HintText defaultText={currentConfig.rowClues[selected.row]} />}
+        </div>
+      )}
+      {selected && direction === 'down' && (
+        <div>
+          <span className="text-[12px] ml-2">{selected.col + 1} מאונך</span> {<HintText defaultText={currentConfig.columnClues[selected.col]} />}
+        </div>
+      )}
+      </div>
+      {currentAvailableHint && <div className="flex-none cursor-pointer select-none text-2xl px-2 pt-2" title='להציג/להסתיר רמז'
+        onClick={toggleHint}>
+      {<CircleHelp />}
+      </div>}
+      <div className="flex-none cursor-pointer select-none text-2xl pt-2 pr-3"
+      onClick={() => moveToNextDefinition(false)}>
+      {<ArrowLeft />}
+      </div>
+    </div>
+  </div>
 }
