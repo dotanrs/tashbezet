@@ -22,13 +22,13 @@ const CluesList: React.FC<ClueListProps> = ({ direction, clueList, onSelectDef, 
     return (
         <div id={`clue-list-${direction}`} className='flex-1'>
             <div className='text-center mt-4 text-gray-600 text-sm'>{directionName}</div>
-            {clueList.map((clue, index) => <>
-                <div key={`all-clues-${direction}-${index}`} className='cursor-pointer flex flex-row hover:bg-highlight-100 border-r-[4px] border-highlight-200 px-2 py-2 mt-2 text-sm'
+            {clueList.map((clue, index) => <div
+                key={`all-clues-${direction}-${index}`} className='cursor-pointer flex flex-row hover:bg-highlight-100 border-r-[4px] border-highlight-200 px-2 py-2 mt-2 text-sm'
                 onClick={() => onSelectDef(direction, index)}>
                    <div className='text-[12px] pl-2 font-bold'>{index + 1}</div>
                    <div className={`${isDefCompletedClass(index)}`}>{clue}</div>
-                </div>
-            </>)}
+            </div>
+            )}
         </div>
     )
 }
