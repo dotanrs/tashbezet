@@ -762,7 +762,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
       </div>
 
       {/* Clues display */}
-      {!showWideScreen && <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
+      {(pageReady && !showWideScreen) && <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
         <MainClue moveToNextDefinition={moveToNextDefinition} hintsShown={hintsShown} isMobile={isMobile} selected={selected} direction={direction} currentAvailableHint={currentAvailableHint} currentConfig={currentConfig} toggleHint={toggleHint} />
         {isMobile
           ? <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} onTabClicked={() => moveToNextDefinition(false)} />
@@ -771,7 +771,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
       </div>}
 
     </div>
-    {showWideScreen && <div className='ml-4 mt-4'>
+    {(pageReady && showWideScreen) && <div className='ml-4 mt-4'>
       <MainClue moveToNextDefinition={moveToNextDefinition} hintsShown={hintsShown} isMobile={isMobile} selected={selected} direction={direction} currentAvailableHint={currentAvailableHint} currentConfig={currentConfig} toggleHint={toggleHint} />
       <AllClues currentDef={currentDef} currentConfig={currentConfig} onSelectDef={setDefinition} isDefCompleted={isDefCompleted} />
     </div>}
