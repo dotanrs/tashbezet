@@ -91,10 +91,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
 
     const setSelected = (value: { row: number; col: number }) => {
       setSelectedIn(value);
-      const cellRef = cellRefs.current[value.row]?.[value.col];
-      if (cellRef) {
-        cellRef.focus();
-      }
     }
 
     // Modify useEffect to only run when a puzzle is selected
@@ -184,7 +180,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
         }
       } else {
         setIsFirstClick(false);
-        setSelected({ row, col });
+        setSelectedIn({ row, col });
         // Keep the same direction when moving to a new cell
       }
     };
@@ -377,36 +373,38 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
       setDirection(newDirection);
     }
   
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      console.log("111", e.key, selected);
       if (!selected) return;
       setDidAtLeastOneMove(true);
-  
+    
       const row = selected.row;
       const col = selected.col;
-  
+    
       // Handle tab key
       if (e.key === 'Tab') {
-        e.preventDefault(); // Prevent losing focus
-        moveToNextDefinition(e.shiftKey);
+        e.preventDefault?.(); // Use optional chaining in case preventDefault doesn't exist
+        moveToNextDefinition(
+          'shiftKey' in e ? e.shiftKey : false // check shiftKey safely
+        );
         return;
       }
-  
-      // Only handle letter input and backspace if the cell is not completed
+    
       if (!cellStatus[row][col]) {
-        // Handle letter keys
         if (e.key.length === 1 && /^[א-ת]$/.test(e.key)) {
-          e.preventDefault();
+          // console.log("here1", e.key, selected);
+          e.preventDefault?.();
           handleLetterInput(e.key);
           return;
         }
-  
-        // On mobile, this is what happens when typing to a full cell, for some reason.
-        // Since we don't know what the user typed, we'll treat it as a backspace.
-        // Somehow this works and the letter is typed right after.
-        const weirdKeyValueForFirefox = "Process";
-        const weirdKeyValueForChrome = "Unidentified";
-        if (e.key === weirdKeyValueForFirefox || e.key === weirdKeyValueForChrome) {
-          e.preventDefault();
+    
+        const weirdKeyValueForFirefox = 'Process';
+        const weirdKeyValueForChrome = 'Unidentified';
+        if (
+          e.key === weirdKeyValueForFirefox ||
+          e.key === weirdKeyValueForChrome
+        ) {
+          e.preventDefault?.();
           const newGrid = [...userGrid];
           const newCellStatus = [...cellStatus];
           newGrid[selected.row][selected.col] = '';
@@ -415,28 +413,30 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
           setCellStatus(newCellStatus);
           return;
         }
-  
-        // Handle backspace
+    
         if (e.key === 'Backspace') {
-          e.preventDefault();
-  
+          e.preventDefault?.();
           handleBackspace(row, col);
         }
       }
-  
-      // Handle arrow keys - always allow navigation
-      if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-        e.preventDefault();
-        const { newDirection, newPosition } = handleArrowNavigation(e.key, direction, row, col, userGrid);
-  
-        if (newDirection) {
-          setDirection(newDirection);
-        }
-        if (newPosition) {
-          setSelected(newPosition);
-        }
+    
+      if (
+        ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(e.key)
+      ) {
+        e.preventDefault?.();
+        const { newDirection, newPosition } = handleArrowNavigation(
+          e.key,
+          direction,
+          row,
+          col,
+          userGrid
+        );
+    
+        if (newDirection) setDirection(newDirection);
+        if (newPosition) setSelected(newPosition);
       }
     };
+    
   
   
     // This is called on mobile when typing in an empty cell
@@ -617,9 +617,11 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
 
     useEffect(() => {
       document.body.classList.add('lg:landscape:overflow-auto', 'landscape:overflow-hidden', 'portrait:overflow-auto');
+      window.addEventListener("keydown", handleKeyDown);
   
       return () => {
         document.body.classList.remove('lg:landscape:overflow-auto', 'landscape:overflow-hidden', 'portrait:overflow-auto');
+        window.removeEventListener("keydown", handleKeyDown);
       };
     }, []);
 
@@ -715,7 +717,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
           cellRefs={cellRefs}
           onCellClick={handleCellClick}
           onChange={handleChange}
-          onKeyDown={handleKeyDown}
           isDone={isDone}
         />
       </div>

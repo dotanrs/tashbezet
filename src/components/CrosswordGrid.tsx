@@ -10,7 +10,6 @@ interface CrosswordGridProps {
   cellRefs: React.MutableRefObject<(HTMLInputElement | null)[][]>;
   onCellClick: (row: number, col: number, isFocused: boolean) => void;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   isDone: boolean;
 }
 
@@ -22,7 +21,6 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
   cellRefs,
   onCellClick,
   onChange,
-  onKeyDown,
   isDone,
 }) => {
   const isMobile = useIsMobile();
@@ -84,27 +82,11 @@ const CrosswordGrid: React.FC<CrosswordGridProps> = ({
               onMouseDown={() => onCellClick(rowIndex, colIndex, gridFocued)}
             >
               {cell !== 'blank' && (
-                isMobile ? (
-                  <div className={`w-full h-full flex items-center justify-center text-[clamp(2vw,14vw,min(7vh,80px))] font-rubik
-                    ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default text-highlight-300 text-bold' : ''}
-                    ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-300' : ''}`}>
-                    {cell}
-                  </div>
-                ) : (
-                  <input
-                    ref={el => cellRefs.current[rowIndex][colIndex] = el}
-                    type="text"
-                    value={cell}
-                    onChange={onChange}
-                    onKeyDown={onKeyDown}
-                    className={`w-full h-full text-center text-[clamp(2vw,14vw,min(7vh,80px))] outline-none bg-transparent font-rubik
-                      ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default text-highlight-300 text-bold' : ''}
-                      ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-300' : ''}`}
-                    maxLength={1}
-                    dir="rtl"
-                    lang="he"
-                  />
-                )
+                <div className={`w-full h-full flex items-center justify-center text-[clamp(2vw,14vw,80px)] font-rubik
+                  ${cellStatus[rowIndex][colIndex] === true ? 'cursor-default text-highlight-300 text-bold' : ''}
+                  ${cellStatus[rowIndex][colIndex] === false ? 'line-through text-red-300' : ''}`}>
+                  {cell}
+                </div>
               )}
             </div>
           );
