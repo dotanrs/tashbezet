@@ -9,10 +9,10 @@ import { findNextDefinition, handleArrowNavigation } from '../utils/navigationUt
 import useIsMobile from '../hooks/useIsMobile';
 import { checkPuzzle, createEmptyCellStatus, createEmptyGrid } from '../utils/puzzleUtils';
 import HebrewKeyboard from './HebrewKeyboard';
-import { CircleHelp, ArrowRight, ArrowLeft, Pause } from 'lucide-react';
+import { Pause } from 'lucide-react';
 import { SharePopup, WelcomeNonLatestPopup, WelcomePopup } from './Popup';
 import { useGameTimer } from '../utils/useGameTimer';
-import { AllClues } from './AllClues';
+import { AllClues, MainClue } from './AllClues';
 
 interface PuzzlesProps {
   currentConfig: CrosswordConfig;
@@ -643,14 +643,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
 
     const backgroundColorUi = 'bg-background-100';
 
-    function HintText({defaultText}: {defaultText: string}) {
-      return (
-        (hintsShown && currentAvailableHint) ? (
-          <span className='text-bold'>{currentAvailableHint}</span>
-        ) : <span>{defaultText}</span>
-      )
-    }
-
     // Id the definition changes, reset the hint
     const definitionName = `${currentConfig?.name}_${direction}_${direction === 'across' ? selected?.row : selected?.col}`
     useEffect(() => {
@@ -770,43 +762,17 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
       </div>
 
       {/* Clues display */}
-      <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
-        <div className={`min-h-[65px] w-[100%] ${hintsShown ? 'bg-yellow-200/70' : 'bg-highlight-200/80'} border-[0.5px] ${isMobile ? '' : 'rounded-lg'}`}>
-          <div className="min-h-[65px] p-2 w-full max-w-[500px] mx-auto direction-rtl text-right flex gap-0 justify-between" style={{ direction: 'rtl' }}>
-            <div className="flex-none cursor-pointer select-none text-xl pt-2 pl-3"
-            onClick={() => moveToNextDefinition(true)}>
-            {<ArrowRight />}
-            </div>
-            <div className="flex-1 gap-0">
-            {selected && direction === 'across' && (
-              <div>
-                <span className="text-[12px] ml-2">{selected.row + 1} מאוזן</span> {<HintText defaultText={currentConfig.rowClues[selected.row]} />}
-              </div>
-            )}
-            {selected && direction === 'down' && (
-              <div>
-                <span className="text-[12px] ml-2">{selected.col + 1} מאונך</span> {<HintText defaultText={currentConfig.columnClues[selected.col]} />}
-              </div>
-            )}
-            </div>
-            {currentAvailableHint && <div className="flex-none cursor-pointer select-none text-2xl px-2 pt-2" title='להציג/להסתיר רמז'
-              onClick={toggleHint}>
-            {<CircleHelp />}
-            </div>}
-            <div className="flex-none cursor-pointer select-none text-2xl pt-2 pr-3"
-            onClick={() => moveToNextDefinition(false)}>
-            {<ArrowLeft />}
-            </div>
-          </div>
-        </div>
+      {!showWideScreen && <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
+        <MainClue moveToNextDefinition={moveToNextDefinition} hintsShown={hintsShown} isMobile={isMobile} selected={selected} direction={direction} currentAvailableHint={currentAvailableHint} currentConfig={currentConfig} toggleHint={toggleHint} />
         {isMobile
           ? <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} onTabClicked={() => moveToNextDefinition(false)} />
           : (!showWideScreen && <AllClues currentDef={currentDef} currentConfig={currentConfig} onSelectDef={setDefinition} isDefCompleted={isDefCompleted} />)
         }
-      </div>
+      </div>}
 
     </div>
-    {showWideScreen && <div className='ml-4'>
+    {showWideScreen && <div className='ml-4 mt-4'>
+      <MainClue moveToNextDefinition={moveToNextDefinition} hintsShown={hintsShown} isMobile={isMobile} selected={selected} direction={direction} currentAvailableHint={currentAvailableHint} currentConfig={currentConfig} toggleHint={toggleHint} />
       <AllClues currentDef={currentDef} currentConfig={currentConfig} onSelectDef={setDefinition} isDefCompleted={isDefCompleted} />
     </div>}
   </div>
