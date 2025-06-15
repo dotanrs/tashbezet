@@ -700,6 +700,11 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
   const sideBarSpacing = useSmallScreenAdjustments ? 'px-1 gap-1' : 'px-2 gap-2'
   // Will return true if the game started, but will revert to false if no user actions were made
   const gameAlreadyStarted = secondsElapsed > 0;
+  const currentDef = {
+    row: selected?.row,
+    col: selected?.col,
+    direction,
+  }
 
   return currentConfig && <>
   <div id="whole-crossword" className={`sm:w-full w-[100%] sm:pt-10 pt-[35px] ${showWideScreen ? 'flex flex-row' : 'max-w-[500px]'} ${hidden && 'hidden'}`}>
@@ -796,13 +801,13 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
         </div>
         {isMobile
           ? <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} onTabClicked={() => moveToNextDefinition(false)} />
-          : (!showWideScreen && <AllClues currentConfig={currentConfig} onSelectDef={setDefinition} isDefCompleted={isDefCompleted} />)
+          : (!showWideScreen && <AllClues currentDef={currentDef} currentConfig={currentConfig} onSelectDef={setDefinition} isDefCompleted={isDefCompleted} />)
         }
       </div>
 
     </div>
     {showWideScreen && <div className='ml-4'>
-      <AllClues currentConfig={currentConfig} onSelectDef={setDefinition} isDefCompleted={isDefCompleted} />
+      <AllClues currentDef={currentDef} currentConfig={currentConfig} onSelectDef={setDefinition} isDefCompleted={isDefCompleted} />
     </div>}
   </div>
   </>;
