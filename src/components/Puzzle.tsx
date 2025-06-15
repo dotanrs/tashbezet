@@ -37,7 +37,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
     // State for the user's input grid
     const [userGrid, setUserGrid] = useState<Grid>(createEmptyGrid());
     // Track selected cell
-    const [selected, setSelected] = useState<Selected>(null);
+    const [selected, setSelectedIn] = useState<Selected>(null);
     // Status message
     const [puzzleDoneMessage, setPuzzleDoneMessage] = useState(false);
     // Track cell validation status
@@ -89,6 +89,14 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
       return puzzleState && puzzleState.timerSeconds === undefined && puzzleState.isComplete;
     })();
 
+    const setSelected = (value: { row: number; col: number }) => {
+      setSelectedIn(value);
+      const cellRef = cellRefs.current[value.row]?.[value.col];
+      if (cellRef) {
+        cellRef.focus();
+      }
+    }
+
     // Modify useEffect to only run when a puzzle is selected
     useEffect(() => {
       if (!currentPuzzleId) return;
@@ -118,7 +126,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
       const firstCell = placeCursor(newGrid);
       if (firstCell) {
         setSelected(firstCell);
-        cellRefs.current[firstCell.row][firstCell.col]?.focus();
       } else {
         // We should never get here
       }
@@ -179,11 +186,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
         setIsFirstClick(false);
         setSelected({ row, col });
         // Keep the same direction when moving to a new cell
-      }
-  
-      const cellRef = cellRefs.current[row]?.[col];
-      if (cellRef) {
-        cellRef.focus();
       }
     };
   
@@ -373,7 +375,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
       const { row: nextRow, col: nextCol, newDirection } = findNextDefinition(userGrid, cellStatus, selected.row, selected.col, direction, forward, requireEmpty);
       setSelected({ row: nextRow, col: nextCol });
       setDirection(newDirection);
-      cellRefs.current[nextRow][nextCol]?.focus();
     }
   
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -433,7 +434,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
         }
         if (newPosition) {
           setSelected(newPosition);
-          cellRefs.current[newPosition.row][newPosition.col]?.focus();
         }
       }
     };
@@ -567,7 +567,6 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
         newGrid[prevCell.newRow][prevCell.newCol] = '';
         newCellStatus[prevCell.newRow][prevCell.newCol] = null;
         setSelected({row: prevCell.newRow, col: prevCell.newCol});
-        cellRefs.current[prevCell.newRow][prevCell.newCol]?.focus();
         if (prevCell.newDirection) {
           setDirection(prevCell.newDirection);
         }
