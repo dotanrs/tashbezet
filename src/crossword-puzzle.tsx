@@ -104,7 +104,7 @@ const CrosswordPuzzle = () => {
     };
   }, []);
 
-  const shortWindow = windowSize.height < 520;
+  const shortWindow = windowSize.height < 470;
 
   const scrollTop = () => {
     if (divRef && divRef.current) {

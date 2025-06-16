@@ -704,7 +704,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
       <div id="crossword-and-buttons" className={`flex space-x-5 flex-row justify-between items-start mx-auto mt-0 mb-3`}
         style={{
           maxWidth: isMobile ? 'calc(var(--app-height) - 350px)' : 'calc(100vh - 250px)',
-          minWidth: isMobile ? undefined : '370px',
+          minWidth: isMobile ? '170px' : (showWideScreen ? '350px' : '270px'),
           }}>
 
         <CrosswordGrid
