@@ -26,7 +26,10 @@ const puzzle: CrosswordConfig = {
     "מבטא את עצמו בעזרת מילים",
     "מצב לא טוב כשרוצים להתקדם",
     "צי",
-  ]
+  ],
+  "rowHints": {
+    3: '(אלכס חולה אהבה)',
+  }
 };
 
 export default puzzle; 
