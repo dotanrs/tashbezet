@@ -76,7 +76,7 @@ const CrosswordPuzzle = () => {
     return <div className='fixed z-10 w-full bg-highlight-200 border-b-[1px] border-gray-600 mb-0'>
     <div className={`${pageWidth} flex flex-row items-center justify-between m-auto pl-2 sm:pl-0 leading-[15px]`}>
       <div id="options">
-        <button onClick={() => setPreviousPuzzlesShown(!previousPuzzlesShown)} className='px-2 py-1'>
+        <button title='אפשרויות' onClick={() => setPreviousPuzzlesShown(!previousPuzzlesShown)} className='px-2 py-1'>
           {previousPuzzlesShown ? <X size={24} className='text-gray-800' /> : <Menu size={24} className='text-gray-800' />}
         </button>
       </div>

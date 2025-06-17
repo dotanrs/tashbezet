@@ -32,6 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         Icon={Share2}
         text=""
         baseBgColor={baseBgColor}
+        title='לשתף את התשבץ הנוכחי'
       />}
       <Button
         onClick={onMarkPuzzle}
@@ -39,6 +40,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         Icon="🖋️"
         text="בדיקה"
         baseBgColor={baseBgColor}
+        title='לסמן את האותיות הנכונות והשגויות'
       />
       {showHintButton && <Button
         onClick={onHint}
@@ -47,6 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         text="תן אות"
         hoverColor="hover:bg-yellow-100"
         baseBgColor={baseBgColor}
+        title='לחשוף אות אקראית בתשבץ'
       />}
       <Button
         onClick={onReset}
@@ -55,6 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         hoverColor="hover:bg-red-200"
         disabledStyle={false}
         baseBgColor={baseBgColor}
+        title='להתחיל מחדש (ינקה את התשבץ ויאפס את השעון)'
       />
     </>
   );
