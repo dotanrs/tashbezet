@@ -765,7 +765,7 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
       </div>
 
       {/* Clues display */}
-      {(pageReady && !showWideScreen) && <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)} whitespace-pre-wrap`}>
+      {(pageReady && !showWideScreen) && <div id="clues-and-keyboard" ref={cluesKeyboardRef} className={`${cluesKeyboardLocation(isMobile)}`}>
         <MainClue moveToNextDefinition={moveToNextDefinition} hintsShown={hintsShown} isMobile={isMobile} selected={selected} direction={direction} currentAvailableHint={currentAvailableHint} currentConfig={currentConfig} toggleHint={toggleHint} />
         {isMobile
           ? <HebrewKeyboard onLetterClick={handleLetterInput} onBackspace={handleBackspaceOnScreenKeyboard} onTabClicked={() => moveToNextDefinition(false)} />

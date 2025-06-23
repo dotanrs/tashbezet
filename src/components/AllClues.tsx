@@ -58,7 +58,7 @@ const CluesList: React.FC<ClueListProps> = ({ direction, clueList, onSelectDef, 
 
 export const AllClues: React.FC<AllCluesProps> = ({ currentConfig, onSelectDef, isDefCompleted, currentDef }) => {
     return (
-        <div className='max-w-[500px] flex flex-row gap-4 text-right direction-rtl' style={{direction: 'rtl'}}>
+        <div className='whitespace-pre-wrap max-w-[500px] flex flex-row gap-4 text-right direction-rtl' style={{direction: 'rtl'}}>
             <CluesList currentDef={currentDef} clueList={currentConfig.rowClues} direction={'across'} onSelectDef={onSelectDef} isDefCompleted={isDefCompleted} />
             <CluesList currentDef={currentDef} clueList={currentConfig.columnClues} direction={'down'} onSelectDef={onSelectDef} isDefCompleted={isDefCompleted} />
         </div>
@@ -85,7 +85,7 @@ export const MainClue: React.FC<MainClueProps> = ({moveToNextDefinition, hintsSh
         )
       }
 
-    return <div className={`min-h-[65px] w-[100%] ${hintsShown ? 'bg-yellow-200/70' : 'bg-highlight-200/80'} border-[0.5px] ${isMobile ? '' : 'rounded-lg'}`}>
+    return <div className={`whitespace-pre-wrap min-h-[65px] w-[100%] ${hintsShown ? 'bg-yellow-200/70' : 'bg-highlight-200/80'} border-[0.5px] ${isMobile ? '' : 'rounded-lg'}`}>
     <div className="min-h-[65px] p-2 w-full max-w-[500px] mx-auto direction-rtl text-right flex gap-0 justify-between" style={{ direction: 'rtl' }}>
       <div className="flex-none cursor-pointer select-none text-xl pt-2 pl-3"
       onClick={() => moveToNextDefinition(true)}>

@@ -1,8 +1,4 @@
 User-agent: *
 Allow: /
 
-# Sitemap location
 Sitemap: https://dotanrs.github.io/tashbezet/sitemap.xml
-
-# Optional: Crawl delay (be nice to servers)
-Crawl-delay: 1
