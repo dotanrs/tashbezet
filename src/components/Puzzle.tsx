@@ -778,6 +778,25 @@ const Puzzle: React.FC<PuzzlesProps> = ({ currentConfig, currentPuzzleId, scroll
       <MainClue moveToNextDefinition={moveToNextDefinition} hintsShown={hintsShown} isMobile={isMobile} selected={selected} direction={direction} currentAvailableHint={currentAvailableHint} currentConfig={currentConfig} toggleHint={toggleHint} />
       <AllClues currentDef={currentDef} currentConfig={currentConfig} onSelectDef={setDefinition} isDefCompleted={isDefCompleted} />
     </div>}
+    <div id="all-defs" className='direction-rtl text-right' style={{direction: 'rtl'}}>
+      {Object.keys(viewablePuzzles).reverse().map((puzzle: string) => (
+          <div key={puzzle}>
+            <div className='text-l mt-4 underline'>{viewablePuzzles[puzzle].name}</div>
+            <div className='text-base mt-2'>מאונך</div>
+            {viewablePuzzles[puzzle].columnClues.map((value, index) => (
+              <div key={`${puzzle}_col_${index}`}>
+                <span className='font-bold'>{viewablePuzzles[puzzle].grid.map(row => row[index]).join("").replace(/blank/g, "")}</span>: {value}
+              </div>
+            ))}
+            <div className='text-base mt-2'>מאוזן</div>
+            {viewablePuzzles[puzzle].rowClues.map((value, index) => (
+              <div key={`${puzzle}_row_${index}`}>
+                <span className='font-bold'>{viewablePuzzles[puzzle].grid[index].join("").replace(/blank/g, "")}</span>: {value}
+              </div>
+            ))}
+          </div>
+      ))}
+    </div>
   </div>
   </>;
 };
