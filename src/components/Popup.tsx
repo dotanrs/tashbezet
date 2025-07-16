@@ -195,20 +195,43 @@ export const SharePopup: React.FC<PopupProps> = ({ currentConfig, puzzleId, onCl
 }
 
 const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: PuzzleId, onClose: () => void, secondsElapsed: number) => {
+    const getCompliment = (secondsElapsed: number) => {
+        if (!secondsElapsed) {
+            return 'כל הכבוד!';
+        }
+        if (secondsElapsed < 5) {
+            return 'האקינג?! 😳';
+        }
+        if (secondsElapsed < 30) {
+            return 'נינג\'ה! 🥷';
+        }
+        if (secondsElapsed <= 60) {
+            return 'מכונה! 🦾';
+        }
+        if (secondsElapsed <= 90) {
+            return 'סילון! 🏅'
+        }
+        if (secondsElapsed <= 180) {
+            return 'איזה זריזוּת! 🐇'
+        }
+        if (secondsElapsed <= 300) {
+            return 'תוצאה מרשימה! 💫'
+        }
+        if (secondsElapsed > 900) {
+            return 'ההתמדה משתלמת 💪'
+        }
+        return 'כל הכבוד! 😎'
+    }
     return <>
          <div className='relative'>
             <img className='relative top-[12px] mx-auto' alt='Tashbezet logo' src='https://dotanrs.github.io/tashbezet/favicon.ico'></img>
             <div className="absolute inset-0 translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
             <Trophy className='mx-auto mt-0 w-[150px] h-[150px] text-gold text-background-300' strokeWidth={'2px'} />
          </div>
-         <div className='text-3xl text-background-300 font-bold mb-1'>כל הכבוד!</div>
-         <div className='text-base'>פתרת את התשבצת השבועי</div>
-         {(!!secondsElapsed) && (<div className='text-l'>ב-<span className='font-bold'>{formatTime(secondsElapsed)}</span></div>)}
-         {ShareLink('לאתגר חברים', 'text-base text-background-300 mt-4 font-bold', getShareMessage(currentConfig, `${currentPuzzleId}`, secondsElapsed))}
-        <div className='text-sm mt-4 text-black mb-6'>
-            <div className='text-gray-500'>תשבץ חדש בעוד:</div>
-            <CountdownTimer />
-        </div>
+         <div className='text-base'></div>
+         {(!!secondsElapsed) && (<div className='text-base'>פתרת את התשבצת השבועי ב-<span className='font-bold text-xl'>{formatTime(secondsElapsed)}</span></div>)}
+         <div className='text-2xl text-background-300 font-bold mb-1'>{getCompliment(secondsElapsed)}</div>
+        {ShareLink('לאתגר חברים', 'text-base text-background-300 mt-4 mb-2 font-bold', getShareMessage(currentConfig, `${currentPuzzleId}`, secondsElapsed))}
           <button
             onClick={onClose}
           className="px-6 py-3 bg-background-300 text-white rounded-lg text-xl relative overflow-hidden hover:shadow-lg"
@@ -216,6 +239,10 @@ const wellDoneDescription = (currentConfig: CrosswordConfig, currentPuzzleId: Pu
           >
         <span className="relative whitespace-pre-wrap">לחזור לתשבץ</span>
        </button>
+       <div className='text-sm mt-4 text-black'>
+            <div className='text-gray-500'>תשבץ חדש בעוד:</div>
+            <CountdownTimer />
+        </div>
     </>
 }
 
